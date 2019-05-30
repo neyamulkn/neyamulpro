@@ -354,6 +354,93 @@ class GigController extends Controller
     {
         return redirect('/dashbord/create-gig/');
     }
+
+    //manage gigs
+    public function manage_gigs()
+    {
+        return view('backend.gig-view');
+    }
+
+    public function get_gigs_by_status($status='active')
+    {
+         $user_id = Auth::user()->id;
+
+        if($status == 'all'){
+            $get_gigs = DB::table('gig_basics')
+            ->join('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
+            ->where('gig_basics.gig_user_id' , '=', $user_id)->get();
+        }else{
+            $get_gigs = DB::table('gig_basics')
+            ->join('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
+            ->where('gig_basics.gig_user_id' , '=', $user_id)
+            ->where( 'gig_basics.gig_status' , '=', $status)->get();
+        }
+
+          
+          if(count($get_gigs) > 0){
+                $output = '
+                <table class="responsive-table-input-matrix">
+                    <thead>
+                    <tr class="header-filter">
+                    <td colspan="12" class="js-filter-title">'.$status.' gigs</td>
+                    
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>IMG</th>
+                        <th>GIG Title </th>
+                        <th>IMPRESSIONS</th>
+                        <th>CLICKS</th>
+                        <th>VIEWS</th>
+                        <th>ORDERS</th>
+                        <th>CANCELLATIONS</th>
+                        <th>Action</th>
+                        
+                    </tr>
+                    </thead>
+                <tbody>';
+                foreach($get_gigs as $show_gig){
+
+                            $gig_img = DB::table('gig_images')->where('gig_id', $show_gig->gig_id)->first(); 
+                          
+                           $output .='
+                        
+                            <tr class="tbgig">
+                                <td><input type="checkbox"></td>
+                                <td class="gig-pict-45">
+                                    <span class="gig-pict-45">
+                                        <img src="'.asset('gigimages/').'/'.$gig_img->image_path.'" alt="gig_image" >
+                                    </span>
+                                </td>
+                                <td class="title js-toggle-gig-stats ">
+                                    <div class="ellipsis1">
+                                        <a class="ellipsis" target="_blank" href="'.asset('/order/review/'.$show_gig->order_id).'">'.$show_gig->gig_title.'</a>
+                                    </div>
+                                </td>
+                                <td>'.\Carbon\Carbon::parse($show_gig->created_at)->format('M d, Y').'</td>
+                                <td>'.\Carbon\Carbon::parse($show_gig->created_at)->format('M d, Y').'</td>
+                                <td>'.$show_gig->total.'</td>
+                                
+                                <td>
+                                    <label for="sv" class="select-block v3">
+                                        <span style="text-transform:uppercase;" class="alert alert-success">'.$show_gig->status.'
+                                    </label>
+                                </td>
+                            </tr> 
+                        ';
+                 }
+                 $output .='</tbody>
+                </tbody>
+            </table>';
+                echo $output;
+        }else{
+
+            echo 'No '.$status.' orders to show.';
+        }
+    }
+
+
+
     public function question_answer_delete(Request $request)
     {
 

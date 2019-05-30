@@ -157,34 +157,39 @@
 					<div class="transaction-list-header-icon"></div>
 				</div>
 				<!-- /TRANSACTION LIST HEADER -->
-
-				<!-- TRANSACTION LIST ITEM -->
-				<div class="transaction-list-item">
-					<div class="transaction-list-item-date">
-						<p>Dec 12th, 2014</p>
+				@if(count($get_earnings)>0)
+					<!-- TRANSACTION LIST ITEM -->
+					@foreach($get_earnings as $get_earning)
+					<div class="transaction-list-item">
+						<div class="transaction-list-item-date">
+							<p>{{ \Carbon\Carbon::parse($get_earning->created_at)->format('M d, Y')}}</p>
+						</div>
+						<div class="transaction-list-item-author">
+							<p class="text-header"><a href="#">{{$get_earning->username}}</a></p>
+						</div>
+						<div class="transaction-list-item-item">
+							<p class="category primary"><a href="{{url('$get_earning->gig_url')}}">{{$get_earning->gig_title}}</a></p>
+						</div>
+						<div class="transaction-list-item-detail">
+							<p>Marketplace</p>
+						</div>
+						<div class="transaction-list-item-code">
+							<p><span class="light">{{$get_earning->type}}</span></p>
+						</div>
+						<div class="transaction-list-item-price">
+							<p>${{$get_earning->price}}</p>
+						</div>
+						
+						<div class="transaction-list-item-earnings">
+							<p class="text-header">${{$get_earning->earning}}</p>
+						</div>
+						
 					</div>
-					<div class="transaction-list-item-author">
-						<p class="text-header"><a href="#">Sarah-Imaginarium</a></p>
-					</div>
-					<div class="transaction-list-item-item">
-						<p class="category primary"><a href="#">Westeros Custom Clothing</a></p>
-					</div>
-					<div class="transaction-list-item-detail">
-						<p>marketplace/workplace/themeplace</p>
-					</div>
-					<div class="transaction-list-item-code">
-						<p><span class="light">direct/referrel</span></p>
-					</div>
-					<div class="transaction-list-item-price">
-						<p>$ 12</p>
-					</div>
-					
-					<div class="transaction-list-item-earnings">
-						<p class="text-header">$ 6</p>
-					</div>
-					
-				</div>
-				<!-- /TRANSACTION LIST ITEM -->
+					@endforeach
+					<!-- /TRANSACTION LIST ITEM -->
+				@else
+				<h3 style="text-align: center;padding: 10px;">There are no transactions to show here.. <h3>
+				@endif
 
 			</div>
 			<!-- /TRANSACTION LIST -->

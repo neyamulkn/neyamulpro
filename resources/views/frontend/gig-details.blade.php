@@ -75,7 +75,17 @@ height: 76px;
 .btn{
 	padding: 8px 15px !important;
 }
-
+.feedback{
+	color: #FFC100;font-size: 15px;font-weight: bold;
+}
+.rating_type{
+	width: 30%;
+	float: left;
+	padding: 5px;
+}
+.price{
+	font-size: 15px;
+}
 </style>
 @endsection
 
@@ -99,7 +109,7 @@ height: 76px;
 
 						<!-- TAB ITEM -->
 						<div class="tab-item selected">
-							<p class="text-header">Basic</p>
+							<p class="text-header">Basic </p>
 						</div>
 						<!-- /TAB ITEM -->
 						<div class="tab-item">
@@ -547,69 +557,53 @@ height: 76px;
 				
 					
 				</div>
-				<div class="comment-list">
-				<h4 class="gigsfuq-item">Reviews (1175)</h4>
-				
-					<!-- COMMENT -->
-					<div class="comment-wrap">
-						<!-- USER AVATAR -->
-						<a href="user-profile.html">
-							<figure class="user-avatar medium">
-								<img src="{{ asset('allscript')}}/images/avatars/avatar_11.jpg" alt="">
-							</figure>
-						</a>
-						<!-- /USER AVATAR -->
-						<div class="comment">
-							<p class="text-header">View as Author (Reply Option)</p>
-							<p class="timestamp">8 Hours Ago</p>
-							<a href="#" class="report">Report</a>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magnada. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-						</div>
-					</div>
-					<!-- /COMMENT -->
-
-					<!-- LINE SEPARATOR -->
-					<hr class="line-separator">
-					<!-- /LINE SEPARATOR -->
-
-					<!-- COMMENT -->
-					<div class="comment-wrap">
-						<!-- USER AVATAR -->
-						<a href="user-profile.html">
-							<figure class="user-avatar medium">
-								<img src="{{ asset('allscript')}}/images/avatars/avatar_12.jpg" alt="">
-							</figure>
-						</a>
-						<!-- /USER AVATAR -->
-						<div class="comment">
-							<p class="text-header">View as Author (Replies)</p>
-							<p class="timestamp">10 Hours Ago</p>
-							<a href="#" class="report">Report</a>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magnada. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-						</div>
-
-						<!-- COMMENT -->
-						<div class="comment-wrap">
-							<!-- USER AVATAR -->
-							<a href="user-profile.html">
-								<figure class="user-avatar medium">
-									<img src="{{ asset('allscript')}}/images/avatars/avatar_09.jpg" alt="">
-								</figure>
-							</a>
-							<!-- /USER AVATAR -->
-							<div class="comment">
-								<p class="text-header">Odin_Design</p>
-								<!-- PIN -->
-								<span class="pin">Author</span>
-								<!-- /PIN -->
-								<p class="timestamp">2 Hours Ago</p>
-								<a href="#" class="report">Report</a>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magnada. Ut enim ad minim veniam, quis nostrud exercitation</p>
-							</div>
-						</div>
-						<!-- /COMMENT -->
-					</div>
+			@if(count($get_feedback)>0)
+			<div class="comment-list">
+				<?php 
+					$com_seller  = 0;
+					$service_describe = 0;
+					$buy_again_recommend = 0;
+					$total = 0;
+					foreach($get_feedback as $show_feedback)
+						{
+							$com_seller  += $show_feedback->com_seller ;
+							$service_describe += $show_feedback->service_describe;
+							$buy_again_recommend += $show_feedback->buy_again_recommend;
+							$total += 1;
+						}
+					?>
+				<h4 class="gigsfuq-item">Reviews <i class="fa fa-star feedback" aria-hidden="true"> {{round((($com_seller)/$total+($service_describe/$total)+($buy_again_recommend/$total))/3, 1)}} </i> ({{$total}})</h4>
+				<div style="margin: 20px;">
+					<sapn class="rating_type">Seller communication level <br/><i class="fa fa-star feedback" aria-hidden="true"> {{($com_seller)/$total}} </i></sapn>
+					<sapn class="rating_type">Recommend to a friend <br/><i class="fa fa-star feedback" aria-hidden="true"> {{$service_describe/$total}} </i></sapn>
+					<sapn class="rating_type">Service as described <br/><i class="fa fa-star feedback" aria-hidden="true"> {{$buy_again_recommend/$total}} </i></sapn> <br/>
 				</div>
+				<hr class="line-separator">
+					<!-- feedback -->
+					@foreach($get_feedback as $show_feedback)
+							<?php $com_seller  = $show_feedback->com_seller ;
+							$service_describe = $show_feedback->service_describe;
+							$buy_again_recommend = $show_feedback->buy_again_recommend; ?>
+					<div class="comment-wrap">
+						<!-- USER AVATAR -->
+						<a href="user-profile.html" >
+							<figure class="user-avatar medium">
+								<img src="{{ asset('image/'.$show_feedback->user_image)}}" class="images" alt="images">
+							</figure>
+						</a>
+						<!-- /USER AVATAR -->
+						<div class="comment">
+							<p class="text-header">{{$show_feedback->username}} <i class="fa fa-star feedback" aria-hidden="true"> {{round(($com_seller+$service_describe+$buy_again_recommend)/3, 1) }}</i> </p>
+							<p class="timestamp">{{ \Carbon\Carbon::parse($show_feedback->created_at)->format('M d, Y')}}</p>
+						
+							<p>{{$show_feedback->feadback_msg}}</p>
+						</div>
+					</div>
+					<hr class="line-separator">
+					@endforeach
+					<!-- /feedback -->
+			</div>
+			@endif
 				<div class="clearfix"></div><br>
 				<div class="product-list grid column4-wrap">
 					<!-- PRODUCT ITEM -->

@@ -9,6 +9,7 @@ class gig_order extends Model
     protected $fillable = [
         'order_id',
     	'gig_id',
+        'ref_user',
         'package_name',
         'quantity',
         'subtotal',

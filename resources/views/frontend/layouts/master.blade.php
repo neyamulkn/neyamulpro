@@ -712,7 +712,7 @@
 				<ul class="main-menu manu2 top-highlight">
 					<!-- MENU ITEM -->
 					<li class="menu-item manu-highlight">
-						<a class="manu3" href="index.html">Workplace</a>
+						<a class="manu3" href="index.html">Workplace </a>
 					</li>
 					<!-- /MENU ITEM -->
 

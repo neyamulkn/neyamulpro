@@ -13,7 +13,9 @@ use App\gig_subcategory;
 use App\filter_subcategory;
 use App\gig_metadata_filter;
 use App\user;
+use App\ref_count;
 use DB;
+use Session;
 
 class gighomeController extends Controller
 {
@@ -41,16 +43,39 @@ class gighomeController extends Controller
 
     	$get_user_info = user::where('username', $user_name)->first();
         $get_gig_info = gig_basic::where('gig_url', $gig_url)->first();
-    	
 
+    	// refferel_user_name
+        if(isset($_GET['ref'])){
+            Session::put('refferel_user_name', $_GET['ref']);
+
+            ref_count::create([
+                'ref_username' => $_GET['ref'],
+                'total_view' => 1,
+                'total_item' => 0,
+                'ref_earning' => 0,
+            ]);
+            
+        }
     	if($get_user_info and $get_gig_info){
     		$gig_id = $get_gig_info->gig_id;
 
+            // if exist gig view table
+            $get_info = DB::table('gigs_view')->where('gig_id', $gig_id)->first();
+            if($get_info){ DB::table('gigs_view')->where('gig_id', $gig_id)->update([
+                'gig_impress' => $get_info->gig_impress+1,
+                'gig_click' => $get_info->gig_click+1,
+                'gig_view' => $get_info->gig_view,
+            ]);}
+            else{  DB::table('gigs_view')->insert(['gig_id' => $gig_id, 'gig_impress' => 1] );  }
+
             $get_gig_price = gig_price::where('gig_id', $gig_id)->first();
             $get_gig_feature = gig_feature::where('gig_id', $gig_id)->get();
-    		$get_question_answer = question_answer::where('gig_id', $gig_id)->get();
-
-
+            $get_question_answer = question_answer::where('gig_id', $gig_id)->get();
+    		$get_feedback = DB::table('feedback')
+                        ->leftjoin('users', 'feedback.buyer_id', 'users.id')
+                        ->leftjoin('userinfos', 'feedback.buyer_id', 'userinfos.user_id')
+                       
+                        ->where('gig_id', $gig_id)->get();
 
             $get_gig_image = gig_image::where('gig_id', $gig_id)->get();
 
@@ -60,9 +85,11 @@ class gighomeController extends Controller
     			'get_gig_image' => $get_gig_image,
                 'get_gig_price' => $get_gig_price,
                 'get_gig_feature' => $get_gig_feature,
-    			'get_question_answer' => $get_question_answer,
+                'get_question_answer' => $get_question_answer,
+    			'get_feedback' => $get_feedback,
     		];
     		return view('frontend.gig-details')->with($alldata);
+           
 
     	}else{
     		return redirect('/');

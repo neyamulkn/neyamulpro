@@ -45,20 +45,20 @@ figure.user-avatar.small {
 
             	<?php 
             	$buyer_id = Auth::user()->id;
-            	$active = $new = $waiting = $delivered = $missing = $complated = $cancel = $started= 0;
+            	$active = $new = $waiting = $delivered = $missing = $completed = $cancel = $started= 0;
             	$get_status = DB::table('gig_orders')->where('gig_orders.buyer_id' , '=', $buyer_id)->get();
             	foreach($get_status as $order_status){
       
             		if($order_status->status == 'active'){ $active +=1 ; }
             		if($order_status->status == 'delivered'){ $delivered +=1 ; }
-            		if($order_status->status == 'complated'){ $complated +=1 ; }
+            		if($order_status->status == 'completed'){ $completed +=1 ; }
             		if($order_status->status == 'cancel'){ $cancel +=1 ; }
             		if($order_status->status == 'started'){ $started +=1 ; }
             		if($order_status->status == 'waiting'){ $waiting +=1 ; }
             		if($order_status->status == 'missing'){ $missing +=1 ; }
             	}
 
-            	$all = $active+$waiting +$delivered+ $missing+ $complated+ $cancel +$started;
+            	$all = $active+$waiting +$delivered+ $missing+ $completed+ $cancel +$started;
 
             	?>
 				<!-- TAB HEADER -->
@@ -76,8 +76,8 @@ figure.user-avatar.small {
 					<div class="tab-item" onclick="get_order('delivered')">
 						<p class="text-header" >DELIVERED ({{$delivered}})</p>
 					</div>
-					<div class="tab-item" onclick="get_order('complated')">
-						<p class="text-header">COMPLETED ({{$complated}}) </p>
+					<div class="tab-item" onclick="get_order('completed')">
+						<p class="text-header">COMPLETED ({{$completed}}) </p>
 					</div>
 					<div class="tab-item" onclick="get_order('cancel')">
 						<p class="text-header">CANCELED ({{$cancel}}) </p>

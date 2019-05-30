@@ -1,0 +1,105 @@
+start = input("Enter Starting City: ")
+end = input("Enter Ending City: ")
+
+current = start
+path = []
+expand_data = []
+path_line = ''
+old_edge = 0
+
+h = [
+        ('Sirajgonj',248),
+        ('Manikgonj',155),
+        ('Magura',236),
+        ('Kushtia',324),
+        ('Gazipur',95),
+        ('Faridpur',237),
+        ('Natore',361),
+        ('Bogra',375),
+        ('Rajbari',239),
+        ('Tangail',188),
+        ('Dhaka',0),
+        ('Mymenshing',171),
+        ('Narayangonj',85),
+        ('Narshindi',105),
+        ('Kishorgonj',155),
+        ('Netrokona',204),
+        ('Sunamgonj',245),
+        ('Naogon',369),
+    ]
+
+edge = [
+        ('Natore', 'Naogon', 70),
+        ('Natore', 'Sirajgonj', 135),
+        ('Natore','Kushtia',113),
+        ('Naogon','Bogra',66),
+        ('Sirajgonj','Bogra',146),
+        ('Sirajgonj','Tangail',75),
+        ('Sirajgonj','Mymenshing',94),
+        ('Kushtia','Rajbari',106),
+        ('Magura','Rajbari',65),
+        ('Magura','Faridpur',70),
+        ('Manikgonj','Faridpur',115),
+        ('Manikgonj','Tangail',141),
+        ('Manikgonj','Gazipur',133),
+        ('Tangail','Gazipur',92),
+        ('Mymenshing','Dhaka',206),
+        ('Gazipur','Dhaka',96),
+        ('Narayangonj','Dhaka',90),
+        ('Narshindi','Dhaka',80),
+        ('Narshindi','Kishorgonj',110),
+        ('Netrokona','Kishorgonj',210),
+        ('Netrokona','Sunamgonj',210),
+    ]
+
+
+def GetEDis(city1,city2):
+    for i in range(0, len(edge), 1):
+        if edge[i][0] == city1 and edge[i][1] == city2:
+            return edge[i][2]
+        elif edge[i][0] == city2 and edge[i][1] == city1:
+            return edge[i][2]
+
+
+def GetHDis(city):
+    for d in h:
+        if d[0] == city:
+            return d[1]
+
+
+def ExpandCity(NameOfCity):
+    R = []
+    for i in edge:
+        if i[0] == NameOfCity:
+            R.append(i[1])
+        elif i[1] == NameOfCity:
+            R.append(i[0])
+    return R
+
+
+def GetMinFn(Array):
+    m = Array[0][1]
+    for x in range(0, len(Array), 1):
+        if m > Array[x][1]:
+            m = Array[x][1]
+    for x in range(0, len(Array), 1):
+        if Array[x][1] == m:
+            setlist = (Array[x][0], Array[x][1])
+            return setlist
+
+while current != end:
+    for x in ExpandCity(current):
+        fn = old_edge + GetEDis(current, x) + GetHDis(x)
+        ct = (x, fn)
+        expand_data.append(ct)
+
+    n = GetMinFn(expand_data)
+    old_edge += GetEDis(current, n[0])
+    path.append(n)
+    path_line += ' --> '+n[0]
+    print(n[0])
+    print(path)
+    del expand_data[:]
+    current = n[0]
+
+print('Path: '+start+path_line)

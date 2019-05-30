@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Manage orders')
+@section('title', 'Manage affiliate')
 
 <style type="text/css">
 	.ref_head{
@@ -141,24 +141,31 @@
 				<!-- /TRANSACTION LIST HEADER -->
 
 				<!-- TRANSACTION LIST ITEM -->
+
+
+				@foreach($get_ref_info as $show_ref_info)
+					
+				
+				
 				<div class="transaction-list-item">
 					<div class="transaction-list-item-date ref_head">
-						<p>May</p>
+						<p>{{ \Carbon\Carbon::parse($show_ref_info->created_at)->format('M d, Y')}}</p>
 					</div>
 					<div class="transaction-list-item-author ref_head">
-						<p class="text-header">5</p>
+						<p class="text-header">{{$show_ref_info->total_view}}</p>
 					</div>
 					<div class="transaction-list-item-item ref_head">
-						<p class="category ">50</p>
+						<p class="category ">{{$show_ref_info->total_item}}</p>
 					</div>
 					<div class="transaction-list-item-detail ref_head">
-						<p class="category ">$45</p>
+						<p class="category ">${{$show_ref_info->ref_earning}}</p>
 					</div>
-					
-					
 				</div>
+			@endforeach
 				<!-- /TRANSACTION LIST ITEM -->
-				</div>
+
+
+			</div>
 				<!-- /TRANSACTION LIST ITEM -->
 
 			

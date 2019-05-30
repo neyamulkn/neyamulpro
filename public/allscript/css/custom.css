@@ -186,6 +186,7 @@ p, ul{
 
 td {
 	position: relative;
+	overflow: hidden;
 }
 
 .price_dollar{

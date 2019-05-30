@@ -303,6 +303,7 @@ li.financial-institutes__logo {
 					<script src="https://js.stripe.com/v3/"></script>
 					<form action="{{url('order/placeorder/stripe_payment/')}}" method="post" id="payment-form">
 						{{csrf_field()}}
+						<input type="hidden" name="payment_method" value="card">
 					  <div class="form-row">
 					    <label for="card-element">
 					      Credit or debit card

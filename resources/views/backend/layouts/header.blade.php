@@ -137,6 +137,9 @@
 				<!-- INNER DROPDOWN -->
 			</li>
 
+
+
+
 		<p class="side-menu-title">Your Account</p>
 		<!-- /SIDE MENU TITLE -->
 		<!-- DROPDOWN ITEM -->
@@ -201,10 +204,8 @@
 				<ul class="inner-dropdown">
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="dashboard-gig.html">All GIG Items</a>
-						<!-- PIN -->
-						<span class="pin soft-edged secondary">2</span>
-						<!-- /PIN -->
+						<a href="{{url('dashboard/manage-gigs/active')}}">All GIG Items</a>
+						
 					</li>
 					<!-- /INNER DROPDOWN ITEM -->
 
@@ -216,9 +217,47 @@
 				</ul>
 				<!-- INNER DROPDOWN -->
 				
-                <!-- PIN -->
-                <span class="pin soft-edged big secondary">!</span>
-                <!-- /PIN -->
+			</li>
+
+				<p class="side-menu-title">Theme option</p>
+
+			<li class="dropdown-item interactive">
+				<a href="#">
+                    <span class="sl-icon icon-tag"></span>
+                    Theme option
+                    <!-- SVG ARROW -->
+					<svg class="svg-arrow">
+						<use xlink:href="#svg-arrow"></use>
+					</svg>
+					<!-- /SVG ARROW -->
+				</a>
+
+				<!-- INNER DROPDOWN -->
+				<ul class="inner-dropdown">
+					
+					<li class="inner-dropdown-item">
+						<a href="{{url('/dashbord/theme/category')}}">Add theme category</a>
+						
+					</li>
+					<li class="inner-dropdown-item">
+						<a href="{{url('dashbord/theme/subcategory')}}">Add sub category</a>
+					</li>
+					<li class="inner-dropdown-item">
+						<a href="{{url('dashbord/theme/subchildcategory')}}">Add Sub child category</a>
+					</li>
+
+					<li class="inner-dropdown-item">
+						<a href="{{url('/dashbord/theme/filter')}}">Add Filter</a>
+					</li>
+
+
+					<li class="inner-dropdown-item">
+						<a href="{{url('dashbord/theme/subfilter')}}">Add sub filter</a>
+					</li>
+
+					
+				</ul>
+				<!-- INNER DROPDOWN -->
 			</li>
 			<li class="dropdown-item interactive">
 				<a href="#">
@@ -244,7 +283,7 @@
 
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="dashboard-inbox.html">Theme Upload</a>
+						<a href="{{url('dashbord/theme/upload')}}">Theme Upload</a>
 					</li>
 					<!-- /INNER DROPDOWN ITEM -->
 				</ul>

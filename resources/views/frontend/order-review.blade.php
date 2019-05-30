@@ -1,6 +1,12 @@
 @extends('frontend.layouts.master')
 
-@section('title', 'Order Review')
+@if($get_order->status == 'delivered')
+  @section('title', 'Order Review')
+@endif
+
+@if($get_order->status == 'completed')
+  @section('title', 'Order completed')
+@endif
 
 @section('css')
 <link rel="stylesheet" href="{{asset('/allscript')}}/css/bootstrap.min.css">
@@ -356,7 +362,7 @@ li.financial-institutes__logo {
               </div>
               <span class="bar done"></span>
               <div class="circle">
-                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover"> <?php echo ($get_order->status == 'delivered' ? '&#x2713;' : '&#9675;'); ?></span>
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover"> <?php if($get_order->status == 'delivered' OR $get_order->status == 'completed'){echo '&#x2713;' ;}else{ echo '&#9675;';} ?></span>
                 <span class="title progress_right ">Order in progress </span>
               </div>
               <span class="bar done" class="progress_right"></span>
@@ -501,7 +507,7 @@ li.financial-institutes__logo {
                 <span style="position: absolute;top: 38px;left: 58px;">{{$deliver_info->msg}}</span><br/> 
                 @if($deliver_info->work_file != null)
                  <span style="font-size: 15px">DELIVERED FILES:</span><br/>
-                 <a href="{{$deliver_info->work_file}}" download>{{$deliver_info->work_file}}</a>
+                 <a href="{{url('deliver_file/'.$deliver_info->work_file)}}" download>{{$deliver_info->work_file}}</a>
                  @endif
               </div><hr/>
             @endforeach
@@ -516,8 +522,18 @@ li.financial-institutes__logo {
               <div style="position: absolute;top: 38px;left: 58px;">
                 <p>Are you pleased withe the delivery and ready to approve it.?</p>
               </div><br/><br/>
-              <span style="padding-left: 40px;"> <button type="button" class="btn">Yes</button> <button type="button" class="btn">No</button></span>
+              <span style="padding-left: 40px;">
+
+                <label style="width: 15%; margin-right: 15px;" for="order_completed" class="btn btn-success">Yes</label> 
+                <button style="width: 15%; margin-top: -20px;" class="btn btn-warning">No</button>
+              </span>
           </div>
+
+
+      <form action="{{url('/order/completed/'.$get_order->order_id)}}" method="post" style="display: none;">
+        <input type="hidden" name="type" value="marketplace">
+       {{csrf_field()}}  <button type="submit" id="order_completed" class="btn">Yes</button>  
+      </form> 
         @endif
       </div>
 
@@ -526,6 +542,7 @@ li.financial-institutes__logo {
 			<!-- CONTENT -->
 		</div>
 	</div>
+
 <!-- /SECTION -->
 @endsection
 

@@ -31,6 +31,39 @@ Route::post('/user/image/upload', 'userinfoController@user_image');
 Route::get('stripe', 'gigOrderController@stripe');
 Route::post('stripe', 'gigOrderController@stripePost')->name('stripe.post');
 
+
+//theme category & filter 
+Route::group(['prefix'=> 'dashbord/theme'],  function(){
+
+	Route::get('/category', 'superAdminController@theme_category');
+	Route::post('create_theme_category', 'superAdminController@create_theme_category');
+
+	// insert sub category
+	Route::get('/subcategory', 'superAdminController@theme_subcategory');
+	Route::post('/subcategory', 'superAdminController@create_theme_subcategory');
+
+	// insert sub child category
+	Route::get('/subchildcategory', 'superAdminController@theme_subchildcategory');
+	Route::post('/subchildcategory', 'superAdminController@create_theme_subchildcategory');
+
+	/// filter theme
+	Route::get('filter/', 'filterController@theme_filter'); // filter
+	Route::post('filter/', 'filterController@insert_theme_filter'); // filter
+
+	/// sub filter theme
+	Route::get('subfilter/', 'filterController@theme_subfilter'); // filter
+	Route::post('subfilter/', 'filterController@insert_theme_subfilter'); // filter
+
+
+	Route::get('/upload/', 'themeController@index');
+	Route::get('/upload/form/', 'themeController@theme_upload');
+
+});
+
+
+
+
+
 // insert main category
 Route::get('dashbord/gig-category', 'superAdminController@gig_category');
 Route::post('dashbord/create-gig-category', 'superAdminController@create_gig_category');
@@ -64,6 +97,10 @@ Route::post('/dashbord/create-gig/third', 'gigController@insert_gig_step_third')
 Route::post('/dashbord/create-gig/fourth', 'gigController@insert_gig_step_fourth'); // insert gig step 4th
 Route::post('/dashbord/create-gig/five', 'gigController@insert_gig_step_five'); // insert gig step 5th
 Route::post('/dashbord/create-gig/finish', 'gigController@insert_gig_step_finish'); // insert gig step finish
+
+Route::get('dashboard/manage-gigs/{status}', 'gigController@manage_gigs');
+Route::get('dashboard/get_gigs_by_status/{status}', 'gigController@get_gigs_by_status');
+
 Route::post('/dashbord/create/price', 'gigController@insert_price'); // update gig
 
 Route::get('/image-upload/{id}', 'gigController@image_upload'); // update gig
@@ -98,13 +135,22 @@ Route::get('/order/placeorder/card/', 'gigOrderController@card'); // stripe paym
 
 Route::post('/order/placeorder/stripe_payment/', 'gigOrderController@stripe_payment'); // stripe payment
 
+// order & payment
+Route::get('/order/payment/success', 'gigOrderController@payment_success'); 
+Route::get('/order/payment/cancel', 'gigOrderController@payment_cancel'); 
+// order requirements
+Route::get('/order/requirements/{order_id}', 'gigOrderController@order_requirements'); 
 
-Route::get('/order/payment/success', 'gigOrderController@payment_success'); // order & payment
-Route::get('/order/requirements/{order_id}', 'gigOrderController@order_requirements'); // order requirements
 Route::post('/order/requirements/{order_id}', 'gigOrderController@insert_order_requirements'); // order requirements
 Route::get('/order/started/{order_id}', 'gigOrderController@order_started'); // order requirements
  // order review for buyer
 Route::get('/order/review/{order_id}', 'gigOrderController@order_review');
+// order completed
+
+Route::post('/order/completed/{order_id}', 'gigOrderController@order_completed');
+Route::get('/order/completed/{order_id}', 'gigOrderController@order_review');
+Route::get('/order/feadback/{order_id}', 'gigOrderController@feadback');
+Route::post('/order/feadback/{order_id}', 'gigOrderController@insert_feadback');
 
 Route::get('/order/payment/{order_id}', 'gigOrderController@order_payment'); // 
 

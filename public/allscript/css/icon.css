@@ -1173,7 +1173,7 @@
 }
 .eo-button-box.active::after {
 	content: " ";
-	border-bottom: 4px solid #286090;
+	
 	display: block;
 	position: absolute;
 	left: 0;

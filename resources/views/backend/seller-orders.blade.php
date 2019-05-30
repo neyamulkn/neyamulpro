@@ -29,6 +29,20 @@ figure.user-avatar.small {
 .transaction-list-item {
     padding-left: 30px;
 }
+
+.a{
+  width: 68%;
+    background-color: #ff0018;
+    color: #fff;
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    text-align: center;
+    position: absolute;
+    top: 8px;
+    right: -27px;
+}
+
 </style>
 @endsection
 
@@ -39,7 +53,7 @@ figure.user-avatar.small {
 			
             <?php 
             	 $seller_id = Auth::user()->id;
-            	$priority = $new = $active = $late = $delivered = $complated = $cancel = $started= 0;
+            	$priority = $new = $active = $late = $delivered = $completed = $cancel = $started= 0;
             	$get_status = DB::table('gig_orders')->where('gig_orders.seller_id' , '=', $seller_id)->get();
             	foreach($get_status as $order_status){
       
@@ -47,14 +61,14 @@ figure.user-avatar.small {
             		if($order_status->status == 'active'){ $active +=1 ; }
             		if($order_status->status == 'new'){ $new +=1 ; }
             		if($order_status->status == 'delivered'){ $delivered +=1 ; }
-            		if($order_status->status == 'complated'){ $complated +=1 ; }
+            		if($order_status->status == 'completed'){ $completed +=1 ; }
             		if($order_status->status == 'cancel'){ $cancel +=1 ; }
             		if($order_status->status == 'started'){ $started +=1 ; }
             		if($order_status->status == 'late'){ $late +=1 ; }
             		
             	}
 
-            	$all = $priority+$active+ $late +$delivered+ $new+ $complated+ $cancel +$started;
+            	$all = $priority+$active+ $late +$delivered+ $new+ $completed+ $cancel +$started;
 
             	?>
             	<div class="tab-header primary">
@@ -78,8 +92,8 @@ figure.user-avatar.small {
 					<div class="tab-item"  onclick="get_order('delivered')">
 						<p class="text-header">DELIVERED ({{$delivered}})</p>
 					</div>
-					<div class="tab-item"  onclick="get_order('complated')">
-						<p class="text-header">COMPLETED ({{$complated}})</p>
+					<div class="tab-item"  onclick="get_order('completed')">
+						<p class="text-header">COMPLETED ({{$completed}})</p>
 					</div>
 					<div class="tab-item"  onclick="get_order('cancel')">
 						<p class="text-header">CANCELLED ({{$cancel}})</p>
@@ -172,7 +186,7 @@ figure.user-avatar.small {
         });
     }
     
-     </script>
+</script>
 
 </script>
 

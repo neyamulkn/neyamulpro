@@ -1139,7 +1139,12 @@ header, .menu-bar, .banner, #services,
   .category.tiny {
     font-size: 0.6875em; }
   .category.primary {
-    color: #06b99b; }
+    color: #06b99b; 
+    overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+    }
     .category.primary > a {
       color: #06b99b; }
   .category.secondary {
