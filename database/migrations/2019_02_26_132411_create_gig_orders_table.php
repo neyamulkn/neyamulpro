@@ -17,6 +17,7 @@ class CreateGigOrdersTable extends Migration
             $table->increments('id');
             $table->string('order_id', 25);
             $table->integer('gig_id');
+            $table->char('ref_user', 25)->nullable();
             $table->string('package_name', 15);
             $table->integer('quantity');
             $table->integer('subtotal');

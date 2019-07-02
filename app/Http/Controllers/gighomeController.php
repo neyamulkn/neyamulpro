@@ -19,6 +19,14 @@ use Session;
 
 class gighomeController extends Controller
 {
+
+
+    public function marketplace(){
+
+        return view('frontend.gigs');
+    }
+
+
     public function gig_view($category, $subcatery){
 
 		
@@ -50,6 +58,7 @@ class gighomeController extends Controller
 
             ref_count::create([
                 'ref_username' => $_GET['ref'],
+                'platform_type' => 'marketplace',
                 'total_view' => 1,
                 'total_item' => 0,
                 'ref_earning' => 0,
@@ -165,7 +174,7 @@ class gighomeController extends Controller
                                                     <span class="icon-tag"></span>
                                                 </div>
                                             </a>
-                                            <a href="<?php echo url($show_gig->username.'/'.$show_gig->gig_url); ?>" target="_blank">
+                                            <a href="<?php echo url('gig/'.$show_gig->username.'/'.$show_gig->gig_url); ?>" target="_blank">
                                                 <p>Go to Item</p>
                                             </a>
                                         </div>
@@ -190,10 +199,10 @@ class gighomeController extends Controller
 
                                 <!-- PRODUCT INFO -->
                                 <div class="product-info">
-                                    <a href="<?php echo url($show_gig->username.'/'.$show_gig->gig_url); ?>">
+                                    <a href="<?php echo url('gig/'.$show_gig->username.'/'.$show_gig->gig_url); ?>">
                                         <p class="text-header">I will <?php echo $show_gig->gig_title; ?></p>
                                     </a>
-                                    <p class="product-description">Lorem ipsum dolor sit urarde...</p>
+                                   
                                     <a href="shop-gridview-v1.html">
                                         <p class="category primary"><?php 
                                         if($show_gig->gig_payment_type == "monthly"){

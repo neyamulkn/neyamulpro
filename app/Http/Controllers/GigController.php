@@ -151,7 +151,7 @@ class GigController extends Controller
 
             }
         }
-        $link =  asset('/dashbord/create-gig/2nd').'/'.$gig_url;
+        $link =  asset('/dashboard/create-gig/2nd').'/'.$gig_url;
         return redirect($link);
       
     }
@@ -212,7 +212,7 @@ class GigController extends Controller
                         gig_feature::create($feature_data);
                         }
                     }
-                    $link =  asset('/dashbord/create-gig/3rd').'/'.$gig_url;
+                    $link =  asset('/dashboard/create-gig/3rd').'/'.$gig_url;
                     return redirect($link);
 
                 }else{
@@ -288,7 +288,7 @@ class GigController extends Controller
                     }
                 }
 
-               $link =  asset('/dashbord/create-gig/4th').'/'.$gig_url;
+               $link =  asset('/dashboard/create-gig/4th').'/'.$gig_url;
                 return redirect($link); 
             }else{
                 return back();
@@ -309,7 +309,7 @@ class GigController extends Controller
 
            $succcess = gig_requirement::create($request->all());
            if($succcess){
-                $link =  asset('/dashbord/create-gig/5th').'/'.$gig_url;
+                $link =  asset('/dashboard/create-gig/5th').'/'.$gig_url;
                 return redirect($link); 
            }
         }else{
@@ -341,7 +341,7 @@ class GigController extends Controller
             }
            
            if($succcess){
-                $link =  asset('/dashbord/create-gig/6th').'/'.$gig_url;
+                $link =  asset('/dashboard/create-gig/6th').'/'.$gig_url;
                 return redirect($link); 
            }
 
@@ -352,7 +352,7 @@ class GigController extends Controller
 
     public function insert_gig_step_finish()
     {
-        return redirect('/dashbord/create-gig/');
+        return redirect('/dashboard/create-gig/');
     }
 
     //manage gigs

@@ -30,6 +30,8 @@
 
 <!-- jQuery -->
 <script src="{{asset('/allscript')}}/js/vendor/jquery-3.1.0.min.js"></script>
+
+<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
 <!-- Side Menu -->
 <script src="{{asset('/allscript')}}/js/side-menu.js"></script>
 

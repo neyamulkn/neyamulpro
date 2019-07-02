@@ -379,31 +379,53 @@ h3.note-wrapper, p {
 }
 p.worklafttt {
     float: left;
-    margin: -2px 0 0 4px;
-    font-size: 21px;
-    color: green;
+    font-size: 16px;
+    color: #A0A0A0;
+}
+.hhbottomg {
+    clear: left;
+    line-height: 23px;
+    font-size: 16px;
+    color: #777777;
+}
+.selected span.sl-icon.icon-drawer {
+    color: green !important;
+}
+.worklaft1 .selected {
+    background-color: #ffffff;
+    box-shadow: 0 1px 6px rgba(57,73,76,.35);
+	margin-bottom: 7px;
+}
+.selected .worklafttt {
+    color: green !important;
+}
+.selected .sl-icon.icon-check {
+    color: green !important;
 }
 span.sl-icon.icon-drawer {
-    color: green;
+    color: #A0A0A0;
     padding: 9px;
     float: left;
+    font-size: 16px;
+    padding-top: 6px;
 }
 span.sl-icon.icon-check {
     float: right;
     padding: 10px;
-    color: green;
+    color: #A0A0A0;
 }
 a.worklaft1 {
-    width: 94%;
-    background-color: white;
-	box-shadow: 0 1px 6px rgba(57,73,76,0.35);
+    width: 100%;
 }
 .workttsr {
     background-color: #fff;
     -webkit-box-shadow: 0 1px 6px rgba(57,73,76,0.35);
     overflow: auto;
     box-shadow: 0 1px 6px rgba(57,73,76,0.35);
-	margin-bottom: 10px;
+	margin-bottom: 20px;
+}
+.workttsr.v2 {
+    margin-bottom: 0 !important;
 }
 .workr81 {
     float: left;
@@ -451,17 +473,17 @@ textarea.workttsweditor {
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
 }
-ul.hhbottomg {
+}
+.hhbottomg {
     float: left;
-    position: absolute;
-    padding: 21px 0;
-    line-height: 24px;
+    clear: left;
+    font-weight: bold;
 }
 .cattwork {
-    padding: 40px 20px 40px 20px;
+    overflow: auto;
+    border-bottom: 1px solid #E0E0E0;
+    padding: 20px 20px;
     background-color: white;
-    margin-top: 23px;
-    height: 166px;
     -webkit-box-shadow: 0 1px 6px rgba(57,73,76,0.35);
     box-shadow: 0 1px 6px rgba(57,73,76,0.35);
 }
@@ -484,7 +506,7 @@ a.button.mid.tertiary.half.v2 {
     box-shadow: 0 1px 6px rgba(57,73,76,0.35);
 }
 .dddddddtexy {
-    margin-top: 130px;
+    margin-top: 15px;
 }
 p.testhhhh {
     float: right;
@@ -717,7 +739,7 @@ img.aboutinfoimg {
     background-color: white;
     padding-bottom: 10px;
 	padding-top: 10px;
-   
+    border-bottom: 3px solid #00d7b3;
 }
 .abouba {
     background: white;
@@ -920,8 +942,7 @@ textarea.gig-title-text {
     font: 400 40px/45px "Helvetica Neue",Helvetica,Arial,sans-serif;
     -webkit-font-smoothing: antialiased;
     color: #ddd;
-    top: 22px;
-    left: 8px;
+    margin: 22px 0 0 7px;
 }
 .gig-edit-tags-desc {
     text-align: right;

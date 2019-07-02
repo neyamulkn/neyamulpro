@@ -98,4 +98,58 @@ class filterController extends Controller
 
     }
 
+
+    // workplace filter
+
+     public function workplace_filter(){
+    	return view('backend.workplace.filter');
+    }
+
+
+    public function insert_workplace_filter(Request $request){
+		if($request->category_id){
+			$category_id = implode(',',  $request->category_id);
+		}else{
+			$category_id = $request->category_id;
+		}
+
+		$data = [
+			'filter_name' => $request->filter_name,
+			'subcategory_id' => $category_id,
+			'type' =>  $request->type,
+			'filter_msg' => $request->filter_msg,
+			];
+
+		$insert = DB::table('workplace_filters')->insert($data);
+         if($insert){
+             return back()->with('msg', 'Filter inserted successfully');
+         }else{
+             return back()->with('msg', 'Sorry Filter not inserted.');
+         }
+
+    }
+
+    //theme filter
+
+    public function workplace_subfilter(){
+    	return view('backend.workplace.subfilter');
+    }
+
+
+    public function insert_workplace_subfilter(Request $request){
+	
+		$data = [
+			'sub_filtername' => $request->sub_filtername,
+			'filter_id' => $request->filter_id,
+			];
+
+		$insert = DB::table('workplace_subfilters')->insert($data);
+         if($insert){
+             return back()->with('msg', 'Filter inserted successfully');
+         }else{
+             return back()->with('msg', 'Sorry Filter not inserted.');
+         }
+
+    }
+
 }

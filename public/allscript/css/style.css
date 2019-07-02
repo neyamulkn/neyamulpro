@@ -523,8 +523,6 @@ input[type="checkbox"] {
       background-color: #647072; }
   .button.mid {
     width: 160px;
-    height: 42px;
-    line-height: 42px;
     font-size: 0.875em; }
     .button.mid.bid {
       float: right;
@@ -1988,7 +1986,7 @@ header {
   header .mobile-account-options-handler {
     display: block; } }
 .main-menu-wrap {
-  background-color: #fff; border: 1px #e5e5e5 solid; }
+  background-color: #fff; border-bottom: 1px #e5e5e5 solid; }
   .main-menu-wrap.dark {
     background-color: #3a494d; }
     .main-menu-wrap.dark .main-menu .menu-item {

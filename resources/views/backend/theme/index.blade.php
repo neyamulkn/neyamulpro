@@ -37,7 +37,7 @@ input[type="radio"], input[type="radio"] {
 		<div class="form-box-item full">
 			<h4>Select a category for your upload:</h4>
 			<hr class="line-separator">
-			<form method="get" action="{{url('dashbord/theme/upload/form/')}}" id="upload_form">
+			<form method="get" action="{{url('dashboard/theme/upload/form/')}}" id="upload_form">
 				
 				<!-- INPUT CONTAINER -->
 				<div class="input-container half">

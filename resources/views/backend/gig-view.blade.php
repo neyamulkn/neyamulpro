@@ -267,7 +267,7 @@
 
     	document.getElementById('open').style.display = 'block';
     	history.pushState('state/', '/buyer_order/', status);
-        var  link = '<?php echo URL::to("dashbord/get_gigs_by_status/");?>/'+status;
+        var  link = '<?php echo URL::to("dashboard/get_gigs_by_status/");?>/'+status;
        
         $.ajax({
             url:link,

@@ -16,8 +16,8 @@ class CreateThemeSubfiltersTable extends Migration
         Schema::create('theme_subfilters', function (Blueprint $table) {
             $table->increments('id');
             $table->char('sub_filtername', 255);
-            $table->char('filter_id', 255);
-            $table->timestamps();
+            $table->integer('filter_id');
+            
         });
     }
 

@@ -1,3 +1,4 @@
+
 (function($) {
 	var $user_quickview_toggler = $('.user-quickview'),
 		$cart_toggler = $('.account-cart-quickview'),
@@ -55,3 +56,6 @@
 				.each( closeDropdown );
 		}
 })(jQuery);
+
+
+

@@ -502,7 +502,7 @@ class GigOrderController extends Controller
                                 </td>
                                 <td class="title js-toggle-gig-stats ">
                                     <div class="ellipsis1">
-                                        <a class="ellipsis" href="'.asset('dashbord/'.$show_order->username.'/manage/order/'.$show_order->order_id).'">'.$show_order->gig_title.'</a>
+                                        <a class="ellipsis" href="'.asset('dashboard/'.$show_order->username.'/manage/order/'.$show_order->order_id).'">'.$show_order->gig_title.'</a>
                                     </div>
                                 </td>
                                 <td>'.\Carbon\Carbon::parse($show_order->created_at)->format('M d, Y').'</td>
@@ -544,7 +544,7 @@ class GigOrderController extends Controller
             if($get_order_details){
                 return view('backend.order-details')->with(compact('get_order_details'));
             }else{
-                 return redirect('dashbord/'.$username .'/manage/seller_order/active');
+                 return redirect('dashboard/'.$username .'/manage/seller_order/active');
             }
        
     }

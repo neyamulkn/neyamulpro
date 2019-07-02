@@ -99,7 +99,7 @@ h2{
 				@foreach($conversation_list as $conversations_show)
 
                 
-                <a href="{{url('dashbord/inbox/'.$conversations_show->username)}}" onclick="message('{{$conversations_show->id}}')" class="message" >
+                <a href="{{url('dashboard/inbox/'.$conversations_show->username)}}" onclick="message('{{$conversations_show->id}}')" class="message" >
                     <div class="inbox-message v2">
 
                         <div class="inbox-message-author">
@@ -197,7 +197,7 @@ $(document).ready(function(){
     message(<?php echo $con_userid ; ?>);
 
     function message(id){
-        var  link = '<?php echo URL::to("/dashbord/getmessages/");?>/'+id;
+        var  link = '<?php echo URL::to("/dashboard/getmessages/");?>/'+id;
         $.ajax({
             url:link,
             method:"get",

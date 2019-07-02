@@ -75,14 +75,16 @@
 			<div class="user-board">
 
 
-				<?php if(Auth::check()){ 
+				<?php 
+				$get_id = null;
+				if(Auth::check()){ 
 					$get_id = Auth::user()->id;
 					$get_user_info = DB::table('userinfos')->where('user_id', $get_id)->first();
 
 				?>
 				<div class="user-quickview">
 					<!-- USER AVATAR -->
-					<a href="{{url('dashbord/profile/setting')}}">
+					<a href="{{url('dashboard/profile/setting')}}">
 					<div class="outer-ring">
 						<div class="inner-ring"></div>
 						<figure class="user-avatar">
@@ -109,10 +111,10 @@
 							<a href="{{url('/'.Auth::user()->username)}}">Profile Page</a>
 						</li>
 						<li class="dropdown-item">
-							<a href="{{url('dashbord/profile/setting')}}">Account Settings</a>
+							<a href="{{url('dashboard/profile/setting')}}">Account Settings</a>
 						</li>
 						<li class="dropdown-item">
-							<a href="dashboard-purchases.html">Your Purchases</a>
+							<a href="{{url('themeplace/downloads')}}">Downloads Theme</a>
 						</li>
 						<li class="dropdown-item">
 							<a href="dashboard-statement.html">Sales Statement</a>
@@ -142,123 +144,14 @@
 				</div>
 
 				<div class="account-information">
-					<?php $get_cart_info = DB::table('add_to_carts')->where('user_id', $get_id)->get();
-						
-					?>	
-					<div class="account-cart-quickview">
-						<span class="icon-present">
-							<!-- SVG ARROW -->
-							<svg class="svg-arrow">
-								<use xlink:href="#svg-arrow"></use>
-							</svg>
-							<!-- /SVG ARROW -->
-						</span>
+					
+					@if(Request::segment(1) == 'marketplace')
+						@include('frontend/gig-add-to-cart')
+					@endif
 
-						<!-- PIN -->
-						<span class="pin soft-edged secondary"><?php echo count($get_cart_info); ?></span>
-						<!-- /PIN -->
-					<?php if(count($get_cart_info)>0){ ?>
-						<!-- DROPDOWN CART -->
-						<ul class="dropdown cart closed">
-
-								<!-- DROPDOWN ITEM -->
-						@foreach($get_cart_info as $get_cart)
-							
-							<?php
-					            $get_gigs = DB::table('gig_basics')
-					                ->join('gig_prices', 'gig_basics.gig_id', '=', 'gig_prices.gig_id')
-					                ->Join('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
-					                ->Join('users', 'gig_basics.gig_user_id', '=', 'users.id')
-					                //->Join('userinfos', 'gig_basics.gig_user_id', '=', 'userinfos.user_id')
-					                ->select('gig_basics.gig_title', 'gig_prices.*', 'gig_images.image_path', 'users.username', 'users.name')
-					                ->where([
-					                    ['gig_basics.gig_id', '=', $get_cart->gig_id],
-					                    ['users.id', '=', $get_cart->gig_user_id],
-					                ])->first();
-
-						               
-						                if($get_cart->package_name == 'basic'){
-						                    $gig_features = DB::table('gig_features')->where('gig_id', $get_gigs->gig_id)->where('feature_basic', 'Yes')->get();
-						                  
-						                        $gig_title = $get_gigs->gig_title;
-						                        $gig_images = $get_gigs->image_path;
-						                        $package_title = $get_gigs->basic_title;
-						                        $package_dsc = $get_gigs->basic_dsc;
-						                        $delivery_time = $get_gigs->delivery_time_b;
-						                        $price = $get_gigs->basic_p;
-						                   
-						                }
-
-						                if($get_cart->package_name == 'plus'){
-						                    $gig_features = DB::table('gig_features')->where('gig_id', $get_gigs->gig_id)->where('feature_plus', 'Yes')->get();
-						                  
-						                        $gig_title = $get_gigs->gig_title;
-						                        $gig_images = $get_gigs->image_path;
-						                        $package_title = $get_gigs->plus_title;
-						                        $package_dsc = $get_gigs->plus_dsc;
-						                        $delivery_time = $get_gigs->delivery_time_p;
-						                        $price = $get_gigs->plus_p;
-						                    
-						                }
-
-						                if($get_cart->package_name == 'super'){
-						                    $gig_features = DB::table('gig_features')->where('gig_id', $get_gigs->gig_id)->where('feature_super', 'Yes')->get();
-						                    
-						                        
-						                        $gig_title = $get_gigs->gig_title;
-						                        $gig_images = $get_gigs->image_path;
-						                        $package_title = $get_gigs->super_title;
-						                        $package_dsc = $get_gigs->super_dsc;
-						                        $delivery_time = $get_gigs->delivery_time_s;
-						                        $price = $get_gigs->super_p;
-						                    
-						                }
-
-						                if($get_cart->package_name == 'platinum'){
-						                    $gig_features = DB::table('gig_features')->where('gig_id', $get_gigs->gig_id)->where('feature_platinum', 'Yes')->get();
-						                   
-						                        
-						                        $gig_title = $get_gigs->gig_title;
-						                        $gig_images = $get_gigs->image_path;
-						                        $package_title = $get_gigs->platinum_title;
-						                        $package_dsc = $get_gigs->platinum_dsc;
-						                        $delivery_time = $get_gigs->delivery_time_pm;
-						                        $price = $get_gigs->platinum_p;
-						                    
-						                }
-
-
-							 ?>
-							<li class="dropdown-item">
-								<a href="{{url('order/checkout/'.$get_cart->cart_id)}}" class="link-to"></a>
-								<!-- SVG PLUS -->
-								<svg class="svg-plus">
-									<use xlink:href="#svg-plus"></use>
-								</svg>
-								<!-- /SVG PLUS -->
-								<div class="dropdown-triangle"></div>
-								<figure class="product-preview-image tiny">
-									<img src="{{ asset('gigimages/'.$gig_images)}}" alt="">
-								</figure>
-								<p class="text-header tiny">{{$gig_title}}</p>
-								
-								<p class="price tiny"><span>$</span>{{$price}}</p>
-								
-							</li>
-
-						@endforeach
-							<!-- /DROPDOWN ITEM -->
-						
-
-							<!-- DROPDOWN ITEM -->
-							<li class="dropdown-item">
-								
-							</li>
-							<!-- /DROPDOWN ITEM -->
-						</ul>
-					<?php } ?>
-						<!-- /DROPDOWN CART -->
-					</div>
+					@if(Request::segment(1) == 'themeplace')
+						@include('frontend/theme/add-to-cart_head')
+					@endif
 
 					<div class="account-email-quickview">
 						<span class="icon-envelope">
@@ -308,7 +201,7 @@
 						        	
 										echo '
 										<li class="dropdown-item">
-											<a href="'.url('dashbord/'.Auth::user()->username.'/manage/order/'.$notify_order->order_id).'" class="link-to"></a>
+											<a href="'.url('dashboard/'.Auth::user()->username.'/manage/order/'.$notify_order->order_id).'" class="link-to"></a>
 											<figure class="user-avatar">
 												<img src="'.asset('allscript/images/avatars/avatar_04.jpg').'" alt="">
 											</figure>
@@ -386,7 +279,12 @@
 					<!-- <a href="" class="interesting-link header-link-login">Find Jobs</a>
 					<a href="" class="interesting-link header-link-login">Find Gigs</a>
 					<a href="" class="interesting-link header-link-login">Find Themes</a> -->
+					<div class="account-information" style="margin: 0px !important; float: left;">
 					<?php if(!Auth::check()){ ?>
+						@if(Request::segment(1) == 'themeplace')
+							@include('frontend/theme/add-to-cart_head')
+						@endif
+				</div>
 					<a href="{{ route('register') }}" class="interesting-link header-link-login">Register</a>
 					<a href="{{ route('login') }}" class="interesting-link header-link-login">Login</a>
 					<?php } ?>
@@ -705,26 +603,28 @@
 		<a href="#" class="button medium secondary">Logout</a>
 		@endguest
 	</div>
+	
 	<!-- /SIDE MENU -->
 	<div class="main-menu-wrap dark">
 		<div class="menu-bar">
 			<nav>
 				<ul class="main-menu manu2 top-highlight">
+						
 					<!-- MENU ITEM -->
-					<li class="menu-item manu-highlight">
-						<a class="manu3" href="index.html">Workplace </a>
+					<li class="menu-item {{(Request::segment(1) == 'workplace') ? 'manu-highlight' : null }}">
+						<a class="manu3" href="{{url('/workplace')}}"> Workplace </a>
 					</li>
 					<!-- /MENU ITEM -->
 
 					<!-- MENU ITEM -->
-					<li class="menu-item">
-						<a href="how-to-shop.html">marketplace</a>
+					<li class="menu-item {{(Request::segment(1) == 'marketplace') ? 'manu-highlight' : null }}" >
+						<a href="{{url('marketplace')}}">Marketplace</a>
 					</li>
 					<!-- /MENU ITEM -->
 
 					<!-- MENU ITEM -->
-					<li class="menu-item">
-						<a href="products.html">Themeplace</a>
+					<li class="menu-item {{(Request::segment(1) == 'themeplace') ? 'manu-highlight' : null }}">
+						<a href="{{url('themeplace')}}">Themeplace</a>
 					</li>
 					<!-- /MENU ITEM -->
 
@@ -749,49 +649,7 @@
 		</div>
 	</div>
 
-<!-- MAIN MENU -->
-	<div class="main-menu-wrap">
-		<div class="menu-bar">
-			<nav>
-				<ul class="main-menu">
-					<!-- MENU ITEM -->
-				<?php
-					$get_category = DB::table('gig_home_category')->orderBy('sorting', 'asc')->get();
-					if($get_category){
-					foreach ($get_category as $show_category) {
-						$category_id = $show_category->id;
-					
-				?>
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/graphics-design">{{$show_category->category_name}}
-						</a>	
-
-						<?php
-						$sub_category = DB::table('gig_subcategories')->where('category_id', $category_id)->get();
-						if($sub_category){
-						?>
-						<div class="content-dropdown home_manu">
-						<!-- FEATURE LIST BLOCK -->
-							<div class="feature-list-block">
-								<!-- FEATURE LIST -->
-								<ul class="feature-list">
-									
-								@foreach ($sub_category as $show_subcategory)
-									<li class="feature-list-item">
-										<a href="{{url('/categories/'.str_slug($show_category->category_name).'/'. str_slug($show_subcategory->subcategory_name))}}"><?php echo $show_subcategory->subcategory_name; ?></a>
-									</li>
-								@endforeach
-								</ul>
-							</div>
-						</div>
-						<?php } ?>
-					</li>
-				<?php }} ?>
-				</ul>
-			</nav>
-		</div>
-	</div>
-
+@yield('menu')
 @yield('content')
 
 @include('frontend.layouts.footer')

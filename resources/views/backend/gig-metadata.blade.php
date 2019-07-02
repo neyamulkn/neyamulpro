@@ -52,7 +52,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>	
 				</div>
 
-			<form action="{{url('dashbord/gig-metadata')}}" data-parsley-validate method="post" id="profile_info">
+			<form action="{{url('dashboard/gig-metadata')}}" data-parsley-validate method="post" id="profile_info">
 				 {{ csrf_field() }}
 	        <div class="modal-body form-box-item">
 

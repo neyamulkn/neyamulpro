@@ -52,7 +52,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>	
 				</div>
 
-		<form action="{{url('dashbord/filter')}}" data-parsley-validate method="post" id="">
+		<form action="{{url('dashboard/filter')}}" data-parsley-validate method="post" id="">
 				 {{ csrf_field() }}
 	        <div class="modal-body form-box-item">
 

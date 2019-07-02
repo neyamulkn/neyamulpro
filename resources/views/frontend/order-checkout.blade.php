@@ -240,7 +240,8 @@ li.financial-institutes__logo {
 										<img src="{{ asset('gigimages/'.$get_gigs->image_path)}}" alt="">
 									</figure>
 								</a>
-								<a href="{{url($get_gigs->username.'/'.$get_gigs->gig_url)}}"><p class="text-header small">I will {{$get_gigs->gig_title}}</p></a>
+								<a href="{{url($get_gigs->username.'/'.$get_gigs->gig_url)}}">
+								<p class="text-header small">I will {{$get_gigs->gig_title}}</p></a>
 							
 							</div>
 							<!-- /ITEM PREVIEW -->

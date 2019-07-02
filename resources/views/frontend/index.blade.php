@@ -13,7 +13,7 @@
 	<!-- BANNER -->
 	<div class="banner-wrap">
 		<section class="banner">
-			<h5>Welcome to <span>HOTLancer.com</span></h5>
+			<h5>Welcome to <span>HOTLancer.com</span> </h5>
 			<h1>The Biggest <span>Marketplace</span></h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
 			<img src="{{ asset('allscript/images/top_items.png') }}" alt="banner-img">

@@ -148,7 +148,7 @@ font-weight: bold;
                         <div class="rms-content-body"> 
                             <div class="row">
                                 <div class="col-md-9">
-                                	<form action="{{url('dashbord/create-gig')}}" method="post" data-parsley-validate>
+                                	<form action="{{url('dashboard/create-gig')}}" method="post" data-parsley-validate>
                                 		{{csrf_field()}}
 
                                     <div class="row">
@@ -254,14 +254,14 @@ font-weight: bold;
 	                                            <label for="gig_search_tag" class="rl-label">Search Tags</label>
 	                                            <div class="inpt-group">
 	                                            	<select name="gig_search_tag[]" required="required" id="gig_search_tag" multiple="multiple" style="width:100%" class="select2">
-														<?php
-															$key_keyword = DB::table('key_keyword')->get();
-															
-														 ?>
-														@foreach($key_keyword as $keyword)
-															<option value="{{$keyword->keyword_name}}">{{$keyword->keyword_name}}</option>
-														@endforeach
-													</select>
+                        														<?php
+                        															$key_keyword = DB::table('key_keyword')->get();
+                        															
+                        														 ?>
+                        														@foreach($key_keyword as $keyword)
+                        															<option value="{{$keyword->keyword_name}}">{{$keyword->keyword_name}}</option>
+                        														@endforeach
+                        													</select>
 
 
 	                                            </div>

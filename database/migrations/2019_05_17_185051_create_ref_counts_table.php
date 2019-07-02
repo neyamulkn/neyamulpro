@@ -17,6 +17,7 @@ class CreateRefCountsTable extends Migration
            
             $table->increments('id');
             $table->char('ref_username', 25);
+            $table->char('platform_type', 15);
             $table->integer('total_view');
             $table->integer('total_item');
              $table->double('ref_earning', 8, 2)->nullable();

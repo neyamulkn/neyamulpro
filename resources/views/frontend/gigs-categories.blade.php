@@ -22,6 +22,11 @@
 </style>
 
 @endsection
+<!-- MAIN MENU -->
+@section('menu')
+	@include('frontend.layouts.gig-menu')
+@endsection
+
 
 @section('content')
 <div style="background:#fffdfd;padding:10px 30px;10px 30px "> 
@@ -213,7 +218,7 @@ $(document).on('click', '.pagination a', function(e){
 		var gig_sort = ($( "#gig_asc option:selected" ).val());
 		var category = "{{ Request::route('category') }}" ;
 		var subcategory = "{{ Request::route('subcategory') }}";
-        var link = "<?php echo '/categories/'.Request::route('category') .'/'. Request::route('subcategory'); ?>?page="+page;
+        var link = "<?php echo '/gig/'.Request::route('category') .'/'. Request::route('subcategory'); ?>?page="+page;
  		$.ajax({
             url:link,
             method:"POST",

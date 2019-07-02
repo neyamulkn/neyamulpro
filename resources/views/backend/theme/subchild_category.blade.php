@@ -53,7 +53,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>	
 				</div>
 
-			<form action="{{url('dashbord/theme/subchildcategory')}}" data-parsley-validate method="post" id="profile_info">
+			<form action="{{url('dashboard/theme/subchildcategory')}}" data-parsley-validate method="post" id="profile_info">
 				 {{ csrf_field() }}
 	        <div class="modal-body form-box-item">
 

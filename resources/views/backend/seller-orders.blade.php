@@ -168,7 +168,7 @@ figure.user-avatar.small {
 
     	document.getElementById('open').style.display = 'block';
     	history.pushState('state/', '/buyer_order/', status);
-        var  link = '<?php echo URL::to("dashbord/manage/get_seller_orders/");?>/'+status;
+        var  link = '<?php echo URL::to("dashboard/manage/get_seller_orders/");?>/'+status;
        
         $.ajax({
             url:link,

@@ -171,7 +171,7 @@ float: right;
                         <div class="rms-content-body"> 
                             <div class="row">
                                 <div class="col-md-9">
-                                	<form action="{{url('dashbord/create-gig/1st/'.$gig_basic->gig_url)}}" method="post" data-parsley-validate>
+                                	<form action="{{url('dashboard/create-gig/1st/'.$gig_basic->gig_url)}}" method="post" data-parsley-validate>
                                 		{{csrf_field()}}
 
                                     <div class="row">
@@ -375,7 +375,7 @@ float: right;
 											  </tr>
 											</thead>
 											<tbody>
-									<form action="{{ url('/dashbord/create-gig/second') }}" method="post">
+									<form action="{{ url('/dashboard/create-gig/second') }}" method="post">
 											{{csrf_field()}}  
 											  <tr>
 												<td>Packages</td>
@@ -708,7 +708,7 @@ float: right;
                             <div class="leftside-title"><b> <i class="fa fa-user" aria-hidden="true"></i> Personal</b> Information</div>
                             <div class="step-label">Step 2 - 4 </div> 
                         </div>
-                     <form action="{{url('/dashbord/create-gig/third')}}" method="post" data-parsley-validate>
+                     <form action="{{url('/dashboard/create-gig/third')}}" method="post" data-parsley-validate>
                      	{{csrf_field()}}
                          <div class="rms-content-body"> 
                          	<label for="item_description" class="rl-label">Item Description</label>
@@ -848,7 +848,7 @@ float: right;
                                  <div class="col-md-12">
 									<div class="comment-giglt">
 										<div class="gigseditor">
-							 <form action="{{url('/dashbord/create-gig/fourth')}}" method="post"data-parsley-validate>
+							 <form action="{{url('/dashboard/create-gig/fourth')}}" method="post"data-parsley-validate>
                      			{{csrf_field()}}
                      			<?php if(count($gig_requirement)<1){ ?>			
 										<textarea name="requirement" maxlength="1200" required="required" class="ttinput-grouptddd" style="border: 1px solid rgb(204, 204, 204);" placeholder="Enter text ..."></textarea>
@@ -959,7 +959,7 @@ float: right;
                                     <div class="comment-list"><br>
                       						<!-- COMMENT -->
                       						<div class="comment-giglt">
-                      					<form action="{{url('/dashbord/create-gig/five')}}" method="post" enctype="multipart/form-data">
+                      					<form action="{{url('/dashboard/create-gig/five')}}" method="post" enctype="multipart/form-data">
                       							{{csrf_field()}}
                        
                          					 <input name="gig_image[]" type="file" />
@@ -1005,7 +1005,7 @@ float: right;
 
         	 <div class="rms-content-box <?php if ($step == '6th'){ echo "rms-current-section"; } ?>">
                     <div class="rms-content-area">
-                    <form action="{{url('/dashbord/create-gig/finish')}}" method="post" >
+                    <form action="{{url('/dashboard/create-gig/finish')}}" method="post" >
                       {{csrf_field()}}
                         <div class="rms-content-title">
                             <div class="leftside-title"><b> <i class="fa fa-file-text" aria-hidden="true"></i> Confirm</b> Details</div>

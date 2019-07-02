@@ -88,6 +88,9 @@ height: 76px;
 }
 </style>
 @endsection
+@section('menu')
+	@include('frontend.layouts.gig-menu')
+@endsection
 
 	<!-- SECTION -->
 @section('content')
@@ -608,7 +611,7 @@ height: 76px;
 				<div class="product-list grid column4-wrap">
 					<!-- PRODUCT ITEM -->
 					<?php
-						$get_another_gig = DB::table('gig_basics')->where('gig_user_id', $get_user_info->id)->where('gig_status', 'active')->get(); 
+						$get_another_gig = DB::table('gig_basics')->where('gig_user_id', $get_user_info->id)->where('gig_status', 'active')->limit(6)->get(); 
 
 						if(count($get_another_gig)>1){
 					?>
@@ -661,7 +664,7 @@ height: 76px;
 
 						<!-- PRODUCT INFO -->
 						<div class="product-info">
-							<a href="{{url($get_user_info->username.'/'.$another_gig->gig_url)}}" target="_blank"">
+							<a href="{{url($get_user_info->username.'/'.$another_gig->gig_url)}}" target="_blank">
 								<p class="text-header">I will {{$another_gig->gig_title }}</p>
 							</a>
 							<a href="shop-gridview-v1.html">

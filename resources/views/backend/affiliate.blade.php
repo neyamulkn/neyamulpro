@@ -149,7 +149,7 @@
 				
 				<div class="transaction-list-item">
 					<div class="transaction-list-item-date ref_head">
-						<p>{{ \Carbon\Carbon::parse($show_ref_info->created_at)->format('M d, Y')}}</p>
+						<p>{{ \Carbon\Carbon::parse($show_ref_info->created_at)->diffForHumans()}}</p>
 					</div>
 					<div class="transaction-list-item-author ref_head">
 						<p class="text-header">{{$show_ref_info->total_view}}</p>

@@ -139,24 +139,12 @@
 				</tbody>
 			</table><br/>
 
-			<div class="container"> <script>
-			        var cd = new Countdown({
-			            cont: document.querySelector('.container'),
-						countdown: false,
-			            endDate: - 1993468400000,
-			            outputTranslation: {
-			              
-			                day: 'Days',
-			                hour: 'Hours',
-			                minute: 'Minutes',
-			                second: 'Seconds',
-			            },
-			            endCallback: null,
-			            outputFormat: 'day|hour|minute|second',
-			        });
-			        cd.start();
-			    	</script>
-				</div><hr/>
+			<div class="container">
+
+				<p id="demo" style="font-size:30px"></p>
+				</div>
+
+				<hr/>
 			<div>
 				<div style="margin-bottom: 10px; text-align:center;color: #7b7b7b;">
 					<span class="step"><span class="sl-icon icon-docs"></span><br/>ORDER REQUIREMENTS</span><br/>
@@ -189,7 +177,7 @@
 				<div class="cart-item-product" style=" font-size: 14px; margin-bottom: 10px">
 					<span id="demo" class="collapse">
 						{{$get_order_details->requirement }}
-						<p>{{$get_order_details->requirement_ans }}</p><hr/>
+						<p>{{ $get_order_details->requirement_ans }}</p><hr/>
 					</span>
 				</div>
 
@@ -258,6 +246,37 @@
 @section('js')
 	<!-- XM Pie Chart -->
 	<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
+
+<script>
+// Set the date we're counting down to
+var countDownDate = new Date("<?php echo \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y h:m:i'); ?>").getTime();
+
+// Update the count down every 1 second
+var countdownfunction = setInterval(function() {
+
+  // Get todays date and time
+  var now = new Date().getTime();
+  
+  // Find the distance between now an the count down date
+  var distance = countDownDate - now;
+  
+  // Time calculations for days, hours, minutes and seconds
+  var days ='<span style="color:red;border:1px solid #ccc;background:green;font-weight:bold;font-size:30px;">'+ Math.floor(distance / (1000 * 60 * 60 * 24))+ '</span>';
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+  // Output the result in an element with id="demo"
+  document.getElementById("demo").innerHTML = days + " days " + hours + " hours "
+  + minutes + " minutes " + seconds + " seconds ";
+  
+  // If the count down is over, write some text 
+  if (distance < 0) {
+    clearInterval(countdownfunction);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+</script>
 @endsection
 
 
