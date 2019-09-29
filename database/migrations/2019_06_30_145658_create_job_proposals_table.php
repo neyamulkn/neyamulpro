@@ -19,7 +19,7 @@ class CreateJobProposalsTable extends Migration
             $table->integer('buyer_id');
             $table->integer('freelancer_id');
             $table->double('proposal_budget', 8,2);
-            $table->char('price_type', 15);
+            $table->char('work_duration', 15);
             $table->text('proposal_dsc');
             $table->char('proposal_file', 255)->nullable();
             $table->timestamps();

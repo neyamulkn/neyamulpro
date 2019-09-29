@@ -31,10 +31,11 @@
 				<div class="hotlancer-work">
 					<div class="hotla-work">
 						<h3 class="up-post-sub">Additional Details</h3>
+						<p style="color: green">{{Session::get('success')}}</p>
 						@foreach($get_jobs as $show_job)
 							<div class="hotl-work">
 								<div class="workj1">
-									<h4 class="text-header"><a href="{{url('workplace/'.$show_job->job_title_slug)}}">{{$show_job->job_title}}</a></h4>
+									<h4 class="text-header"><a href="{{route('job-details', $show_job->job_title_slug )}}">{{$show_job->job_title}}</a></h4>
 									<div class="workj2">
 									<span class="icon-like workj4"></span>
 									<span class="icon-heart workj4"></span>

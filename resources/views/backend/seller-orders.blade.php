@@ -188,7 +188,6 @@ figure.user-avatar.small {
     
 </script>
 
-</script>
 
 
 

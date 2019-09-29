@@ -35,4 +35,6 @@ class gig_price extends Model
 	   'platinum_p',
 	   'user_id'
    ];
+
+   public $timestamps = false;
 }

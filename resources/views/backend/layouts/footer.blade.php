@@ -28,9 +28,8 @@
 </svg>
 <!-- /SVG MINUS -->
 
-<!-- jQuery -->
-<script src="{{asset('/allscript')}}/js/vendor/jquery-3.1.0.min.js"></script>
 
+<script src="{{asset('/allscript')}}/js/vendor/jquery-3.1.0.min.js"></script>
 <script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
 <!-- Side Menu -->
 <script src="{{asset('/allscript')}}/js/side-menu.js"></script>
@@ -40,6 +39,9 @@
 <!-- Dashboard Header -->
 <script src="{{asset('/allscript')}}/js/dashboard-header.js"></script>
 <script src="{{asset('/allscript')}}/js/bootstrap.min.js"></script>
+<script src="{{ asset('/allscript/js/vendor/toastr.js') }}"></script>
+
+{!! Toastr::message() !!}
 
 @yield('js')
 
@@ -64,6 +66,14 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+</script>
+
+<script>
+
+window.onload = function(){
+   jQuery('#overlay').fadeOut();
+
+}
 </script>
 </body>
 

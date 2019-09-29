@@ -1,12 +1,11 @@
 <?php 
 
+    if(Auth::check()){
         $user_id = Auth::user()->id;
         $get_cart_details = DB::table('add_to_carts')->where('user_id', $user_id)->get();
 
-       
 
-
-        if($get_cart_details){
+        if(count($get_cart_details)>0){
 
         foreach ($get_cart_details as $get_cart) {
             $get_gigs = DB::table('gig_basics')
@@ -24,7 +23,7 @@
                     'get_gigs' => $get_gigs,
                    // 'package' => $package
                 ];
-
+            if(($get_gigs)>0){
                 if($get_cart->package_name == 'basic'){
                     $gig_features = DB::table('gig_features')->where('gig_id', $get_gigs->gig_id)->where('feature_basic', 'Yes')->get();
                     $package = [
@@ -83,4 +82,6 @@
                     'gig_features' =>  $gig_features
                 ];
             }
+        }
+    }
 ?>

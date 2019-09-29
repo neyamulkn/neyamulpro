@@ -4,82 +4,155 @@ namespace App\Http\Controllers;
 
 use App\themeOrder;
 use Illuminate\Http\Request;
-
+use Auth;
+use Session;
+use DB;
 class ThemeOrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+    
+    public function theme_checkout(Request $request){
+        if(!Auth::check()){
+            return Redirect::route('login');
+        }
+        $session_id = 0;
+        $session_id =  Session::get('session_id');
+        $user_id = null;
+        if(Auth::check()){
+            $user_id = Auth::user()->id;
+        }
+
+        $get_themecart_info = DB::table('theme_add_to_cart')
+        ->where('user_id', $user_id)
+        ->orWhere('session_id', $session_id)
+        ->get();
+
+        return view('frontend/theme/theme-payment')->with(compact('get_themecart_info'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function payment_success()
     {
-        //
+        if(isset($_GET['tx'])){
+            $buyer_id = Auth::user()->id;
+            $username = Auth::user()->username;
+            
+            $session_id = 0;
+            $session_id =  Session::get('session_id'); // for guest user add to cart
+           
+            // check refferel_user_name
+            if(Session::has('refferel_user_name')){
+                if(Session::get('refferel_user_name') != $username){
+                 $ref_user = Session::get('refferel_user_name');
+                }
+            }else{ $ref_user = null; }
+
+            //get all cart item 
+            $get_themecart_info = DB::table('theme_add_to_cart')
+            ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
+            ->where('theme_add_to_cart.user_id', $buyer_id)
+            ->orWhere('session_id', $session_id)
+            ->get();
+
+            // all cart item buyer purchas 
+            foreach ($get_themecart_info  as $show_themecart_info) {
+                $order_id =strtoupper(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), -8)); 
+                $data = [
+                    'order_id' => $order_id,
+                    'theme_id' => $show_themecart_info->theme_id,
+                    'lichance_name' => $show_themecart_info->lichance_name,
+                    'seller_id' => $show_themecart_info->user_id,
+                    'buyer_id' =>  $buyer_id,
+                    'ref_user' => $ref_user,
+                    'total_price' => $show_themecart_info->price,
+                    'payment_method' => 'paypal',
+                    'transection_id' => $_GET['tx'],
+                   
+                ];
+
+                $insert = themeOrder::create($data);
+
+                if($insert){
+                    DB::table('theme_add_to_cart')
+                    ->where('cart_id',  $show_themecart_info->cart_id)
+                    ->where(function($query) use ($buyer_id, $session_id) {
+                        $query->where('user_id', $buyer_id)
+                        ->orWhere('session_id', $session_id);
+                    })->delete();
+                }
+            }
+
+            if($insert){
+                    return redirect('/themeplace/downloads/theme/'.Auth::user()->username);
+                }else{
+                    return redirect('/themeplace/cart/view'.Auth::user()->username);
+                }
+        }else{
+            return redirect('/themeplace/cart/view'.Auth::user()->username);
+        }
+      
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function stripe_payment(Request $request)
     {
-        //
+
+        $buyer_id = Auth::user()->id;
+        $username = Auth::user()->username;
+        
+        $session_id = 0;
+        $session_id =  Session::get('session_id'); // for guest user add to cart
+       
+        \Stripe\Stripe::setApiKey("sk_test_USX32J7O4Oxh4gsTMwlAY5zr00t9yNdFxr");
+    if(isset($request->stripeToken)){
+        // check refferel_user_name
+        if(Session::has('refferel_user_name')){
+            if(Session::get('refferel_user_name') != $username){
+             $ref_user = Session::get('refferel_user_name');
+            }
+        }else{ $ref_user = null; }
+
+        //get all cart item 
+        $get_themecart_info = DB::table('theme_add_to_cart')
+        ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
+        ->where('theme_add_to_cart.user_id', $buyer_id)
+        ->orWhere('session_id', $session_id)
+        ->get();
+
+        // all cart item buyer purchas 
+        foreach ($get_themecart_info  as $show_themecart_info) {
+            $order_id =strtoupper(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), -8)); 
+                $data = [
+                    'order_id' => $order_id,
+                    'theme_id' => $show_themecart_info->theme_id,
+                    'lichance_name' => $show_themecart_info->lichance_name,
+                    'seller_id' => $show_themecart_info->user_id,
+                    'buyer_id' =>  $buyer_id,
+                    'ref_user' => $ref_user,
+                    'total_price' => $show_themecart_info->price,
+                    'payment_method' => 'card',
+                    'transection_id' => $request->stripeToken,
+                   
+                ];
+
+                $insert = themeOrder::create($data);
+
+                if($insert){
+                    DB::table('theme_add_to_cart')
+                    ->where('cart_id',  $show_themecart_info->cart_id)
+                    ->where(function($query) use ($buyer_id, $session_id) {
+                        $query->where('user_id', $buyer_id)
+                        ->orWhere('session_id', $session_id);
+                    })->delete();
+                }
+            }
+
+            if($insert){
+                return redirect('/themeplace/downloads/theme/'.Auth::user()->username);
+            }
+        }
+         return redirect('/themeplace/cart/view'.Auth::user()->username);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\themeOrder  $themeOrder
-     * @return \Illuminate\Http\Response
-     */
-    public function show(themeOrder $themeOrder)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\themeOrder  $themeOrder
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(themeOrder $themeOrder)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\themeOrder  $themeOrder
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, themeOrder $themeOrder)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\themeOrder  $themeOrder
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(themeOrder $themeOrder)
-    {
-        //
+    public function payment_cancel(){
+        return redirect('/themeplace/cart/view/'.Auth::user()->username);
     }
 }

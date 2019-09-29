@@ -155,7 +155,7 @@
 	<!-- FOOTER BOTTOM -->
 	<div id="footer-bottom-wrap">
 		<div id="footer-bottom">
-			<p><span>&copy;</span><a href="index-2.html">Emerald Dragon</a> Template - All Rights Reserved 2015</p>
+			<p><span>&copy;</span><a href="#">HOTLancer</a> - All Rights Reserved 2019</p>
 		</div>
 	</div>
 	<!-- /FOOTER BOTTOM -->

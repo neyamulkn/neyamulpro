@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 <?php $subcategory = Request::route('subcategory') ?>
-@section('title', $subcategory )
+@section('title', $get_cat_sub->subcategory_name .' – '. $get_cat_sub->category_name  .' – '. Request::segment(1) . ' – HOTLancer' )
 
 @section('css')
 	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/simple-line-icons.css') }}">
@@ -21,10 +21,6 @@
 }
 </style>
 
-@endsection
-<!-- MAIN MENU -->
-@section('menu')
-	@include('frontend.layouts.gig-menu')
 @endsection
 
 
@@ -87,11 +83,11 @@
 				<!-- /DROPDOWN -->
 
 				<!-- SIDEBAR ITEM -->
-				@foreach($get_filter_id as $get_filter)
+				@foreach($get_filters as $get_filter)
 
-				<?php $get_filter_info = DB::table('filters')->where('filter_id', $get_filter->filter_id)->first(); ?>
+
 				<div class="sidebar-item">
-					<h4>{{$get_filter_info->filter_name}}</h4>
+					<h4>{{$get_filter->filter_name}}</h4>
 					<hr class="line-separator">
 					<form id="shop_search_form" name="shop_search_form">
 					<input id="token" type="hidden" name="_token" value="{{csrf_token() }}" />
@@ -218,10 +214,13 @@ $(document).on('click', '.pagination a', function(e){
 		var gig_sort = ($( "#gig_asc option:selected" ).val());
 		var category = "{{ Request::route('category') }}" ;
 		var subcategory = "{{ Request::route('subcategory') }}";
-        var link = "<?php echo '/gig/'.Request::route('category') .'/'. Request::route('subcategory'); ?>?page="+page;
+       	
+       var  link = '<?php echo URL::to("/marketplace/");?>/'+category+'/'+subcategory+'?page='+page;
+		    history.pushState({id: 'Marketplace'}, category +' '+subcategory, link);
+
  		$.ajax({
             url:link,
-            method:"POST",
+            method:"post",
             data:{
 				metadata:metadata,
 				gig_sort:gig_sort,
@@ -268,8 +267,7 @@ $(document).on('click', '.pagination a', function(e){
 <script src="{{ asset('allscript/js/vendor/jquery.tooltipster.min.js') }}"></script>
 <!-- Owl Carousel -->
 <script src="{{ asset('allscript/js/vendor/jquery.range.min.js') }}"></script>
-<!-- Tweet -->
-<script src="{{ asset('allscript/js/vendor/twitter/jquery.tweet.min.js') }}"></script>
+
 <!-- Side Menu -->
 <script src="{{ asset('allscript/js/side-menu.js') }}"></script>
 
@@ -277,8 +275,7 @@ $(document).on('click', '.pagination a', function(e){
 <script src="{{ asset('allscript/js/shop.js') }}"></script>
 <!-- Tooltip -->
 <script src="{{ asset('allscript/js/tooltip.js') }}"></script>
-<!-- Home Alerts -->
-<script src="{{ asset('allscript/js/home-alerts.js') }}"></script>
+
 
 
 @endsection

@@ -11,7 +11,7 @@ class job_proposal extends Model
     	'buyer_id',
     	'freelancer_id',
     	'proposal_budget',
-    	'price_type',
+    	'work_duration',
     	'proposal_dsc',
     	'proposal_file',
     	

@@ -91,6 +91,25 @@
 	}
 /* end  search bar header */
 
+.table td, .table th{
+	padding: 5px;
+	vertical-align: middle;
+    font-size: 15px;
+}
+
+.modal-header{
+	background: #36BE7F;
+    color: #fff;
+    padding:5px 10px;
+}
+
+.modal-content{
+	border:none;
+}
+.modal-header h4{
+	color:#fff;
+}
+.modal-header .close{color:#fff;opacity:1;text-shadow: none;}
 
 .right-edit-button {
     right: 24px;
@@ -165,9 +184,7 @@ textarea{
 	display: inline-block;
 	border-radius: 6px;
 }
-.active{
-	border-bottom: 6px solid #00d7b3;
-}
+
 
 p, ul{
 	margin: 0px;
@@ -191,9 +208,9 @@ td {
 
 .price_dollar{
 	position:absolute;
-	top:17px;
-	left: 35px;
-	font-size: 15px;
+	top:24px;
+	left: 33px;
+	font-size: 12px;
 }
 
 
@@ -214,4 +231,9 @@ color: #fff;
     color: #000;
     font-weight: 700;
     font-size: 13px;
+}
+
+.user_image img {
+    height: 26px !important;
+    widows: 26px !important;
 }

@@ -7,7 +7,187 @@
 	<link rel="stylesheet" href="{{ asset('allscript')}}/css/vendor/font-awesome.min.css">
 	<script src="{{asset('/allscript')}}/js/countDown.min.js"></script>
     <link href="{{asset('/allscript')}}/css/countDown.css" media="all" rel="stylesheet" />
-    <style type="text/css">
+<style type="text/css">
+
+ 
+.counterWrap {
+  padding: 30px;
+  width: 100%;
+}
+
+.counter, .labelsq {
+  display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    justify-content: space-between;
+}
+
+.counter ul {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  flex: 0 0 141px;
+  max-width: 141px;
+}
+
+.counter > ul:after {
+  content: ":";
+    color: #2b373a9c;
+    font-family: "GeometriaMedium";
+    font-size: 60px;
+    line-height: 75px;
+    text-align: center;
+    display: block;
+    font-weight: bold;
+    margin-left: 8px;
+}
+.counter > ul:last-of-type:after {
+  content: "";
+  margin: 0;
+  padding: 0;
+  width: 0;
+}
+.counter li {
+    border: 1px solid #2b373a9c;
+    margin-right: 8px;
+    min-width: 70px;
+    height: 90px;
+    text-align: center;
+    font-size: 75px;
+    line-height: 1.2;
+    font-family: "FiraSans";
+    border-radius: 4px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.2) inset;
+  color: #2b373a9c;
+}
+.counter li:last-child {
+  margin: 0;
+}
+
+.labelsq ul {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.labelsq li {
+  flex: 0 0 141px;
+    max-width: 141px;
+    text-align: center;
+    font-family: "GeometriaMedium";
+    font-size: 20px;
+    line-height: 25px;
+    color: #2b373a;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 767px) {
+  .counterWrap {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .counter ul {
+    flex: 0 0 101px;
+    max-width: 101px;
+  }
+  .counter ul li {
+    width: 50px;
+    min-width: 50px;
+    height: 70px;
+    font-size: 60px;
+    line-height: 1.2;
+  }
+
+  .counter > ul:after {
+    content: ":";
+    font-size: 50px;
+    line-height: 55px;
+    padding-left: 8px;
+  }
+
+  .labelsq li {
+    flex: 0 0 101px;
+    max-width: 101px;
+  }
+}
+@media only screen and (max-width: 575px) {
+  .counterWrap {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .counter ul {
+    flex: 0 0 81px;
+    max-width: 81px;
+  }
+  .counter ul li {
+    width: 40px;
+    min-width: 40px;
+    height: 60px;
+    font-size: 50px;
+    line-height: 1.2;
+  }
+
+  .counter > ul:after {
+    content: ":";
+    font-size: 44px;
+    line-height: 50px;
+    padding-left: 8px;
+  }
+
+  .labelsq li {
+    flex: 0 0 81px;
+    max-width: 81px;
+    font-size: 18px;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .counterWrap {
+    width: 100%;
+    max-width: 290px;
+    padding: 30px 5px;
+  }
+
+  .counter ul {
+    flex: 0 0 64px;
+    max-width: 64px;
+  }
+  .counter ul li {
+    width: 31px;
+    min-width: 31px;
+    height: 50px;
+    font-size: 42px;
+    line-height: 1.2;
+  }
+
+  .counter > ul:after {
+    content: ":";
+    font-size: 30px;
+    line-height: 50px;
+    padding-left: 2px;
+  }
+
+  .labelsq li {
+    flex: 0 0 64px;
+    max-width: 64px;
+    font-size: 14px;
+  }
+
+
+}
+
+
+
+
+
     	.step{
     		color:#00668c; font-size: 16px;
     	}
@@ -139,11 +319,12 @@
 				</tbody>
 			</table><br/>
 
-			<div class="container">
-
-				<p id="demo" style="font-size:30px"></p>
-				</div>
-
+			<div class="counterWrap">
+				<div class="counter"></div>
+				<div class="labelsq"><ul><li>days</li><li>hours</li><li>minutes</li><li>seconds</li></ul></div>
+				<div style="display:none;" id="dataSet"><?php echo \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y h:m:i'); ?></div>
+				<!-- формат даты - номер месяца/число месяца/год  время  например: 5/10/2019 12:45:00 -->
+			</div>
 				<hr/>
 			<div>
 				<div style="margin-bottom: 10px; text-align:center;color: #7b7b7b;">
@@ -248,35 +429,109 @@
 	<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
 
 <script>
-// Set the date we're counting down to
-var countDownDate = new Date("<?php echo \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y h:m:i'); ?>").getTime();
+;(function ($) {
 
-// Update the count down every 1 second
-var countdownfunction = setInterval(function() {
+  $.fn.countdown = function(options){
+    //global variables 
+    var vars = $.extend({}, $.fn.countdown.defaults, options),
+        $counter = $(this),
+        t = {day: 0, hour: 0, minute: 0, sec: 0},
+        targetDate = new Date(vars.targetDate).getTime(),
+        secondsLeft;
 
-  // Get todays date and time
-  var now = new Date().getTime();
-  
-  // Find the distance between now an the count down date
-  var distance = countDownDate - now;
-  
-  // Time calculations for days, hours, minutes and seconds
-  var days ='<span style="color:red;border:1px solid #ccc;background:green;font-weight:bold;font-size:30px;">'+ Math.floor(distance / (1000 * 60 * 60 * 24))+ '</span>';
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-  
-  // Output the result in an element with id="demo"
-  document.getElementById("demo").innerHTML = days + " days " + hours + " hours "
-  + minutes + " minutes " + seconds + " seconds ";
-  
-  // If the count down is over, write some text 
-  if (distance < 0) {
-    clearInterval(countdownfunction);
-    document.getElementById("demo").innerHTML = "EXPIRED";
-  }
-}, 1000);
+    //private methods
+    methods = {
+      setup: function () {
+        
+        $.each(t, function(time, value){
+          var currentSection = '<ul id="'+time+'"><li>0</li><li>0</li></ul>';
+          $counter.append(currentSection);
+        });
+        
+        if (vars.labels) {
+          //var labelHtml = '<div class="labels"><ul><li>Days</li><li>Hours</li><li>Minutes</li><li>Seconds</li></ul></div>';
+									var labelHtml = document.querySelector('.labelsq');
+          $counter.append(labelHtml);
+        }
+
+      },
+
+      updateTime: function(){
+        var currentTime = new Date().getTime(),
+            secondsLeft = (targetDate - currentTime) / 1000,
+            secsIn = {day: 86400, hour: 3600, minute: 60};
+
+        if (secondsLeft < 0) {secondsLeft = 0;}
+        
+        $.each(t, function(timePeriod, value){
+          t[timePeriod] = parseInt( (secondsLeft / secsIn[timePeriod]), 10);
+          if (timePeriod !== 'sec'){
+           secondsLeft = secondsLeft % secsIn[timePeriod];
+          } 
+          else {
+            t[timePeriod] = secondsLeft;
+          }
+        });
+      },
+
+      updateCounter: function() {
+        $.each(t, function(period, value){
+          var section = $counter.find('#'+period).children(),
+              digit = splitDigits(value);
+          
+          section.eq(0).html(digit[0]);
+          section.eq(1).html(digit[1]);
+        });
+
+        function splitDigits(number) {
+          var digits = [];
+          digits[0] = Math.floor(number / 10);
+          digits[1] = Math.floor(number % 10);
+          return digits; 
+        }
+      },
+
+      tick: function () {
+        if (secondsLeft < 1) {}
+        else {
+          methods.updateTime();
+          methods.updateCounter();
+          setTimeout(function() {methods.tick();}, 1000);
+        } 
+      },
+
+      init: function () {
+        methods.setup();
+        methods.updateTime();
+        methods.updateCounter();
+        methods.tick();
+      },
+    };
+
+    //initiate countdown
+    methods.init();
+  };
+
+  $.fn.countdown.defaults = {
+    targetDate: '',    //string: the date you want the counter to count down to.
+    labels:     true              //boolean: toggles the {day / hour / minute / second} labels 
+  };
+}(jQuery));
+// end of countdown plugin
+
+
+
+$(function() {
+	//дата берется из html
+	var setData = document.querySelector('#dataSet').innerHTML;
+	var newDate = new Date(setData);
+	$('.counter').countdown({
+				targetDate: newDate,
+				labels: false
+		});
+});
 </script>
+
 @endsection
 
 

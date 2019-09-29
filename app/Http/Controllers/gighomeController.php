@@ -12,7 +12,7 @@ use App\gig_home_category;
 use App\gig_subcategory;
 use App\filter_subcategory;
 use App\gig_metadata_filter;
-use App\user;
+use App\User;
 use App\ref_count;
 use DB;
 use Session;
@@ -23,35 +23,39 @@ class gighomeController extends Controller
 
     public function marketplace(){
 
-        return view('frontend.gigs');
+        $get_category = DB::table('gig_home_category')->get();
+        return view('frontend.gigs')->with(compact('get_category'));
     }
 
 
     public function gig_view($category, $subcatery){
 
-		
-		$get_subcategory_id = gig_subcategory::where('subcategory_url', $subcatery)->first();
-		if($get_subcategory_id){
+		$get_cat_sub = DB::table('gig_home_category')
+            ->join('gig_subcategories', 'gig_home_category.id', 'gig_subcategories.category_id')
+            ->where('gig_home_category.category_url', $category)
+            ->where('gig_subcategories.subcategory_url', $subcatery)->first();
+
+		$get_filters = DB::table('gig_subcategories')
+        ->join('filter_subcategories', 'gig_subcategories.id', 'filter_subcategories.subcategory_id')
+        ->join('filters', 'filter_subcategories.filter_id', 'filters.filter_id')
+        ->where('gig_subcategories.subcategory_url', $subcatery)
+        ->groupBy('filter_subcategories.filter_id')->get();
 
 			//$get_gig_basic = gig_basic::where('gig_subcategory', $get_subcategory_id->id)->where('gig_status', 'active')->paginate(3); 
 
-			// get filter id for leftsite bar
-			$get_filter_id = filter_subcategory::select('filter_id')->where('subcategory_id', $get_subcategory_id->id)->get();
-
-			$alldata = [
-				//'get_gig_basic' => $get_gig_basic,
-				'get_filter_id' => $get_filter_id,
-			];
-			return view('frontend.gigs-categories')->with($alldata);
+			
+        if($get_filters){
+			return view('frontend.gigs-categories')->with(compact('get_filters','get_cat_sub'));
 
 		}
+        return back();
     }
 
-    public function gig_details($user_name, $gig_url){
+    public function gig_details($gig_url){
 
-    	$get_user_info = user::where('username', $user_name)->first();
+    	
         $get_gig_info = gig_basic::where('gig_url', $gig_url)->first();
-
+        $get_user_info = user::where('id', $get_gig_info->gig_user_id)->first();
     	// refferel_user_name
         if(isset($_GET['ref'])){
             Session::put('refferel_user_name', $_GET['ref']);
@@ -65,16 +69,17 @@ class gighomeController extends Controller
             ]);
             
         }
-    	if($get_user_info and $get_gig_info){
+    	if($get_gig_info){
     		$gig_id = $get_gig_info->gig_id;
-
+          
             // if exist gig view table
             $get_info = DB::table('gigs_view')->where('gig_id', $gig_id)->first();
             if($get_info){ DB::table('gigs_view')->where('gig_id', $gig_id)->update([
-                'gig_impress' => $get_info->gig_impress+1,
-                'gig_click' => $get_info->gig_click+1,
-                'gig_view' => $get_info->gig_view,
-            ]);}
+                    'gig_impress' => $get_info->gig_impress+1,
+                    'gig_click' => $get_info->gig_click+1,
+                    'gig_view' => $get_info->gig_view+1,
+                ]);
+            }
             else{  DB::table('gigs_view')->insert(['gig_id' => $gig_id, 'gig_impress' => 1] );  }
 
             $get_gig_price = gig_price::where('gig_id', $gig_id)->first();
@@ -83,7 +88,6 @@ class gighomeController extends Controller
     		$get_feedback = DB::table('feedback')
                         ->leftjoin('users', 'feedback.buyer_id', 'users.id')
                         ->leftjoin('userinfos', 'feedback.buyer_id', 'userinfos.user_id')
-                       
                         ->where('gig_id', $gig_id)->get();
 
             $get_gig_image = gig_image::where('gig_id', $gig_id)->get();
@@ -174,7 +178,7 @@ class gighomeController extends Controller
                                                     <span class="icon-tag"></span>
                                                 </div>
                                             </a>
-                                            <a href="<?php echo url('gig/'.$show_gig->username.'/'.$show_gig->gig_url); ?>" target="_blank">
+                                            <a href="<?php echo url('marketplace/'.$show_gig->gig_url); ?>" target="_blank">
                                                 <p>Go to Item</p>
                                             </a>
                                         </div>
@@ -199,7 +203,7 @@ class gighomeController extends Controller
 
                                 <!-- PRODUCT INFO -->
                                 <div class="product-info">
-                                    <a href="<?php echo url('gig/'.$show_gig->username.'/'.$show_gig->gig_url); ?>">
+                                    <a href="<?php echo url('marketplace/'.$show_gig->gig_url); ?>">
                                         <p class="text-header">I will <?php echo $show_gig->gig_title; ?></p>
                                     </a>
                                    

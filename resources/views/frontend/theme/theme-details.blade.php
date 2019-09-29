@@ -1,13 +1,46 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-{{$get_theme_detail->theme_name}}
+{!! $get_theme_detail->theme_name .' – '. Request::segment(1) .' – '. 'HOTLancer' !!}
+@endsection
+
+@section('metatag')
+    <meta name="description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
+    <meta name="image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    <meta name="rating" content="5">
+    <!-- Schema.org for Google -->
+    <meta itemprop="name" content="HOTLancer - the largest freelancer Marketplace">
+    <meta itemprop="description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
+    <meta itemprop="image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="HOTLancer - the largest freelancer Marketplace">
+    <meta name="twitter:description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
+    <meta name="twitter:site" content="https://hotlancer.com/">
+    <meta name="twitter:creator" content="@HeRaKhan">
+    <meta name="twitter:image:src" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    <meta name="twitter:player" content="#">
+    <!-- Twitter - Product (e-commerce) -->
+    
+    <!-- Open Graph general (Facebook, Pinterest & Google+) -->
+    <meta name="og:title" content="HOTLancer - the largest freelancer Marketplace">
+    <meta name="og:description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
+    <meta name="og:image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    <meta name="og:url" content="https://hotlancer.com/">
+    <meta name="og:site_name" content="HOTLancer">
+    <meta name="og:locale" content="en">
+    <meta name="og:video" content="#">
+    <meta name="fb:admins" content="1323213265465">
+    <meta name="fb:app_id" content="13212465454">
+    <meta name="og:type" content="product">
 @endsection
 @section('css')
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
-	<link rel="stylesheet" href="{{ asset('allscript')}}/css/vendor/simple-line-icons.css">
-	<link rel="stylesheet" href="{{ asset('allscript')}}/css/vendor/tooltipster.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{!! asset('allscript') !!}/css/vendor/simple-line-icons.css">
+	<link rel="stylesheet" href="{!! asset('allscript') !!}/css/vendor/tooltipster.css">
+	<link rel="stylesheet" href="{!! asset('allscript') !!}/e/1.css">
+	<link rel="stylesheet" href="{!! asset('allscript') !!}/css/vendor/font-awesome.min.css">
 
 <style>
 .post .post-content {
@@ -140,6 +173,20 @@ span.icon-arrow-right.small {
     margin-bottom: 8px;
     min-height: auto !important;
 }
+
+.user img{
+	width: 50px;
+	height:50px;
+}
+
+
+.share-links.v3 button{
+  color: #000;
+  padding: 10px !important;
+    padding-bottom: 7px !important; 
+}
+
+
 </style>
 @endsection
 @section('menu')
@@ -154,13 +201,13 @@ span.icon-arrow-right.small {
 			<div class="sidebar right">
 				<!-- SIDEBAR ITEM -->
 				<div class="sidebar-item">
-					<p class="price large"><span>$</span><b id="cng_price">{{$get_theme_detail->price_regular}} </b></p>
+					<p class="price large"><span>$</span><b id="cng_price">{!! $get_theme_detail->price_regular !!} </b></p>
 					<hr class="line-separator">
 					
-				<form action="{{url('themeplace/buy')}}" method="post" id="aux_form">
-					{{csrf_field()}}
+				<form action="{!! url('themeplace/buy') !!}" method="post" id="aux_form">
+					{!! csrf_field() !!}
 					
-					<input type="hidden" name="theme_id" value="{{$get_theme_detail->theme_id}}">
+					<input type="hidden" name="theme_id" value="{!! $get_theme_detail->theme_id !!}">
 					<!-- CHECKBOX -->
 					<input type="radio" id="regular-license" value="price_regular" name="regular_license" form="aux_form" checked="">
 					<label class="b-label linked-check" for="regular-license">
@@ -180,8 +227,8 @@ span.icon-arrow-right.small {
 					<p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
 					<button type="submit" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
 				</form>
-					<input type="hidden" name="price" value="{{$get_theme_detail->price_regular}}" id="price">
-					<button onclick="add_to_cart('{{$get_theme_detail->theme_id}}')" class="button mid tertiary half">Add to Cart </button>
+					<input type="hidden" name="price" value="{!! $get_theme_detail->price_regular !!}" id="price">
+					<button onclick="add_to_cart('{!! $get_theme_detail->theme_id !!}')" class="button mid tertiary half">Add to Cart </button>
 					<button class="button mid secondary wicon half"><span class="icon-heart"></span>652</button>
 					<div class="clearfix"></div>
 				</div>
@@ -189,21 +236,21 @@ span.icon-arrow-right.small {
 				<!-- SIDEBAR ITEM -->
 				<div class="sidebar-item author-bio short author-badges-v1 column">
 					<a href="user-profile.html" class="user-avatar-wrap medium">
-						<figure class="user-avatar medium">
-							<img src="{{asset('image').'/'.$get_theme_detail->user_image }}" alt="">
+						<figure class="user-avatar medium user">
+							<img src="{!! asset('image').'/'.$get_theme_detail->user_image  !!}" alt="">
 						</figure>
 					</a>
 					<!-- /USER AVATAR -->
-					<p class="text-header">{{$get_theme_detail->username}}</p>
+					<p class="text-header">{!! $get_theme_detail->username !!}</p>
 					
-					<p class="text-oneline">{{$get_theme_detail->user_title}}</p>
+					<p class="text-oneline">{!! $get_theme_detail->user_title !!}</p>
 
 					<!-- BADGE LIST -->
 					<div class="badge-list">
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small liquid">
-								<img src="{{ asset('allscript')}}/images/badges/community/gold_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/community/gold_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
@@ -211,7 +258,7 @@ span.icon-arrow-right.small {
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small liquid">
-								<img src="{{ asset('allscript')}}/images/badges/flags/flag_usa_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/flags/flag_usa_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
@@ -219,7 +266,7 @@ span.icon-arrow-right.small {
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small liquid">
-								<img src="{{ asset('allscript')}}/images/badges/community/support_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/community/support_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
@@ -227,7 +274,7 @@ span.icon-arrow-right.small {
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small pinned liquid">
-								<img src="{{ asset('allscript')}}/images/badges/community/member_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/community/member_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
@@ -235,7 +282,7 @@ span.icon-arrow-right.small {
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small liquid">
-								<img src="{{ asset('allscript')}}/images/badges/community/hunter_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/community/hunter_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
@@ -243,7 +290,7 @@ span.icon-arrow-right.small {
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small pinned liquid">
-								<img src="{{ asset('allscript')}}/images/badges/community/appreciationist_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/community/appreciationist_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
@@ -251,7 +298,7 @@ span.icon-arrow-right.small {
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small liquid">
-								<img src="{{ asset('allscript')}}/images/badges/community/rainbow_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/community/rainbow_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
@@ -259,7 +306,7 @@ span.icon-arrow-right.small {
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small pinned liquid">
-								<img src="{{ asset('allscript')}}/images/badges/community/friendly_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/community/friendly_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
@@ -267,20 +314,20 @@ span.icon-arrow-right.small {
 						<!-- BADGE LIST ITEM -->
 						<div class="badge-list-item">
 							<figure class="badge small liquid">
-								<img src="{{ asset('allscript')}}/images/badges/community/gold_s.png" alt="">
+								<img src="{!!  asset('allscript') !!}/images/badges/community/gold_s.png" alt="">
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
 					</div>	
 					<!-- /BADGE LIST -->
 					<div class="clearfix"></div>
-					<a href="{{url($get_theme_detail->username)}}" class="button mid dark spaced">Go to <span class="tertiary">Profile Page</span></a>
+					<a href="{!! url($get_theme_detail->username) !!}" class="button mid dark spaced">Go to <span class="tertiary">Profile Page</span></a>
 					<a href="#" class="button mid dark-light">Send a Private Message</a>
 				</div>
 				<!-- /SIDEBAR ITEM -->
 				<div class="sidebar-item void buttons">
 					<a href="#" class="button big dark purchase">
-						<span >{{$total_sale->total_sale}} </span>
+						<span >{!! $total_sale->total_sale !!} </span>
 						<span class="tertiary"> Sales</span>
 					</a>
 					<a href="#" class="button big tertiary wcart">
@@ -453,13 +500,13 @@ span.icon-arrow-right.small {
 						<!-- INFORMATION LAYOUT ITEM -->
 						<div class="information-layout-item">
 							<p class="text-header">Upload Date:</p>
-							<p>{{ \Carbon\Carbon::parse($get_theme_detail->created_at)->format('M d, Y')}}</p>
+							<p>{!!  \Carbon\Carbon::parse($get_theme_detail->created_at)->format('M d, Y') !!}</p>
 						</div>
 						<!-- /INFORMATION LAYOUT ITEM -->
 						<!-- INFORMATION LAYOUT ITEM -->
 						<div class="information-layout-item">
 							<p class="text-header">Upload Date:</p>
-							<p>{{ \Carbon\Carbon::parse($get_theme_detail->updated_at)->format('M d, Y')}}</p>
+							<p>{!!  \Carbon\Carbon::parse($get_theme_detail->updated_at)->format('M d, Y') !!}</p>
 						</div>
 						<!-- /INFORMATION LAYOUT ITEM -->
 						<!-- /Radio ITEM -->
@@ -467,8 +514,8 @@ span.icon-arrow-right.small {
 							@if($get_theme_feature->feature_type=='radio')
 								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
 								<div class="information-layout-item">
-									<p class="text-header">{{$get_feature_name->filter_name}}:</p>
-									<p>{{$get_theme_feature->feature_name}}</p>
+									<p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
+									<p>{!! $get_theme_feature->feature_name !!}</p>
 								</div>
 							@endif
 						@endforeach
@@ -478,8 +525,8 @@ span.icon-arrow-right.small {
 							@if($get_theme_feature->feature_type=='select')
 								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
 								<div class="information-layout-item">
-									<p class="text-header">{{$get_feature_name->filter_name}}:</p>
-									<p>{{$get_theme_feature->feature_name}}</p>
+									<p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
+									<p>{!! $get_theme_feature->feature_name !!}</p>
 								</div>
 							@endif
 						@endforeach
@@ -489,8 +536,8 @@ span.icon-arrow-right.small {
 							@if($get_theme_feature->feature_type=='dropdown')
 								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
 								<div class="information-layout-item">
-									<p class="text-header">{{$get_feature_name->filter_name}}:</p>
-									<p>{{$get_theme_feature->feature_name}}</p>
+									<p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
+									<p>{!! $get_theme_feature->feature_name !!}</p>
 								</div>
 							@endif
 						@endforeach
@@ -500,7 +547,7 @@ span.icon-arrow-right.small {
 							<p class="tags tertiary" style="border:none;">
 								<?php $tag_array = explode(',', $get_theme_detail->search_tag); ?>
 								@foreach($tag_array as $tag)
-									<a href="{{url('tags/'.$tag)}}">{{$tag}}</a>,
+									<a href="{!! url('tags/'.$tag) !!}">{!! $tag !!}</a>,
 								@endforeach
 							</p>
 						</div>
@@ -516,17 +563,16 @@ span.icon-arrow-right.small {
 			<!-- CONTENT -->
 			<div class="content left">
 				<div class="sidebar-1">
-					<p><a href="/">Marketplace</a> <span class="icon-arrow-right small"></span> <a href="/">Files</a> <span class="icon-arrow-right small"></span> <a href="/">WordPress</a> <span class="icon-arrow-right small"></span> <a href="/">Blog / Magazine</a> <span class="icon-arrow-right small"></span> <a href="/">News / Editorial</a></p><br/>
-					<h3 class="sidebar-2">{{$get_theme_detail->theme_name}}</h3>
-					
-					
+					<h3 class="sidebar-2">{!! $get_theme_detail->theme_name !!}</h3>
+					<br><p><a href="{{url('/themeplace')}}">themeplace</a> <span class="icon-arrow-right small"></span> <a href="{{url('/themeplace')}}">{{$get_theme_detail->category_name}}</a> <span class="icon-arrow-right small"></span> <a href="/"> {{$get_theme_detail->subcategory_name}}</a></p>
 				</div>
+
 				<!-- POST -->
 				<article class="post">
 					<!-- POST IMAGE SLIDES -->
 					<div class="post-image">
 						<figure class="product-preview-image large liquid">
-							<img src="{{ asset('theme/images/'.$get_theme_detail->main_image)}}" alt="">
+							<img src="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}" alt="">
 						</figure>
 						<!-- SLIDE CONTROLS -->
 						<div class="slide-control-wrap">
@@ -559,7 +605,7 @@ span.icon-arrow-right.small {
 								<div class="image-slide selected">
 									<div class="overlay"></div>
 									<figure class="product-preview-image thumbnail liquid">
-										<img src="{{ asset('theme/images/'.$get_theme_detail->main_image)}}" alt="">
+										<img src="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}" alt="">
 									</figure>
 								</div>
 								<!-- /IMAGE SLIDE -->
@@ -568,7 +614,7 @@ span.icon-arrow-right.small {
 									<div class="image-slide">
 										<div class="overlay"></div>
 										<figure class="product-preview-image thumbnail liquid">
-											<img src="{{ asset('theme/images/'.$theme_additiona_image->theme_additiona_img)}}" alt="">
+											<img src="{!!  asset('theme/images/'.$theme_additiona_image->theme_additiona_img) !!}" alt="">
 										</figure>
 									</div>
 									<!-- /IMAGE SLIDE -->
@@ -619,7 +665,7 @@ span.icon-arrow-right.small {
 						<div class="tab-item">
 							<p class="text-header">Reviews 
 
-								<span class="feedback">&#9733; {{$total_ratting / $total_review}} </span> ({{$total_review}})
+								<span class="feedback">&#9733; @if($total_review>0) {{ round($total_ratting / $total_review, 1) }} @endif </span> ({!! $total_review !!})
 
 							</p>
 						</div>
@@ -644,25 +690,38 @@ span.icon-arrow-right.small {
 								<!-- POST PARAGRAPH -->
 								<div class="post-paragraph">
 									<p>
-									{{$get_theme_detail->description}}
+									{!! $get_theme_detail->description !!}
 								</p>
 								</div>
 								<!-- /POST PARAGRAPH -->
 							
 								<hr class="line-separator">
 								<!-- /POST PARAGRAPH -->
+								<!-- SHARE -->
 								<div class="share-links-wrap">
-									<p class="text-header small">Share this:</p>
+									<p class="text-header small">Social Share:</p>
 									<!-- SHARE LINKS -->
 									<ul class="share-links hoverable">
-										<li><a href="#" class="fb"></a></li>
-										<li><a href="#" class="twt"></a></li>
-										<li><a href="#" class="db"></a></li>
-										<li><a href="#" class="rss"></a></li>
-										<li><a href="#" class="gplus"></a></li>
+										<li><a href="http://www.facebook.com/sharer.php?u={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-facebook"></i></a></li>
+										<li><a href="https://twitter.com/share?url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;text={!! $get_theme_detail->theme_name !!}&amp;hashtags=HOTLancer" target="_blank"><i class="fa fa-twitter"></i></a></li>
+								
+										<li><a href="http://reddit.com/submit?url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;title={!! $get_theme_detail->theme_name !!}" target="_blank"><i class="fa fa-reddit"></i></a></li>
+										<li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-linkedin"></i></a></li>
 									</ul>
 									<!-- /SHARE LINKS -->
 								</div>
+								<!-- /SHARE -->
+								<!-- Affiliate SHARE -->
+								<div class="share-links-wrap">
+									<p class="text-header small">Affiliate Link:</p>
+									<!-- Affiliate SHARE LINKS -->
+									<ul class="share-links v3">
+										<input type="text" value="{{ url('themeplace/'.$get_theme_detail->theme_url) }}@if(Auth::check())?ref={{Auth::user()->username}}@endif" id="myInput">
+										<button onclick="myFunction()"><i class="fa fa-copy"></i></button>
+									</ul>
+									<!-- /Affiliate SHARE LINKS -->
+								</div>
+								<!-- /Affiliate SHARE -->
 							</div>
 					
 							<!-- /COMMENT REPLY -->
@@ -680,13 +739,13 @@ span.icon-arrow-right.small {
 							<div class="comment-wrap" style="padding: 10px 0px 10px !important;">
 								
 								<div class="comment" style="margin-bottom: 0px;">
-									<p class="text-header">{{$get_theme_review->username}}</p>
+									<p class="text-header">{!! $get_theme_review->username !!}</p>
 									<!-- PIN -->
 									<span class="pin greyed">Purchased</span>
 									<!-- /PIN -->
-									<p class="timestamp"><span class="feedback">&#9733; {{$get_theme_review->ratting_star}} </span> For {{$get_theme_review->ratting_reason}}</p>
-									<a href="#" class="report">{{Carbon\Carbon::parse($get_theme_review->created_at)->format('d M, Y')}}</a>
-									<p>{{$get_theme_review->ratting_comment}}</p>
+									<p class="timestamp"><span class="feedback">&#9733; {!! $get_theme_review->ratting_star !!} </span> For {!! $get_theme_review->ratting_reason !!}</p>
+									<a href="#" class="report">{!! Carbon\Carbon::parse($get_theme_review->created_at)->format('d M, Y') !!}</a>
+									<p>{!! $get_theme_review->ratting_comment !!}</p>
 								</div>
 							</div>
 							<!-- /COMMENT -->
@@ -709,7 +768,7 @@ span.icon-arrow-right.small {
 								<!-- USER AVATAR -->
 								<a href="user-profile.html">
 									<figure class="user-avatar medium">
-										<img src="{{ asset('allscript')}}/images/avatars/avatar_06.jpg" alt="">
+										<img src="{!!  asset('allscript') !!}/images/avatars/avatar_06.jpg" alt="">
 									</figure>
 								</a>
 								<!-- /USER AVATAR -->
@@ -734,7 +793,7 @@ span.icon-arrow-right.small {
 								<!-- USER AVATAR -->
 								<a href="user-profile.html">
 									<figure class="user-avatar medium">
-										<img src="{{ asset('allscript')}}/images/avatars/avatar_11.jpg" alt="">
+										<img src="{!!  asset('allscript') !!}/images/avatars/avatar_11.jpg" alt="">
 									</figure>
 								</a>
 								<!-- /USER AVATAR -->
@@ -752,7 +811,7 @@ span.icon-arrow-right.small {
 								<!-- USER AVATAR -->
 								<a href="user-profile.html">
 									<figure class="user-avatar medium">
-										<img src="{{ asset('allscript')}}/images/avatars/avatar_09.jpg" alt="">
+										<img src="{!!  asset('allscript') !!}/images/avatars/avatar_09.jpg" alt="">
 									</figure>
 								</a>
 								<!-- /USER AVATAR -->
@@ -800,7 +859,7 @@ span.icon-arrow-right.small {
 								<!-- USER AVATAR -->
 								<a href="user-profile.html">
 									<figure class="user-avatar medium">
-										<img src="{{ asset('allscript')}}/images/avatars/avatar_09.jpg" alt="">
+										<img src="{!!  asset('allscript') !!}/images/avatars/avatar_09.jpg" alt="">
 									</figure>
 								</a>
 								<!-- /USER AVATAR -->
@@ -841,7 +900,7 @@ span.icon-arrow-right.small {
 								<div class="product-preview-actions">
 									<!-- PRODUCT PREVIEW IMAGE -->
 									<figure class="product-preview-image">
-										<img src="{{asset('theme/images/'.$another_theme->main_image)}}" alt="theme-image">
+										<img src="{!! asset('theme/images/'.$another_theme->main_image) !!}" alt="theme-image">
 									</figure>
 									<!-- /PRODUCT PREVIEW IMAGE -->
 
@@ -849,12 +908,12 @@ span.icon-arrow-right.small {
 									<div class="preview-actions">
 										<!-- PREVIEW ACTION -->
 										<div class="preview-action">
-											<a href="{{url('themeplace/item/'.$another_theme->theme_url)}}">
+											<a href="{!! url('themeplace/item/'.$another_theme->theme_url) !!}">
 												<div class="circle tiny tertiary">
 													<span class="icon-tag"></span>
 												</div>
 											</a>
-											<a href="{{url('themeplace/item/'.$another_theme->theme_url)}}">
+											<a href="{!! url('themeplace/item/'.$another_theme->theme_url) !!}">
 												<p>Go to Item</p>
 											</a>
 										</div>
@@ -880,10 +939,10 @@ span.icon-arrow-right.small {
 								<!-- PRODUCT INFO -->
 								<div class="product-info">
 									<a href="item-v1.html">
-										<p class="wrap-text">{{$another_theme->theme_name}}</p>
+										<p class="wrap-text">{!! $another_theme->theme_name !!}</p>
 									</a>
 								
-									<p class="price"><span>$</span>{{$another_theme->price_regular}}</p>
+									<p class="price"><span>$</span>{!! $another_theme->price_regular !!}</p>
 								</div>
 								<!-- /PRODUCT INFO -->
 								<hr class="line-separator">
@@ -892,11 +951,11 @@ span.icon-arrow-right.small {
 								<div class="user-rating">
 									<a href="author-profile.html">
 										<figure class="user-avatar small">
-											<img src="{{asset('image').'/'.$another_theme->user_image }}" alt="user-avatar">
+											<img src="{!! asset('image').'/'.$another_theme->user_image  !!}" alt="user-avatar">
 										</figure>
 									</a>
 									<a href="author-profile.html">
-										<p class="text-header tiny">{{$another_theme->username}}</p>
+										<p class="text-header tiny">{!! $another_theme->username !!}</p>
 									</a>
 
 									<?php
@@ -908,7 +967,7 @@ span.icon-arrow-right.small {
 									@if($theme_reviews->count_reviews>0)
 										<ul class="rating tooltip tooltipstered">
 											 @for($i=1; $i<=5; $i++)
-											<li class="rating-item {{ ($i<=$theme_reviews->sum_star / $theme_reviews->count_reviews) ? ' ' : 'empty' }}">
+											<li class="rating-item {!!  ($i<=$theme_reviews->sum_star / $theme_reviews->count_reviews) ? ' ' : 'empty'  !!}">
 												
 												<svg class="svg-star">
 													<use xlink:href="#svg-star"></use>
@@ -941,32 +1000,32 @@ span.icon-arrow-right.small {
 	
 
 <!-- Tooltipster -->
-<script src="{{ asset('allscript')}}/js/vendor/jquery.tooltipster.min.js"></script>
+<script src="{!!  asset('allscript') !!}/js/vendor/jquery.tooltipster.min.js"></script>
 <!-- ImgLiquid -->
-<script src="{{ asset('allscript')}}/js/vendor/imgLiquid-min.js"></script>
+<script src="{!!  asset('allscript') !!}/js/vendor/imgLiquid-min.js"></script>
 <!-- XM Tab -->
-<script src="{{ asset('allscript')}}/js/vendor/jquery.xmtab.min.js"></script>
+<script src="{!!  asset('allscript') !!}/js/vendor/jquery.xmtab.min.js"></script>
 <!-- Tweet -->
-<script src="{{ asset('allscript')}}/js/vendor/twitter/jquery.tweet.min.js"></script>
+<script src="{!!  asset('allscript') !!}/js/vendor/twitter/jquery.tweet.min.js"></script>
 <!-- Side Menu -->
-<script src="{{ asset('allscript')}}/js/side-menu.js"></script>
+<script src="{!!  asset('allscript') !!}/js/side-menu.js"></script>
 <!-- Liquid -->
-<script src="{{ asset('allscript')}}/js/liquid.js"></script>
+<script src="{!!  asset('allscript') !!}/js/liquid.js"></script>
 <!-- Checkbox Link -->
-<script src="{{ asset('allscript')}}/js/checkbox-link.js"></script>
+<script src="{!!  asset('allscript') !!}/js/checkbox-link.js"></script>
 <!-- Image Slides -->
-<script src="{{ asset('allscript')}}/js/image-slides.js"></script>
+<script src="{!!  asset('allscript') !!}/js/image-slides.js"></script>
 <!-- Post Tab -->
-<script src="{{ asset('allscript')}}/js/post-tab.js"></script>
+<script src="{!!  asset('allscript') !!}/js/post-tab.js"></script>
 <!-- XM Accordion -->
-<script src="{{ asset('allscript')}}/js/vendor/jquery.xmaccordion.min.js"></script>
+<script src="{!!  asset('allscript') !!}/js/vendor/jquery.xmaccordion.min.js"></script>
 <!-- XM Pie Chart -->
-<script src="{{ asset('allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
+<script src="{!!  asset('allscript') !!}/js/vendor/jquery.xmpiechart.min.js"></script>
 <!-- Item V1 -->
 
-<script src="{{ asset('allscript')}}/js/item-v2.js"></script>
+<script src="{!!  asset('allscript') !!}/js/item-v2.js"></script>
 <!-- Tooltip -->
-<script src="{{ asset('allscript')}}/js/tooltip.js"></script>
+<script src="{!!  asset('allscript') !!}/js/tooltip.js"></script>
 
 <script>
 	
@@ -976,11 +1035,11 @@ span.icon-arrow-right.small {
 
 		$.ajax({
 			method:'post',
-			url:'{{ URL::to("/themeplace/cart/") }}',
+			url:'{!!  URL::to("/themeplace/cart/")  !!}',
 			data:{
 				theme_id:theme_id,
 				price:price,
-				_token:"{{ csrf_token() }}"
+				_token:"{!!  csrf_token()  !!}"
 			},
 			success:function(data){
 				alert(data);
@@ -1010,9 +1069,9 @@ span.icon-arrow-right.small {
 				if( checkboxID != selectedCheckboxID ) {
 					deselect($("#"+checkboxID))
 					hideDescription(checkboxID);
-					changePrice('{{$get_theme_detail->price_regular}}');
+					changePrice('{!! $get_theme_detail->price_regular !!}');
 				} else {
-					changePrice('{{$get_theme_detail->price_extented}}');
+					changePrice('{!! $get_theme_detail->price_extented !!}');
 				}
 			});
 	}
@@ -1038,6 +1097,14 @@ span.icon-arrow-right.small {
 	
 </script>
 
-
+<script>
+function myFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  document.execCommand("Copy");
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Copied: " + copyText.value;
+}
+</script>
 @endsection
 

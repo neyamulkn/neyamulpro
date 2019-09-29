@@ -4,7 +4,7 @@
 @section('css')
 <link rel="stylesheet" href="{{asset('/allscript')}}/css/c.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/login.css">
+
 
 	<style>
 .select-block.va {
@@ -199,10 +199,53 @@ code {
 }
 
 .ttinput-groupg {
-    width: 77%;
+    width: 79% !important;
     float: right;
 }
+
+.upload-file .button {
+	height: 30px !important;
+}
+.upload-file .upload-file-progress .upload-bar{
+	padding-top: 7px;
+}
+.upload-file .upload-file-actions p{
+	width: 200px;
+}
+
+.form-box-items.wrap-1-3 {
+
+    margin-left: 16px;
+    float: left;
+}
+.form-box-items .form-box-item{
+	width: 100% !important;
+}
+
 </style>
+
+<!-- tags -->
+   <link href="{{asset('tags')}}/typeahead.css"  rel="stylesheet" />
+    <link href="{{asset('tags')}}/bootstrap-tagsinput.css" rel="stylesheet">
+    <style>
+ 
+    .twitter-typeahead { display:initial !important; }
+    .bootstrap-tagsinput {line-height:40px;display:block !important;}
+    .bootstrap-tagsinput .tag {background:#09F;padding:5px;border-radius:4px;}
+    .tt-hint {top:2px !important;}
+    .tt-input{vertical-align:baseline !important;}
+    .typeahead { border: 1px solid #CCCCCC;border-radius: 4px;padding: 8px 12px;width: 300px;font-size:1.5em;}
+    .tt-menu { width:300px; }
+    span.twitter-typeahead .tt-suggestion {padding: 10px 20px;  border-bottom:#CCC 1px solid;cursor:pointer;}
+    span.twitter-typeahead .tt-suggestion:last-child { border-bottom:0px; }
+    .demo-label {font-size:1.5em;color: #686868;font-weight: 500;}
+    .bgcolor {max-width: 440px;height: 200px;background-color: #c3e8cb;padding: 40px 70px;border-radius:4px;margin:20px 0px;}
+    .tt-menu{width: 100%;}
+    .ttinput-group{overflow: hidden;}
+    </style>
+<!--end tags -->
+
+
 @endsection
 
 @section('content')
@@ -213,30 +256,99 @@ code {
         <h4>Upload Item</h4>
     </div>
     <!-- /HEADLINE -->
-
 	<!-- FORM BOX ITEMS -->
 	<div class="form-box-items wrap-3-1 left">
 		<!-- FORM BOX ITEM -->
 		<div class="form-box-item full">
+
 			<h4>Item Specifications</h4>
-			<span style="color: green; font-weight: bold;">{{Session::get('msg')}}</span>
-			<hr class="line-separator">
-			<form action="{{url('/dashboard/theme/upload')}}" method="post" data-parsley-validate  enctype="multipart/form-data">
-				{{csrf_field()}}
-				<!-- INPUT CONTAINER -->
+			<!-- INPUT CONTAINER -->
+
 				<div class="ttinput-group">
-				  <label class="ttinput-groupt" for="name">Name</label>
+				  <label style="float: left;" class="rl-label required" for="name">Name</label>
 				  <div class="inputs">
-					<input class="ttinput-groupg" required="required" type="text" id="name" name="theme_name" value="" maxlength="100">
+					<input class="ttinput-groupg" form="main_form" value="{{$get_theme->theme_name}}" required="required" type="text" id="name" name="theme_name"  maxlength="100">
 					<small class="ttinput-group">Maximum 100 characters. No HTML allowed. Follow our <a href="#">Item Title Naming Conventions</a>.</small>
 				  </div>
 				</div>
+
+				<div class="input-container">
+					<label class="rl-label required">Upload Main File</label>
+					<!-- UPLOAD FILE -->
+					<div class="upload-file">
+						<div class="upload-file-actions">
+						<form id="fileUploadForm" method="post" action="{{ route('file_upload') }}" enctype="multipart/form-data">
+                      		@csrf
+							<input type="file" onchange="uploadselectFile()" required="required" style="display: none;" name="uploadFile" id="uploadFile">
+							<label for="uploadFile" class="button dark-light">Upload File...</label>
+							<p><span id="success">Max file size 2gb</span>  <span class="loader" style="display: none;">
+								<img src="{{asset('image/loading.gif')}}" width="20" /></span></p>
+							<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
+							<input type="submit" style="display: none;" id="main_fileSubmit" />
+						</form>
+						</div>
+						<div class="upload-file-progress">
+							<!-- BADGE PROGRESS -->
+							<div class="upload-bar">
+								<div class="progress">
+			                      <div class="progress-bar progress-bar-file" role="progressbar" aria-valuenow=""
+			                      aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+			                        0%
+			                      </div>
+                   				</div>
+							</div>
+							<!-- /BADGE PROGRESS -->
+							<p class="text-header progress-percent">0%</p>
+							<span id="closeBtn"></span>
+						</div>
+					</div>
+					<!-- UPLOAD FILE -->
+				</div>
 				<!-- /INPUT CONTAINER -->
+				<div class="input-container">
+					<label class="rl-label required">Upload Main Image</label>
+					<!-- UPLOAD FILE -->
+					<div class="upload-file">
+						<div class="upload-file-actions">
+						<form id="imageUploadForm" method="post" action="{{ route('image_upload') }}" enctype="multipart/form-data">
+                      		@csrf
+							<input type="file" onchange="uploadselectImage()" required="required" style="display: none;" name="uploadImage" id="uploadImage">
+							<label for="uploadImage" class="button dark-light">Upload File...</label>
+							<p ><span id="success-image">Max file size 2gb </span>
+								<span style="display: none;" class="loader-image" ><img src="{{asset('image/loading.gif')}}" width="20" /></span></p>
+
+							<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
+							<input type="submit" style="display: none;" id="main_imageSubmit" />
+						</form>
+						</div>
+						<div class="upload-file-progress">
+							<!-- BADGE PROGRESS -->
+							<div class="upload-bar">
+								<div class="progress">
+			                      <div class="progress-bar progress-bar-image" role="progressbar" aria-valuenow=""
+			                      aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+			                        0%
+			                      </div>
+                   				</div>
+							</div>
+							<!-- /BADGE PROGRESS -->
+							<p class="text-header progress-percent-image">0%</p>
+							<span id="closeBtn-image"></span>
+						</div>
+					</div>
+					<!-- UPLOAD FILE -->
+				</div>
+				<!-- /INPUT CONTAINER -->
+				<div class="clearfix"></div>
+				
+			<form action="{{ route('insert_theme') }}" id="main_form" method="post" data-parsley-validate  enctype="multipart/form-data">
+				{{csrf_field()}}
+				<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
 				<!-- INPUT CONTAINER -->
 				<div class="ttinput-group">
-				  <label class="ttinput-groupt" for="name">Summary</label>
+				  <label class="ttinput-groupt" for="summary">Summary</label>
 				  <div class="inputs">
-					<textarea class="ttinput-groupg" required="required" type="text" id="name" name="summary" value="" maxlength="100"></textarea>
+					<textarea class="ttinput-groupg" required="required" type="text" id="summary" name="summary" maxlength="100">{{$get_theme->summary}}</textarea>
 					
 					<small class="ttinput-group">Highlight what makes your item unique or a key selling point. They appear on search result pages next to an image of your item. Max 45 characters per line. No HTML allowed. Do not repeat features or keyword spam. Key Feature guidelines</a>.</small>
 				  </div>
@@ -245,12 +357,12 @@ code {
 				
 				<!-- INPUT CONTAINER -->
 				<div class="ttinput-grouptt">
-				  <label class="ttinput-groupt" for="name"> Description</label>
+				  <label class="ttinput-groupt" for="description"> Description</label>
 					<div class="inputs">
-						<div class="inputseditor">
+						<div class="inputseditor  ttinput-groupg" >
 							
 							
-							<textarea id="textarea" required="required" name="description" placeholder="Go on, start editing ..."></textarea>
+							<textarea id="textarea" required="required" type="text" name="description" id="description" placeholder="Go on, start editing ...">{{$get_theme->description}}</textarea>
 							<div id="toolbar" class="gig-edit-toolbar" style="display: block;">
 								<a class="toolbar-btn bold" data-wysihtml5-command="bold" title="CTRL+B"></a>
 								<a class="toolbar-btn ul" data-wysihtml5-command="insertUnorderedList" title="CTRL+I"></a>
@@ -299,90 +411,7 @@ code {
 				</div>
 				<!-- /INPUT CONTAINER -->
 
-				<!-- INPUT CONTAINER -->
-				<div class="input-container">
-					<label class="rl-label required">Upload Main File</label>
-					<!-- UPLOAD FILE -->
-					<div class="upload-file">
-						<div class="upload-file-actions">
-							<input type="file" required="required" style="display: none;" name="main_file" id="main_file" value="">
-							<label for="main_file" class="button dark-light">Upload File...</label>
-							<p>Pack of Cartoon Illustrations.zip</p>
-						</div>
-						<div class="upload-file-progress">
-							<!-- BADGE PROGRESS -->
-							<div class="upload-bar">
-								<div class="upload-pg1"></div>
-							</div>
-							<!-- /BADGE PROGRESS -->
-							<p class="text-header">46%</p>
-							<a href="#" class="button dark-light square">
-								<img src="{{asset('/allscript')}}/images/dashboard/close-icon-small.png" alt="close-icon">
-							</a>
-						</div>
-					</div>
-					<!-- UPLOAD FILE -->
-				</div>
-				<!-- /INPUT CONTAINER -->
-
-				<!-- INPUT CONTAINER -->
-				<div class="input-container">
-					<label class="rl-label required">Upload Main Image</label>
-					<!-- UPLOAD FILE -->
-					<div class="upload-file">
-						<div class="upload-file-actions">
-							<input type="file" required="required" style="display: none;" name="main_image" id="main_image" value="">
-							<label for="main_image"  class="button dark-light">Upload File...</label>
-							
-							<p>Cartoon Illustrations.jpeg</p>
-						</div>
-						<div class="upload-file-progress">
-							<!-- BADGE PROGRESS -->
-							<div class="upload-bar">
-								<div class="upload-pg2"></div>
-							</div>
-							<!-- /BADGE PROGRESS -->
-							<p class="text-header">100%</p>
-							<a href="#" class="button dark-light square">
-								<img src="{{asset('/allscript')}}/images/dashboard/close-icon-small.png" alt="close-icon">
-							</a>
-						</div>
-					</div>
-					<!-- UPLOAD FILE -->
-				</div>
-				<!-- /INPUT CONTAINER -->
-				<div class="clearfix"></div>
-				<!-- INPUT CONTAINER -->
-				<div class="input-container">
-					<label class="rl-label">Additional Screenshots </label>
-					<!-- UPLOAD FILE -->
-					<div class="upload-file">
-						<div class="upload-file-actions">
-							<input type="file" style="display: none;" multiple="multiple" name="additonal_image[]" id="additonal_image" value="">
-							<label for="additonal_image" class="button dark-light">Upload File...</label>
-							 {{ $errors->first('additonal_image') }}
-							<p>Screenshot 01.jpeg</p>
-						</div>
-						
-						<div class="upload-file-progress">
-							<!-- BADGE PROGRESS -->
-							<div class="upload-bar">
-								<div class="upload-pg3"></div>
-							</div>
-							<!-- /BADGE PROGRESS -->
-							<p class="text-header">68%</p>
-							<a href="#" class="button dark-light square">
-								<img src="{{asset('/allscript')}}/images/dashboard/close-icon-small.png" alt="close-icon">
-							</a>
-						</div>
-						<small class="ttinput-group" style="color:#999">max image size:2mb</small>
-						
-					</div>
-					<!-- UPLOAD FILE -->
-
-					
-				</div>
-				<!-- /INPUT CONTAINER -->
+				<br/>
 
 				<div class="clearfix"></div>
 						<div class="ttinput-group">
@@ -390,9 +419,8 @@ code {
 							<div class="inputs">
 								<label for="sv" class="select-block va">
 									<select required="required" name="sub_category" id="vr">
-										<option value="">Select sub category</option>
 										@foreach($get_subcategory as $show_subcategory)
-											<option value="{{$show_subcategory->subcategory_url}}">{{$show_subcategory->subcategory_name}}</option>
+											<option {{( $show_subcategory->id == $get_theme->sub_category)? 'selected' : '' }} value="{{$show_subcategory->id}}" >{{$show_subcategory->subcategory_name}}</option>
 										@endforeach
 									</select>
 									<!-- SVG ARROW -->
@@ -405,7 +433,7 @@ code {
 							</div>
 						</div>
 						<div class="clearfix"></div>
-						<input type="hidden" name="category_id" value="{{$_GET['theme_category']}}">
+						
 				<!-- /INPUT CONTAINER -->
 				
 				@foreach($get_filters as $show_filter)
@@ -432,7 +460,7 @@ code {
 						  <label class="ttinput-groupt">{{ $show_filter->filter_name}}</label>
 						  <div class="inputs">
 
-						<?php $get_subfilters = DB::table('theme_subfilters')->where('filter_id', $show_filter->filter_id)->get(); ?>
+							<?php $get_subfilters = DB::table('theme_subfilters')->where('filter_id', $show_filter->filter_id)->get(); ?>
 							
 							<select multiple="multiple" name="select[{{$show_filter->filter_id}}]" id="hhhfgfd">
 								@foreach($get_subfilters as $show_subfilter)
@@ -448,7 +476,7 @@ code {
 					@if($show_filter->type == 'dropdown' )
 						<div class="clearfix"></div>
 						<div class="ttinput-group">
-						  <label class="ttinput-groupt" for="name">{{ $show_filter->filter_name}}</label>
+						  	<label class="ttinput-groupt" for="name">{{ $show_filter->filter_name}}</label>
 							<div class="inputs">
 								<label for="sv" class="select-block">
 									<?php $get_subfilters = DB::table('theme_subfilters')->where('filter_id', $show_filter->filter_id)->get(); ?>
@@ -479,7 +507,7 @@ code {
 				<div class="ttinput-group">
 				  <label class="ttinput-groupt" for="name">Demo URL</label>
 					<div class="inputs">
-						<input class="ttinput-groupg" type="text" id="name" name="demo_url" value="" maxlength="100">
+						<input class="ttinput-groupg" value="{{$get_theme->demo_url}}" type="text" id="name" name="demo_url"  maxlength="100">
 						<small class="ttinput-group">Link to a live preview on your own hosting (i.e. https://my-site.com/demo/)</a></small>
 					</div>
 				</div>
@@ -490,7 +518,7 @@ code {
 				<div class="ttinput-group">
 				  <label class="ttinput-groupt" for="name"> Screenshort URL</label>
 					<div class="inputs">
-						<input class="ttinput-groupg" type="text" id="name" name="screenshort_url" value="" maxlength="100">
+						<input class="ttinput-groupg" value="{{$get_theme->screenshort_url}}" type="text" id="name" name="screenshort_url"  maxlength="100">
 						<small class="ttinput-group">Link to a live Screenshort preview on your own hosting (i.e. https://my-site.com/Screenshort/)</a></small>
 					</div>
 				</div>
@@ -498,29 +526,14 @@ code {
 				<div class="clearfix"></div>
 
 				<div class="ttinput-group">
-						  <label class="ttinput-groupt" for="name">Search Tags</label>
-							<div class="inputs">
-								<label class="select-block va">
-									<select name="search_tag[]" required="required" id="gig_search_tag" multiple="multiple" style="width:100%" class="select2">
-								<?php
-									$key_keyword = DB::table('key_keyword')->get();
-									
-								 ?>
-								@foreach($key_keyword as $keyword)
-									<option value="{{$keyword->keyword_name}}">{{$keyword->keyword_name}}</option>
-								@endforeach
-							</select>
-									<!-- SVG ARROW -->
-									<svg class="svg-arrow">
-										<use xlink:href="#svg-arrow"></use>
-									</svg>
-									<!-- /SVG ARROW -->
-								</label>
-								<small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</a></small>
-							</div>
+					  <label class="ttinput-groupt" for="name">Search Tags</label>
+						<div class="inputs">
+							<label class="select-block va">
+							<input type="text" value="fasd,fldsf," style="border:none !important;" name="search_tag" value="" id="tags-input" data-role="tagsinput" />
+							</label>
+							<small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</a></small>
 						</div>
-
-                 </div>
+					</div>
 
 				<div class="clearfix"></div>
 				<div class="box-stacked-radius-top">
@@ -543,7 +556,7 @@ code {
 								<div class="licensel">
 								  Item price
 								  <br>
-								  <input class="jspricld" type="number" autocomplete="off" min="1" step="1" maxlength="7" id="regular-price" name="price_regular" value="">
+								  <input value="{{ $get_theme->price_regular}}" class="jspricld" type="number" required="required" min="1" maxlength="7" id="price_regular"  name="price_regular" >
 								</div>
 								
 								
@@ -566,7 +579,7 @@ code {
 								<div class="licensel">
 								  Item price
 								  <br>
-								  <input class="jspricld" type="number" autocomplete="off" min="1" step="1" maxlength="7" id="regular-price" name="price_extented" value="">
+								  <input value="{{ $get_theme->price_extented }}" class="jspricld" type="number" autocomplete="off"  min="1" step="1" maxlength="7" id="regular-price" name="price_extented">
 								</div>
 								
 								
@@ -583,83 +596,84 @@ code {
 				<div class="clearfix"></div>
 				
 				<hr class="line-separator">
-				<button type="submit" style="width: 100% !important" class="button big dark">Submit Item <span class="primary">for Review</span></button>
+				<button type="submit" onclick="form_sumbit()" style="width: 100% !important" id="form_sumbit_btn" style="height: 55px !important;" class="button big dark">Submit Item <span class="primary">for Review</span></button>
 			</form>
 		</div>
 		<!-- /FORM BOX ITEM -->
 	</div>
 	<!-- /FORM BOX ITEMS -->
 
+
 	<!-- FORM BOX ITEMS -->
-	<div class="form-box-items wrap-1-3 right">
-		<!-- FORM BOX ITEM -->
-		<div class="form-box-item full">
-			<h4>Upload Queue</h4>
-			<hr class="line-separator">
-			<!-- PG BAR LIST -->
-			<div class="pg-bar-list">
-				<!-- PG BAR LIST ITEM -->
-				<div class="pg-bar-list-item">
-					<div class="pg-bar-list-item-info">
-						<p class="text-header">Professional Business Card</p>
-						<p class="text-header">86%</p>
-						<p class="timestamp">4 days ago</p>
+	<div class="form-box-items wrap-1-3">
+				<!-- FORM BOX ITEM -->
+				<div class="form-box-item v2">
+					<h4>Upload Queue</h4>
+					<hr class="line-separator">
+					<!-- PG BAR LIST -->
+					<div class="pg-bar-list">
+						<!-- PG BAR LIST ITEM -->
+						<div class="pg-bar-list-item">
+							<div class="pg-bar-list-item-info">
+								<p class="text-header">Professional Business Card</p>
+								<p class="text-header">86%</p>
+								<p class="timestamp">4 days ago</p>
+							</div>
+							<!-- BADGE PROGRESS -->
+							<div class="pg1 xmlinefill" style="width: 219.094px; height: 30px; position: relative;"><canvas class="lineOutline" width="219" height="30" style="position: absolute; z-index: 0; top: 0px; left: 0px;"></canvas><canvas class="lineBar" width="188" height="30" style="position: absolute; z-index: 1; top: 0px; left: 0px;"></canvas></div>
+							<!-- /BADGE PROGRESS -->
+						</div>
+						<!-- /PG BAR LIST ITEM -->
+
+						<!-- PG BAR LIST ITEM -->
+						<div class="pg-bar-list-item">
+							<div class="pg-bar-list-item-info">
+								<p class="text-header">Professional Business Card</p>
+								<p class="text-header">92%</p>
+								<p class="timestamp">12 days ago</p>
+							</div>
+							<!-- BADGE PROGRESS -->
+							<div class="pg2 xmlinefill" style="width: 219.094px; height: 30px; position: relative;"><canvas class="lineOutline" width="219" height="30" style="position: absolute; z-index: 0; top: 0px; left: 0px;"></canvas><canvas class="lineBar" width="201" height="30" style="position: absolute; z-index: 1; top: 0px; left: 0px;"></canvas></div>
+							<!-- /BADGE PROGRESS -->
+						</div>
+						<!-- /PG BAR LIST ITEM -->
 					</div>
-					<!-- BADGE PROGRESS -->
-					<div class="pg1"></div>
-					<!-- /BADGE PROGRESS -->
+					<!-- /PG BAR LIST -->
 				</div>
-				<!-- /PG BAR LIST ITEM -->
+				<!-- /FORM BOX ITEM -->
 
-				<!-- PG BAR LIST ITEM -->
-				<div class="pg-bar-list-item">
-					<div class="pg-bar-list-item-info">
-						<p class="text-header">Professional Business Card</p>
-						<p class="text-header">92%</p>
-						<p class="timestamp">12 days ago</p>
+				<!-- FORM BOX ITEM -->
+				<div class="form-box-item full">
+					<h4>Upload Guidelines</h4>
+					<hr class="line-separator">
+					<!-- PLAIN TEXT BOX -->
+					<div class="plain-text-box">
+						<!-- PLAIN TEXT BOX ITEM -->
+						<div class="plain-text-box-item">
+							<p class="text-header">File Upload:</p>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+						</div>
+						<!-- /PLAIN TEXT BOX ITEM -->
+
+						<!-- PLAIN TEXT BOX ITEM -->
+						<div class="plain-text-box-item">
+							<p class="text-header">Photos and Images:</p>
+							<p>Lorem ipsum dolor sit amet.<br>Consectetur adipisicing elit, sed do.</p>
+							<p>Eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+						</div>
+						<!-- /PLAIN TEXT BOX ITEM -->
+
+						<!-- PLAIN TEXT BOX ITEM -->
+						<div class="plain-text-box-item">
+							<p class="text-header">Guide with Links:</p>
+							<p><a href="#" class="primary">Click here for the link.</a></p>
+						</div>
+						<!-- /PLAIN TEXT BOX ITEM -->
 					</div>
-					<!-- BADGE PROGRESS -->
-					<div class="pg2"></div>
-					<!-- /BADGE PROGRESS -->
+					<!-- /PLAIN TEXT BOX -->
 				</div>
-				<!-- /PG BAR LIST ITEM -->
+				<!-- /FORM BOX ITEM -->
 			</div>
-			<!-- /PG BAR LIST -->
-		</div>
-		<!-- /FORM BOX ITEM -->
-
-		<!-- FORM BOX ITEM -->
-		<div class="form-box-item full">
-			<h4>Upload Guidelines</h4>
-			<hr class="line-separator">
-			<!-- PLAIN TEXT BOX -->
-			<div class="plain-text-box">
-				<!-- PLAIN TEXT BOX ITEM -->
-				<div class="plain-text-box-item">
-					<p class="text-header">File Upload:</p>
-					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-				</div>
-				<!-- /PLAIN TEXT BOX ITEM -->
-
-				<!-- PLAIN TEXT BOX ITEM -->
-				<div class="plain-text-box-item">
-					<p class="text-header">Photos and Images:</p>
-					<p>Lorem ipsum dolor sit amet.<br>Consectetur adipisicing elit, sed do.</p>
-					<p>Eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-				</div>
-				<!-- /PLAIN TEXT BOX ITEM -->
-
-				<!-- PLAIN TEXT BOX ITEM -->
-				<div class="plain-text-box-item">
-					<p class="text-header">Guide with Links:</p>
-					<p><a href="#" class="primary">Click here for the link.</a></p>
-				</div>
-				<!-- /PLAIN TEXT BOX ITEM -->
-			</div>
-			<!-- /PLAIN TEXT BOX -->
-		</div>
-		<!-- /FORM BOX ITEM -->
-	</div>
 	<!-- /FORM BOX ITEMS -->
 
 	<div class="clearfix"></div>
@@ -667,59 +681,148 @@ code {
 <!-- DASHBOARD CONTENT -->
 
 
- <!-- location modal --->  
-	<div id="add" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Update Location</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>	
-				</div>
-
-			<form action="{{url('dashboard/create-gig-category')}}" data-parsley-validate method="post" id="profile_info">
-				 {{ csrf_field() }}
-	        <div class="modal-body form-box-item">
-
-				
-				<div class="input-container">
-					<div class="input-container">
-						<label class="rl-label">Category Name</label>
-						<input name="gig_category" value="" type="text" id="" placeholder="Enter category here...">
-					</div>
-	        	</div>
-	        	<div class="input-container">
-					<label for="country2" class="rl-label required">Status</label>
-					<label for="country2" class="select-block">
-						<select name="status">
-							<option value="1">Active</option>
-							<option value="2">Unactive</option>
-							
-						</select>
-						<!-- SVG ARROW -->
-						<svg class="svg-arrow">
-							<use xlink:href="#svg-arrow"></use>
-						</svg>
-						<!-- /SVG ARROW -->
-					</label>
-				</div>
-
-	        <div class="modal-footer">
-	          <button type="reset" class="btn btn-sm btn-danger" data-dismiss="modal">Cancal</button>
-	          <button type="submit" class="btn btn-sm btn-success">Update</button>
-	        </div>
-	        </form>
-	      </div>
-	    </div>
-	</div>
-	<!-- End location model---->
 @endsection
 
 @section('js')
 
+<script type="text/javascript" src="{{asset('allscript/js/jquery.form.js')}}"></script>
+
+
+<script type="text/javascript">
+	
+	function remove_item(file_item){
+
+	//var  link = '{{route("delete_folder_item")}}/'+file_item;
+alert(file_item);
+	// $.ajax({
+	//     url:link,
+	//     method:"get",
+	//     data:{
+	//         file_item:file_item
+	//     },
+	//     success:function(data){
+	//         if(data){
+	           
+	//           $('.progress-bar-'+type).text('0%');
+	//           $('.progress-percent-'+type).text('0%');
+	//           $('.progress-bar-'+type).css('width', '0%');
+	           
+	//       	}
+	//    	}
+	// });
+}
+</script>
+<script>
+
+function uploadselectFile(){
+   $("#main_fileSubmit").click();
+}
+
+$(document).ready(function(){
+
+    $('#fileUploadForm').ajaxForm({
+      beforeSend:function(){
+        $('.loader').css('display', 'block');
+      },
+      uploadProgress:function(event, position, total, percentComplete)
+      {
+        $('.progress-bar-file').text(percentComplete + '%');
+        $('.progress-percent').text(percentComplete + '%');
+        $('.progress-bar-file').css('width', percentComplete + '%');
+      },
+      success:function(data)
+      {
+        if(data.errors)
+        {
+          $('.progress-bar-file').text('0%');
+          $('.progress-percent').text('0%');
+          $('.progress-bar-file').css('width', '0%');
+          $('#success').html('<span class="text-danger"><b>'+data.errors+'</b></span>');
+        }
+        if(data.success)
+        {
+          $('.progress-bar-file').text('Upload completed');
+          $('.progress-bar-file').css('width', '100%');
+          $('#closeBtn').html('<span class="text-success"><b>'+data.success+'</b></span><br /><br />');
+          $('.loader').css('display', 'none');
+          $('#success').html(data.image);
+        }
+      }
+    });
+ });
+
+function uploadselectImage(){
+   $("#main_imageSubmit").click();
+}
+
+$(document).ready(function(){
+    $('#imageUploadForm').ajaxForm({
+      beforeSend:function(){
+         $('.loader-image').css('display', 'block');
+      },
+      uploadProgress:function(event, position, total, percentComplete)
+      {
+        $('.progress-bar-image').text(percentComplete + '%');
+        $('.progress-percent-image').text(percentComplete + '%');
+        $('.progress-bar-image').css('width', percentComplete + '%');
+      },
+      success:function(data)
+      {
+        if(data.errors)
+        {
+          $('.progress-bar-image').text('0%');
+          $('.progress-percent-image').text('0%');
+          $('.progress-bar-image').css('width', '0%');
+          $('#success-image').html('<span class="text-danger"><b>'+data.errors+'</b></span>');
+        }
+        if(data.success)
+        {
+          $('.progress-bar-image').text('Upload completed');
+          $('.progress-bar-image').css('width', '100%');
+          $('#closeBtn-image').html('<span class="text-success"><b>'+data.success+'</b></span><br /><br />');
+          $('.loader-image').css('display', 'none');
+          $('#success-image').html(data.image);
+        }
+      }
+    });
+
+});
+
+</script>
+
+<!-- tags  -->
+<script src="{{asset('tags')}}/typeahead.js"></script>
+<script src="{{asset('tags')}}/bootstrap-tagsinput.js"></script>
+<script>
+
+    var countries = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      prefetch: {
+        url: '{{ route("theme_tags")}}',
+        filter: function(list) {
+          return $.map(list, function(name) {
+            return { name: name }; });
+        }
+      }
+    });
+    countries.initialize();
+
+    $('#tags-input').tagsinput({
+
+      typeaheadjs: {
+        name: 'countries',
+        displayKey: 'name',
+        valueKey: 'name',
+        source: countries.ttAdapter()
+      }
+    });
+</script>
+
+<!-- end tags
+ -->
+
 <script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
-
-
 <script src="{{asset('/allscript')}}/js/advanced.js"></script>
 <script src="{{asset('/allscript')}}/js/wysihtml.js"></script>
 
@@ -759,6 +862,25 @@ code {
     });
 </script>
 
+
+<script type="text/javascript">
+	function form_sumbit(){
+
+	var theme_name = document.getElementById('name').value;
+	var summary = document.getElementById('summary').value;
+	var textarea = document.getElementById('textarea').value;
+	var price_regular = document.getElementById('price_regular').value;
+	var main_image = document.getElementById('main_image').value;
+	var main_file = document.getElementById('main_file').value;
+
+	if( theme_name != '' && textarea != '' && price_regular != '' && summary != '' && main_image != '' && main_file != '' ){
+		document.getElementById('form_sumbit_btn').innerHTML = 'Uploading please wait...';
+
+	}
+
+	
+}
+</script>
 
 <!-- XM Pie Chart -->
 <script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>

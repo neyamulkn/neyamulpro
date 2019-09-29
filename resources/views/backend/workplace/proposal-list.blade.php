@@ -70,7 +70,7 @@
 						<!-- COMMENTS -->
 						<div class="comment-list">
 							<!-- COMMENT -->
-							
+						@if(count($get_proposals)>0)
 						@foreach($get_proposals as $show_proposal)
 							<div class="comment-wrap">
 								<!-- USER AVATAR -->
@@ -112,6 +112,10 @@
 								</div>
 							</div>
 						@endforeach
+
+						@else
+							<h1 style="padding-top:10px;color: #ddd; font-weight: bold;">No candidates</h1>
+						@endif
 						</div>
 						<!-- /COMMENTS -->
 					</div>

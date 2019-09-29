@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\userinfo;
+use App\role;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -16,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'email', 'password', 'account_type', 'expert_level', 'hourly_rate', 'country', 'status'
+        'name', 'username', 'email', 'password', 'role_id', 'expert_level', 'hourly_rate', 'country', 'status'
     ];
 
     /**
@@ -30,5 +31,9 @@ class User extends Authenticatable
 
     public function userinfo(){
         return $this->hasOne(userinfo::class);
+    }
+
+    public function role(){
+        return $this->belongsTo(role::class);
     }
 }

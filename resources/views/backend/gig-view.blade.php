@@ -11,210 +11,64 @@
 
         <!-- DASHBOARD CONTENT -->
         <div class="dashboard-content">
+        	<div class="headline buttons primary">
+                <h4>Manage Gigs</h4>
+				<a href="{{url('dashboard/create-gig')}}" class="button mid-short primary">Create new gig</a>
+            </div>
             <div class="post-tab xmtab" style="display: block;">
 				<!-- TAB HEADER -->
+
+				<?php 
+            	$all = $active = $draft = $pending = $denied = $paused = 0;
+            	foreach($get_status as $show_status){
+      
+            		if($show_status->status == 'active'){ $active +=1 ; }
+            		if($show_status->status == 'pending'){ $pending +=1 ; }
+            		if($show_status->status == 'draft'){ $draft +=1 ; }
+            		if($show_status->status == 'denied'){ $denied +=1 ; }
+            		if($show_status->status == 'paused'){ $paused +=1 ; }
+            	}
+
+            	$all = $active+$pending +$draft+ $denied+ $paused;
+
+            	?>
 				<div class="tab-header primary">
 					<!-- TAB ITEM -->
-					<div class="tab-item selected">
-						<p class="text-header">ACTIVE (25)</p>
+					<div class="tab-item selected" onclick="get_gigs('active')">
+						<p class="text-header">ACTIVE({{$active}}) </p>
 					</div>
-					<div class="tab-item">
-						<p class="text-header">PENDING APPROVAL</p>
+					<div class="tab-item"  onclick="get_gigs('pending')">
+						<p class="text-header">PENDING APPROVAL({{$pending}})</p>
 					</div>
-					<div class="tab-item">
-						<p class="text-header">REQUIRES MODIFICATION</p>
+					<div class="tab-item"  onclick="get_gigs('draft')">
+						<p class="text-header">DRAFT({{$draft}})</p>
 					</div>
-					<div class="tab-item">
-						<p class="text-header">DRAFT</p>
+					<div class="tab-item"  onclick="get_gigs('denied')">
+						<p class="text-header">DENIED({{$denied}})</p>
 					</div>
-					<div class="tab-item">
-						<p class="text-header">DENIED</p>
+					<div class="tab-item"  onclick="get_gigs('paused')">
+						<p class="text-header">PAUSED({{$paused}})</p>
 					</div>
-					<div class="tab-item">
-						<p class="text-header">PAUSED</p>
+					<div class="tab-item"  onclick="get_gigs('all')">
+						<p class="text-header">ALL({{$all}})</p>
 					</div>
 					<!-- /TAB ITEM -->
 				</div>
 				<!-- /TAB HEADER -->
 
-				<div class="tab-content void open">
-					<!-- COMMENTS -->
-					<div class="comment-list"><br>
-						<!-- COMMENT -->
-					<div class="product-list list full v2">
-						<table class="responsive-table-input-matrix">
-							<thead>
-							<tr class="header-filter">
-                            <td colspan="12" class="js-filter-title">Active Gigs</td>
-                            
-							</tr>
-							<tr>
-								<th></th>
-								<th>IMG</th>
-								<th>GIG Title </th>
-								<th>IMPRESSIONS</th>
-								<th>CLICKS</th>
-								<th>VIEWS</th>
-								<th>ORDERS</th>
-								<th>CANCELLATIONS</th>
-								<th>Action</th>
-							</tr>
-							</thead>
-							<tbody>
-
-							<tr class="tbgig">
-								<td><input type="checkbox"></td>
-								<td class="gig-pict-45">
-									<span class="gig-pict-45">
-										<a href="#"><img src="{{asset('/allscript')}}/images/items/westeroshtml_b06.jpg" alt="" ></a>
-									</span>
-								</td>
-								<td class="title js-toggle-gig-stats ">
-									<div class="ellipsis1">
-										<a class="ellipsis" href="#">drive real traffic to your website for 1 month on google</a>
-									</div>
-								</td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-down red"></i></td>
-								<td>
-									<label for="sv" class="select-block v3">
-										<select name="sv" id="sv">
-											<option value="0"></option>
-											<option value="1">Adobe Suite CS6</option>
-											<option value="2">Adobe Suite CS7</option>
-										</select>
-										<!-- SVG ARROW -->
-										<svg class="svg-arrow">
-											<use xlink:href="#svg-arrow"></use>
-										</svg>
-										<!-- /SVG ARROW -->
-									</label>
-								</td>
-							</tr>
-							<tr class="tbgig">
-								<td><input type="checkbox"></td>
-								<td class="gig-pict-45">
-									<span class="gig-pict-45">
-										<a href="#"><img src="{{asset('/allscript')}}/images/items/westeroshtml_b06.jpg" alt="" ></a>
-									</span>
-								</td>
-								<td class="title js-toggle-gig-stats ">
-									<div class="ellipsis1">
-										<a class="ellipsis" href="#">drive real traffic to your website for 1 month on google</a>
-									</div>
-								</td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-down red"></i></td>
-								<td>
-									<form>
-										<label for="period1" class="select-block">
-											<select name="period1" id="period1">
-												<option value="0"></option>
-												<option value="2">This Month</option>
-												<option value="1">This Year</option>
-											</select>
-											<!-- SVG ARROW -->
-											<svg class="svg-arrow">
-												<use xlink:href="#svg-arrow"></use>
-											</svg>
-											<!-- /SVG ARROW -->
-										</label>
-									</form>
-								</td>
-							</tr>
-							<tr class="tbgig">
-								<td><input type="checkbox"></td>
-								<td class="gig-pict-45">
-									<span class="gig-pict-45">
-										<a href="#"><img src="{{asset('/allscript')}}/images/items/westeroshtml_b06.jpg" alt="" ></a>
-									</span>
-								</td>
-								<td class="title js-toggle-gig-stats ">
-									<div class="ellipsis1">
-										<a class="ellipsis" href="#">drive real traffic to your website for 1 month on google</a>
-									</div>
-								</td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-down red"></i></td>
-								<td>
-								</td>
-							</tr>
-							<tr class="tbgig">
-								<td><input type="checkbox"></td>
-								<td class="gig-pict-45">
-									<span class="gig-pict-45">
-										<a href="#"><img src="{{asset('/allscript')}}/images/items/westeroshtml_b06.jpg" alt="" ></a>
-									</span>
-								</td>
-								<td class="title js-toggle-gig-stats ">
-									<div class="ellipsis1">
-										<a class="ellipsis" href="#">drive real traffic to your website for 1 month on google</a>
-									</div>
-								</td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-down red"></i></td>
-								<td>
-								</td>
-							</tr>
-							<tr class="tbgig">
-								<td><input type="checkbox"></td>
-								<td class="gig-pict-45">
-									<span class="gig-pict-45">
-										<a href="#"><img src="{{asset('/allscript')}}/images/items/westeroshtml_b06.jpg" alt="" ></a>
-									</span>
-								</td>
-								<td class="title js-toggle-gig-stats ">
-									<div class="ellipsis1">
-										<a class="ellipsis" href="#">drive real traffic to your website for 1 month on google</a>
-									</div>
-								</td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-up green"></i></td>
-								<td>17 <i class="fa fa-long-arrow-down red"></i></td>
-								<td>
-								</td>
-							</tr>
-							</tbody>
-						</table>
-					</div>
-						<!-- /COMMENT REPLY -->
-					</div>
-					<!-- /COMMENTS -->
-				</div>
-				<div class="tab-content void open">
-					<!-- COMMENTS -->
-					<div class="comment-list"><br>
-						<!-- COMMENT -->
-						<!-- /COMMENT REPLY -->
-					</div>
-					<!-- /COMMENTS -->
-				</div>
 				<div class="void open" id="open">
 					<!-- COMMENTS -->
 					<div class="comment-list"><br>
 						<!-- COMMENT -->
 					<div class="product-list list full v2">
-								<!-- data show-->
-						<div class="show_order"></div> 
+						<div class="show_gigs"></div>
 					</div>
 						<!-- /COMMENT REPLY -->
 					</div>
 					<!-- /COMMENTS -->
 				</div>
+				
+				
 			</div>
 
 			<div class="clearfix"></div>			
@@ -245,10 +99,7 @@
 <script src="{{asset('/allscript')}}/js/image-slides.js"></script>
 <!-- Post Tab -->
 <script src="{{asset('/allscript')}}/js/post-tab.js"></script>
-<!-- XM Accordion -->
-<script src="js/vendor/jquery.xmaccordion.min.js"></script>
-<!-- XM Pie Chart -->
-<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
+
 <!-- Item V1 -->
 <!-- Tooltip -->
 <script src="{{asset('/allscript')}}/js/tooltip.js"></script>
@@ -261,29 +112,49 @@
 <script src="{{asset('/allscript')}}/js/dashboard-header.js"></script>
 
 <script type="text/javascript">
-
-	get_order('{{Request::route('status')}}');
-    function get_order(status){
-
+	get_gigs('{{Request::route("status")}}');
+    function get_gigs(status){
     	document.getElementById('open').style.display = 'block';
-    	history.pushState('state/', '/buyer_order/', status);
+    	history.pushState('state/', '/manage-gigs/', status);
         var  link = '<?php echo URL::to("dashboard/get_gigs_by_status/");?>/'+status;
-       
+      
         $.ajax({
             url:link,
             method:"get",
-            data:{
-                status:status
-            },
             success:function(data){
                 if(data){
                    
-                    $('.show_order').html(data);
+                    $('.show_gigs').html(data);
                    
               	}
            	}
         });
     }
+
+function action_type(id, gig_id) {
+	if(id == 2){
+    	if (confirm("Are you sure delete it.?")) {
+       
+            var  link = '<?php echo URL::to("dashboard/marketplace/gig/delete");?>/'+gig_id;
+            $.ajax({
+            url:link,
+            method:"get",
+            
+            success:function(data){
+                if(data){
+                    
+                     $("#item"+gig_id).hide();
+                    toastr.error(data);
+                }
+	            }
+	        
+	        });
+	    }
+	     return false;
+	}
+   
+        
+} 
     
 </script>
 

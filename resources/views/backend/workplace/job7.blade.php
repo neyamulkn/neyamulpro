@@ -48,7 +48,7 @@
                     <span class="sl-icon icon-check"></span>
                 </a>
             </div>
-        <form  action="{{url('dashboard/workplace/job-post/insert/step_five')}}" method="post">
+        <form  action="{{url('dashboard/workplace/job-post/insert/step_seven')}}" method="post">
                 {{csrf_field()}}
             <input type="hidden" name="post_id" value="{{Request::segment(4)}}">
                  

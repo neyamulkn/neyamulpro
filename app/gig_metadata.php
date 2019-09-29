@@ -9,7 +9,6 @@ class gig_metadata extends Model
     protected $fillable = [
     	'sub_filter_name',
     	'filter_id',
-    	'filter_type',
-    	'status'
+    	'filter_type'
     ];
 }

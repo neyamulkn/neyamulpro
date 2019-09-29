@@ -11,4 +11,6 @@ class gig_image extends Model
     	'user_id',
     	'image_path'
     ];
+
+     public $timestamps = false;
 }

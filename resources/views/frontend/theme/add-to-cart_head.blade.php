@@ -29,7 +29,7 @@ $get_cart_info = DB::table('theme_add_to_cart')->orWhere('user_id', $get_id)->or
 		 ?>
 		 
 		<li class="dropdown-item">
-			<a href="{{url('themeplace/cart/')}}" class="link-to"></a>
+			<a href="{{url('themeplace/'.$get_theme->theme_url)}}" class="link-to"></a>
 			<!-- SVG PLUS -->
 			<svg class="svg-plus">
 				<use xlink:href="#svg-plus"></use>
@@ -48,7 +48,7 @@ $get_cart_info = DB::table('theme_add_to_cart')->orWhere('user_id', $get_id)->or
 		<li class="dropdown-item">
 			<p class="text-header tiny">Total</p>
 			<p class="price"><span>$</span>108.00</p>
-			<a href="{{url('themeplace/cart')}}" class="button tertiary half">Go to Cart</a>
+			<a href="{{url('themeplace/cart/view/'.Auth::user()->username)}}" class="button tertiary half">Go to Cart</a>
 			<a href="checkout.html" class="button secondary half">Go to Checkout</a>
 		</li>
 		<!-- /DROPDOWN ITEM -->

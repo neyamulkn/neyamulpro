@@ -168,7 +168,7 @@
 							<p class="text-header"><a href="#">{{$get_earning->username}}</a></p>
 						</div>
 						<div class="transaction-list-item-item">
-							<p class="category primary"><a href="{{url('$get_earning->gig_url')}}">{{$get_earning->gig_title}}</a></p>
+							<p class="category primary"><a href="{{url('gig/'.$get_earning->username.'/'.$get_earning->gig_url)}}">{{$get_earning->gig_title}}</a></p>
 						</div>
 						<div class="transaction-list-item-detail">
 							<p>Marketplace</p>

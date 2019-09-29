@@ -1,366 +1,440 @@
 @extends('frontend.layouts.master')
-@section('title', 'Hotlancer')
+@section('title', Request::segment(1). ' - HOTLancer')
 
 @section('css')
-	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/simple-line-icons.css') }}">
-	<link rel="stylesheet" href="{{ asset('allscript/css')}}/hl-work.css">
+	<link rel="stylesheet" href="{!! asset('allscript/css/vendor/simple-line-icons.css') !!}">
+	<link rel="stylesheet" href="{{asset('allscript/css/vendor/font-awesome.min.css')}}">
 
 @endsection
+<link rel="stylesheet" href="{{asset('allscript/workplace/jobs.css')}}">
 
 @section('content')
 
 	<!-- SECTION -->
+	
+	<!-- SECTION HEADLINE -->
+	<div class="jp_top_header_img_wrapper">
+        <div class="jp_slide_img_overlay"></div>
+        <div class="jp_banner_heading_cont_wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="jp_job_heading_wrapper">
+                            <div class="jp_job_heading">
+                                <h1><span>3,000+</span> Browse Jobs</h1>
+                                <p>Find Jobs, Employment &amp; Career Opportunities</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="jp_header_form_wrapper">
+                            <div class="col-lg-4">
+                                <input type="text" placeholder="Keyword e.g. (Job Title, Description, Tags)">
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="jp_form_location_wrapper">
+                                    <i class="fa fa-dot-circle-o first_icon"></i>
+									<select>
+										<option>Select Location</option>
+										<option>Select Location</option>
+										<option>Select Location</option>
+										<option>Select Location</option>
+										<option>Select Location</option>
+									</select>
+									<i class="fa fa-angle-down second_icon"></i>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="jp_form_exper_wrapper">
+                                    <i class="fa fa-dot-circle-o first_icon"></i>
+									<select>
+										<option>Experience</option>
+										<option>Experience</option>
+										<option>Experience</option>
+										<option>Experience</option>
+										<option>Experience</option>
+									</select>
+									<i class="fa fa-angle-down second_icon"></i>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="jp_form_btn_wrapper">
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-search"></i> Search</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="jp_banner_main_jobs_wrapper">
+                            <div class="jp_banner_main_jobs">
+                                <ul>
+                                    <li><i class="fa fa-tags"></i> Trending Keywords :</li>
+                                    <li><a href="#">ui designer,</a></li>
+                                    <li><a href="#">developer,</a></li>
+                                    <li><a href="#">senior</a></li>
+                                    <li><a href="#">it company,</a></li>
+                                    <li><a href="#">design,</a></li>
+                                    <li><a href="#">call center</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="jp_banner_jobs_categories_wrapper">
+            <div class="container">
+                <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border jp_job_cate_left_border_bottom">
+                    <div class="jp_top_jobs_category">
+                        <i class="fa fa-code"></i>
+                        <h3><a href="#">Developer</a></h3>
+                        <p>(240 jobs)</p>
+                    </div>
+                </div>
+                <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border_bottom">
+                    <div class="jp_top_jobs_category">
+                        <i class="fa fa-laptop"></i>
+                        <h3><a href="#">Technology</a></h3>
+                        <p>(504 jobs)</p>
+                    </div>
+                </div>
+                <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border_bottom">
+                    <div class="jp_top_jobs_category">
+                        <i class="fa fa-bar-chart"></i>
+                        <h3><a href="#">Accounting</a></h3>
+                        <p>(2250 jobs)</p>
+                    </div>
+                </div>
+                <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border_res">
+                    <div class="jp_top_jobs_category">
+                        <i class="fa fa-medkit"></i>
+                        <h3><a href="#">Medical</a></h3>
+                        <p>(202 jobs)</p>
+                    </div>
+                </div>
+                <div class="jp_top_jobs_category_wrapper">
+                    <div class="jp_top_jobs_category">
+                        <i class="fa fa-university"></i>
+                        <h3><a href="#">Government</a></h3>
+                        <p>(1457 jobs)</p>
+                    </div>
+                </div>
+                <div class="jp_top_jobs_category_wrapper">
+                    <div class="jp_top_jobs_category">
+                        <i class="fa fa-th-large"></i>
+                        <h3><a href="#">All Jobs</a></h3>
+                        <p>(2000+ jobs)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- /SECTION HEADLINE -->
+	
+	<!-- SECTION -->
 	<div class="section-wrap">
 		<div class="section">
-			<div class="sidebar">
-				<!-- DROPDOWN -->
-				<ul class="dropdown hover-effect secondary">
-					<li class="dropdown-item">
-						<a href="#">Digital Graphics</a>
-					</li>
-					<li class="dropdown-item active">
-						<a href="#">Illustration</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Web Design</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Stock Photography</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Code and Plugins</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Digital Graphics</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Illustration</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Web Design</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Stock Photography</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Code and Plugins</a>
-					</li>
-				</ul>
-				<!-- /DROPDOWN -->
-
-				<!-- SIDEBAR ITEM -->
-				<div class="sidebar-item">
-					<h4>Filter Products</h4>
-					<hr class="line-separator">
-					<form id="shop_search_form" name="shop_search_form">
-						<!-- CHECKBOX -->
-						<input type="checkbox" id="filter1" name="filter1" checked="">
-						<label for="filter1">
-							<span class="checkbox secondary"><span></span></span>
-							Cartoon Characters
-							<span class="quantity">350</span>
-						</label>
-						<!-- /CHECKBOX -->
-
-						<!-- CHECKBOX -->
-						<input type="checkbox" id="filter2" name="filter2" checked="">
-						<label for="filter2">
-							<span class="checkbox secondary"><span></span></span>
-							Flat Vector
-							<span class="quantity">68</span>
-						</label>
-						<!-- /CHECKBOX -->
-
-						<!-- CHECKBOX -->
-						<input type="checkbox" id="filter3" name="filter3" checked="">
-						<label for="filter3">
-							<span class="checkbox secondary"><span></span></span>
-							People
-							<span class="quantity">350</span>
-						</label>
-						<!-- /CHECKBOX -->
-
-						<!-- CHECKBOX -->
-						<input type="checkbox" id="filter4" name="filter4">
-						<label for="filter4">
-							<span class="checkbox secondary"><span></span></span>
-							Animals
-							<span class="quantity">68</span>
-						</label>
-						<!-- /CHECKBOX -->
-
-						<!-- CHECKBOX -->
-						<input type="checkbox" id="filter5" name="filter5">
-						<label for="filter5">
-							<span class="checkbox secondary"><span></span></span>
-							Objects
-							<span class="quantity">350</span>
-						</label>
-						<!-- /CHECKBOX -->
-
-						<!-- CHECKBOX -->
-						<input type="checkbox" id="filter6" name="filter6" checked="">
-						<label for="filter6">
-							<span class="checkbox secondary"><span></span></span>
-							Backgrounds
-							<span class="quantity">68</span>
-						</label>
-						<!-- /CHECKBOX -->
-					</form>
+			<div class="col-lgh">
+				<h3>Find your freelancer or agency</h3>
+				<div class="container1">
+					<div class="col-lg-3">
+						<div class="upcenter hotm-10">
+							<img src="{{asset('allscript')}}/images/up1.svg">
+							<h5>Web, Mobile &amp; Software Dev</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="upcenter hotm-10">
+							<img src="{{asset('allscript')}}/images/up2.svg">
+							<h5>Design & Creative</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="upcenter hotm-10">
+							<img src="{{asset('allscript')}}/images/up3.svg">
+							<h5>Writing</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="upcenter hotm-10">
+							<img src="{{asset('allscript')}}/images/up4.svg">
+							<h5>Sales & Marketing</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="upcenter hotm-10">
+							<img src="{{asset('allscript')}}/images/up5.svg">
+							<h5>Admin Support</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="upcenter hotm-10">
+							<img src="{{asset('allscript')}}/images/up6.svg">
+							<h5>Customer Service</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="upcenter hotm-10">
+							<img src="{{asset('allscript')}}/images/up7.svg">
+							<h5>Data Science & Analytics</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="upcenter hotm-10">
+							<img src="{{asset('allscript')}}/images/up8.svg">
+							<h5>Engineering & Architecture</h5>
+						</div>
+					</div>
 				</div>
-				<!-- /SIDEBAR ITEM -->
-
-				<!-- SIDEBAR ITEM -->
-				<div class="sidebar-item">
-					<h4>File Types</h4>
-					<hr class="line-separator">
-					<!-- CHECKBOX -->
-					<input type="checkbox" id="ft1" name="ft1" form="shop_search_form">
-					<label for="ft1">
-						<span class="checkbox secondary"><span></span></span>
-						Photoshop PSD
-						<span class="quantity">72</span>
-					</label>
-					<!-- /CHECKBOX -->
-
-					<!-- CHECKBOX -->
-					<input type="checkbox" id="ft2" name="ft2" form="shop_search_form" checked="">
-					<label for="ft2">
-						<span class="checkbox secondary"><span></span></span>
-						Illustrator AI
-						<span class="quantity">254</span>
-					</label>
-					<!-- /CHECKBOX -->
-
-					<!-- CHECKBOX -->
-					<input type="checkbox" id="ft3" name="ft3" form="shop_search_form" checked="">
-					<label for="ft3">
-						<span class="checkbox secondary"><span></span></span>
-						EPS
-						<span class="quantity">138</span>
-					</label>
-					<!-- /CHECKBOX -->
-
-					<!-- CHECKBOX -->
-					<input type="checkbox" id="ft4" name="ft4" form="shop_search_form" checked="">
-					<label for="ft4">
-						<span class="checkbox secondary"><span></span></span>
-						SVG
-						<span class="quantity">96</span>
-					</label>
-					<!-- /CHECKBOX -->
-
-					<!-- CHECKBOX -->
-					<input type="checkbox" id="ft5" name="ft5" form="shop_search_form">
-					<label for="ft5">
-						<span class="checkbox secondary"><span></span></span>
-						InDesign INDD
-						<span class="quantity">102</span>
-					</label>
-					<!-- /CHECKBOX -->
-				</div>
-				<!-- /SIDEBAR ITEM -->
-
-				<!-- SIDEBAR ITEM -->
-				<div class="sidebar-item range-feature">
-					<h4>Price Range</h4>
-					<hr class="line-separator spaced">
-					<input type="hidden" class="price-range-slider secondary" value="500" form="shop_search_form">
-					<button form="shop_search_form" class="button mid secondary-dark">Update your Search</button>
-				</div>
-				<!-- /SIDEBAR ITEM -->
 			</div>
+			<p class="upcat">Don’t see what you’re looking for? <a href="#">See all categories</a></p>
 			<!-- SIDEBAR -->
 			<div class="sidebar right">
-				<!-- SIDEBAR ITEM -->
-				<button form="shop_search_form" class="button mid secondary-dark">Create Your Project</button>
-				<!-- /SIDEBAR ITEM -->
-
-				<!-- SIDEBAR ITEM -->
-				<div class="sidebar-item author-bio short author-badges-v1 column">
-					<a href="user-profile.html" class="user-avatar-wrap medium">
-						<figure class="user-avatar medium">
-							<img src="{{ asset('allscript')}}/images/avatars/avatar_01.jpg" alt="">
-						</figure>
-					</a>
-					<p class="text-header">Odin_Design</p>
-					<p class="text-oneline">Lorem ipsum dolor sit amet, consectetur sicing elit.</p>
-				
-					<div class="badges-showcase-item column">
-						<p class="text-header badge-progress-title">Availability</p>
-						<!-- BADGE PROGRESS -->
-						<p class="tags primary">As Needed - Open to Offers 85%</p>
-						<div class="badge-progress badge-progress23 xmlinefill" style="width: 150px; height: 18px; position: relative;">
-							<canvas class="lineOutline" width="200" height="18" style="position: absolute; z-index: 0; top: 0px; left: 0px;"></canvas>
-							<canvas class="lineBar" width="200" height="18" style="position: absolute; z-index: 1; top: 0px; left: 0px;"></canvas>
+				<div class="col-lg-12">
+					<div class="jp_add_resume_wrapper">
+						<div class="jp_add_resume_img_overlay"></div>
+						<div class="jp_add_resume_cont">
+							<img src="{{asset('allscript')}}/images/logo.png" alt="logo">
+							<h4>Get Best Matched Jobs On your Email. Add Resume NOW!</h4>
+							<ul>
+								<li><a href="#"><i class="fa fa-plus-circle"></i> &nbsp;ADD RESUME</a></li>
+							</ul>
 						</div>
-						<!-- /BADGE PROGRESS -->
-					</div><!-- /SIDEBAR ITEM -->
-				</div>
-				<div class="sidebar-item product-info">
-					<h4>Product Information</h4>
-					<hr class="line-separator">
-					<!-- INFORMATION LAYOUT -->
-					<div class="information-layout">
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="text-header">Sales:</p>
-							<p>22</p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
-
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="text-header">Upload Date:</p>
-							<p>August 18th, 2015</p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
-
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="text-header">Files Included:</p>
-							<p>PSD, AI<br>JPEG, PNG</p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
-
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="text-header">Requirements:</p>
-							<p>CS6 or Lower</p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
-
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="text-header">Dimensions:</p>
-							<p>4500x2800 Px</p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
-
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="tags primary"><a href="#">photoshop</a>, <a href="#">flat</a>, <a href="#">icon</a>, <a href="#">devices</a>, <a href="#">mobile</a>, <a href="#">vector</a>, <a href="#">coffee</a>, <a href="#">scene</a>, <a href="#">hero</a>, <a href="#">image</a>, <a href="#">maker</a>, <a href="#">set</a>, <a href="#">tablet</a>, <a href="#">laptop</a>, <a href="#">mockup</a></p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
 					</div>
-					<!-- INFORMATION LAYOUT -->
 				</div>
+				<div class="sidebar">
+					<ul class="dropdown hover-effect">
+						<li class="dropdown-item">
+							<a href="#">Design Inspires<span class="item-count">12</span></a>
+						</li>
+						<li class="dropdown-item">
+							<a href="#">Software<span class="item-count">27</span></a>
+						</li>
+						<li class="dropdown-item">
+							<a href="#">Interviews<span class="item-count">8</span></a>
+						</li>
+						<li class="dropdown-item">
+							<a href="#">Resources / Freebies<span class="item-count">15</span></a>
+						</li>
+						<li class="dropdown-item">
+							<a href="#">Technology<span class="item-count">19</span></a>
+						</li>
+					</ul>
+				</div>
+				
 			</div>
 			<!-- /SIDEBAR -->
 
 			<!-- CONTENT -->
-			<div class="content upwork">
-				<div class="hotlancer-work">
-					<div class="sidebar-item">
-						<h4>Find Work</h4>
-						<hr class="line-separator">
-						<form class="search-form">
-							<input type="text" class="rounded" name="search" id="search_topics" placeholder="Search For Jobs">
-							<input class="search-work" type="image" src="{{ asset('allscript')}}/images/search-icon.png" alt="search-icon">
-						</form>
+			<div class="content left">
+				<div class="jp_hiring_slider_main_wrapper">
+					<h3>TOP HIRING COMPANIES</h3>
+					@foreach($top_hire_users as $show_users)
+					
+					<div class="col-lg-3">
+						<div class="jp_hiring_content_main_wrapper">
+							<div class="jp_hiring_content_wrapper">
+								<img width="128" height="128" src="{{asset('/image/'.$show_users->user_image)}}" alt="hiring_img">
+								<h4>{{$show_users->username}}</h4>
+								<p>({{$show_users->country}})</p>
+								<a href="#">4 Opening</a>
+							</div>
+						</div>
 					</div>
+					@endforeach
 				</div>
-				
-				<br/>
-				<div class="hotlancer-work">
-				<div class="thread">
-					<!-- THREAD TITLE -->
-					<div class="thread-title">
-						<p class="text-header">My Job Feed</p>
-					</div>
-					<!-- /THREAD TITLE -->
-
-					<!-- COMMENTS -->
-					<div class="comment-list">
-
-						@foreach($get_jobs as $show_job)
-							<!-- COMMENT -->
-							<div class="comment-upwork">
-								<div class="">
-								<div class="workj1">
-									<h4 class="text-header"><a href="{{url('workplace/'.$show_job->job_title_slug )}}">{{$show_job->job_title}}</a></h4>
-									<div class="workj2">
-									<span class="icon-like workj4"></span>
-									<span class="icon-heart workj4"></span>
+				<div class="col-lgh">
+					<h2>Recent Jobs</h2>
+					 @foreach($get_jobs as $show_job)
+					   <div class="jp_job_post_main_wrapper_cont">
+						<div class="jp_job_post_main_wrapper">
+							<div class="row">
+								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+									<div class="jp_job_post_side_img">
+										<img src="{{asset('allscript')}}/images/job_post_img1.jpg" alt="post_img">
+									</div>
+									<div class="jp_job_post_right_cont">
+										<h4><a  style="color: #00d7b3" href="{{ route('job-details' , $show_job->job_title_slug) }}">{!!$show_job->job_title!!}</a></h4>
+										<p><a href="{{url($show_job->username)}}"> {!!$show_job->username!!} </a>&nbsp; <small style="color: #ccc;"> by {!! \Carbon\Carbon::parse($show_job->created_at)->diffForHumans()!!}</small></p>
+										<ul>
+											<li><i class="fa fa-cc-paypal"></i>&nbsp;  ${!!$show_job->budget!!}</li>
+											<li><i class="fa fa-map-marker"></i>&nbsp;{!!$show_job->country!!}</li>
+										</ul>
 									</div>
 								</div>
-									<br/>
-									<p class="pin-tag primary"><b>{{$show_job->price_type}}</b> - {{$show_job->experience}} ($$$) - Est. Budget: ${{$show_job->budget}}, 10-30 hrs/week - {{ \Carbon\Carbon::parse($show_job->created_at)->diffForHumans()}}</p>
-									<!-- /RECOMMENDATION -->
-									<p>{{$show_job->job_dsc}}<a href="{{url('workplace/'.$show_job->job_title_slug )}}" class="pin-tag primary">more</a></p>
-									<br/>
-									<div class="tag-list primary">
-										<?php 
-
-											$get_filters = DB::table('job_expertise')
-						                        ->join('workplace_filters', 'job_expertise.filter_id', 'workplace_filters.filter_id')
-						                        ->where('job_expertise.job_id', $show_job->job_id)->get();
-
-										?>
-											 @foreach($get_filters as $show_filter)
-
-						                         <?php
-												 $get_subfilters = DB::table('workplace_subfilters')->where('filter_id', $show_filter->filter_id)->get(); ?>
-
-
-											 @foreach($get_subfilters as $show_subfilter)
-												<a href="#" class="tag-list-item">{{$show_subfilter->sub_filtername}}</a>
-											@endforeach
-										@endforeach
-
+								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+									<div class="jp_job_post_right_btn_wrapper">
+										<ul>
+											<li><a href="#"><i class="fa fa-heart-o"></i></a></li>
+											<li><a href="#">{!!$show_job->price_type!!}</a></li>
+											<li><a href="{!! route('job_proposal', $show_job->job_title_slug) !!}">Apply</a></li>
+										</ul>
 									</div>
-									<div class="meta-line">
-									<a href="open-post.html">
-										<p class="category primary">{{$show_job->username}}</p>
-									</a>
-									<!-- METADATA -->
-									
-									<div class="metadata">
-										<!-- META ITEM -->
-										<div class="meta-item">
-											<span class="icon-bubble"></span>
-											<p>05</p>
-										</div>
-										<!-- /META ITEM -->
-
-										<!-- META ITEM -->
-										<div class="meta-item">
-											<span class="icon-eye"></span>
-											<p>68</p>
-										</div>
-										<!-- /META ITEM -->
-									</div>
-									<!-- /METADATA -->
-									<p>{{ \Carbon\Carbon::parse($show_job->created_at)->format('M d, Y')}}</p>
-								</div>
 								</div>
 							</div>
-						@endforeach
-						
-						<!-- /COMMENT -->
-
-						<!-- LINE SEPARATOR -->
-						<hr class="line-separator">
-						<!-- /LINE SEPARATOR -->
-
-						<!-- PAGER -->
-						<div class="page primary paginations">
-							<div class="pager-item"><p>1</p></div>
-							<div class="pager-item active"><p>2</p></div>
-							<div class="pager-item"><p>3</p></div>
-							<div class="pager-item"><p>...</p></div>
-							<div class="pager-item"><p>17</p></div>
 						</div>
-						<!-- /PAGER -->
-
-						<div class="clearfix"></div>
-						<!-- /COMMENT REPLY -->
-					</div>
-					<!-- /COMMENTS -->
-				</div>
+						<div class="jp_job_post_keyword_wrapper">
+							<ul>
+								<li><i class="fa fa-tags"></i>Keywords :</li>
+								<li><a href="#">ui designer,</a></li>
+								<li><a href="#">developer,</a></li>
+								<li><a href="#">senior</a></li>
+								<li><a href="#">it company,</a></li>
+								<li><a href="#">design,</a></li>
+								<li><a href="#">call center</a></li>
+							</ul>
+						</div>
+					   </div>
+                    @endforeach
 				</div>
 			</div>
-			<!-- /CONTENT -->
+			<!-- CONTENT -->
+		</div>
+	</div>
+	<div class="col-lghup">
+		<h3>How it works</h3>
+		<div class="container1">
+			<div class="col-lg-3">
+				<div class="upcenter1 hotm-10">
+					<img src="{{asset('allscript')}}/images/up1.svg">
+					<h5>Post a job (it’s free)</h5>
+					<p>Tell us about your project. Upwork connects you with top freelancers and agencies around the world, or near you.</p>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="upcenter1 hotm-10">
+					<img src="{{asset('allscript')}}/images/up1.svg">
+					<h5>Bids come to you</h5>
+					<p>Get qualified proposals within 24 hours. Compare bids, reviews, and prior work. Interview favorites and hire the best fit.</p>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="upcenter1 hotm-10">
+					<img src="{{asset('allscript')}}/images/up1.svg">
+					<h5>Collaborate easily</h5>
+					<p>Use Upwork to chat or video call, share files, and track project milestones from your desktop or mobile.</p>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="upcenter1 hotm-10">
+					<img src="{{asset('allscript')}}/images/up1.svg">
+					<h5>Payment simplified</h5>
+					<p>Pay hourly or fixed-price and receive invoices through Upwork. Pay for work you authorize.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /SECTION -->
+	<div class="promo-banner dark left">
+		<span class="icon-wallet"></span>
+		<h5>Make money instantly!</h5>
+		<h1>Start <span>Selling</span></h1>
+		<a href="#" class="button medium primary">Open Your Shop!</a>
+	</div>
+	<div class="promo-banner secondary right">
+		<span class="icon-tag"></span>
+		<h5>Find anything you want</h5>
+		<h1>Start Buying</h1>
+		<a href="#" class="button medium dark">Register Now!</a>
+	</div>
+	<div id="services-wrap">
+		<section id="services" class="services-v2">
+			<!-- SERVICE LIST -->
+			<div class="service-list small column3-wrap">
+				<!-- SERVICE ITEM -->
+				<div class="service-item column">
+					<div class="outer-ring">
+						<div class="inner-ring"></div>
+						<span class="icon-present"></span>
+					</div>
+					<h3>Buy &amp; Sell Easily</h3>
+					<p>Lorem ipsum dolor sit amet, consectetur sicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+				<!-- /SERVICE ITEM -->
+
+				<!-- SERVICE ITEM -->
+				<div class="service-item column">
+					<div class="outer-ring">
+						<div class="inner-ring"></div>
+						<span class="icon-lock"></span>
+					</div>
+					<h3>Secure Transaction</h3>
+					<p>Lorem ipsum dolor sit amet, consectetur sicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+				<!-- /SERVICE ITEM -->
+
+				<!-- SERVICE ITEM -->
+				<div class="service-item column">
+					<div class="outer-ring">
+						<div class="inner-ring"></div>
+						<span class="icon-like"></span>
+					</div>
+					<h3>Products Control</h3>
+					<p>Lorem ipsum dolor sit amet, consectetur sicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+				<!-- /SERVICE ITEM -->
+
+				<!-- SERVICE ITEM -->
+				<div class="service-item column">
+					<div class="outer-ring">
+						<div class="inner-ring"></div>
+						<span class="icon-diamond"></span>
+					</div>
+					<h3>Quality Platform</h3>
+					<p>Lorem ipsum dolor sit amet, consectetur sicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+				<!-- /SERVICE ITEM -->
+
+				<!-- SERVICE ITEM -->
+				<div class="service-item column">
+					<div class="outer-ring">
+						<div class="inner-ring"></div>
+						<span class="icon-earphones-alt"></span>
+					</div>
+					<h3>Assistance 24/7</h3>
+					<p>Lorem ipsum dolor sit amet, consectetur sicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+				<!-- /SERVICE ITEM -->
+
+				<!-- SERVICE ITEM -->
+				<div class="service-item column">
+					<div class="outer-ring">
+						<div class="inner-ring"></div>
+						<span class="icon-bubble"></span>
+					</div>
+					<h3>Support Forums</h3>
+					<p>Lorem ipsum dolor sit amet, consectetur sicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+				<!-- /SERVICE ITEM -->
+			</div>
+			<!-- /SERVICE LIST -->
+			<div class="clearfix"></div>
+		</section>
+	</div>
+	<div id="subscribe-banner-wrap">
+		<div id="subscribe-banner">
+			<!-- SUBSCRIBE CONTENT -->
+			<div class="subscribe-content">
+				<!-- SUBSCRIBE HEADER -->
+				<div class="subscribe-header">
+					<figure>
+						<img src="{{asset('allscript')}}/images/news_icon.png" alt="subscribe-icon">
+					</figure>
+					<p class="subscribe-title">Subscribe to our Newsletter</p>
+					<p>And receive the latest news and offers</p>
+				</div>
+				<!-- /SUBSCRIBE HEADER -->
+
+				<!-- SUBSCRIBE FORM -->
+				<form class="subscribe-form">
+					<input type="text" name="subscribe_email" id="subscribe_email" placeholder="Enter your email here...">
+					<button class="button medium dark">Subscribe!</button>
+				</form>
+				<!-- /SUBSCRIBE FORM -->
+			</div>
+			<!-- /SUBSCRIBE CONTENT -->
 		</div>
 	</div>
 	<!-- /SECTION -->
@@ -368,15 +442,5 @@
 
 @section('js')
 
-<!-- Side Menu -->
-<script src="{{ asset('allscript')}}/js/side-menu.js"></script>
-<!-- User Quickview Dropdown -->
-
-<!-- XM LineFill -->
-<script src="{{ asset('allscript')}}/js/vendor/jquery.xmlinefill.min.js"></script>
-
-<script src="{{ asset('allscript')}}/js/badges.js"></script>
-
-<script src="https://cdn.plyr.io/3.3.10/plyr.js"></script>
 
 @endsection

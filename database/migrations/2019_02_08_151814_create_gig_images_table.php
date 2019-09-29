@@ -14,12 +14,12 @@ class CreateGigImagesTable extends Migration
     public function up()
     {
         Schema::create('gig_images', function (Blueprint $table) {
-            $table->increments('image_id');
-            $table->integer('gig_id');
-            $table->integer('user_id');
+            $table->integer('gig_id')->unsigned();
             $table->string('image_path');
-            $table->timestamps();
+            
         });
+
+       
     }
 
     /**

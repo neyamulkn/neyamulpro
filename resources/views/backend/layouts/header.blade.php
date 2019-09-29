@@ -6,11 +6,15 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/simple-line-icons.css">
+    <link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/font-awesome.min.css">
     <link rel="stylesheet" href="{{asset('/allscript')}}/css/select2.min.css">
+	<script src="{{asset('/allscript')}}/gig/js/jquery.2.2.0.min.js"></script>
 
 	@yield('css')
+
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/style.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/custom.css">
+	<link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/toastr.css">
 	<!-- favicon -->
 	<link rel="icon" href="favicon.ico">
 	<title>@yield('title')</title>
@@ -26,13 +30,38 @@
 				top: 0px;
 				transition: 2s;
 		}
+		#overlay {
+			position: fixed;
+			left: 0px;
+			top: 0px;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			background-color: rgba(0,0,0, .3);
+			background-image: url("{{asset('image/loading.gif')}}");
+			background-position: center;
+		    background-repeat: no-repeat;
+		}
 
-
+	.uploading {
+		position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	text-align: center;
+	padding:10%;
+	background-color: rgba(154, 150, 150, 0.3);
+	background-image: url("{{asset('image/spinner.gif')}}");
+	background-position: center;
+    background-repeat: no-repeat;
+}
 
 	</style>
 </head>
 <body>
-
+<div id="overlay"></div>
 	<!-- SIDE MENU -->
 	<div id="dashboard-options-menu" class="side-menu dashboard left closed">
         <!-- SVG PLUS -->
@@ -53,7 +82,7 @@
 						$user_image = DB::table('userinfos')->where('user_id', $id)->first();
 					?>
 					<figure class="user-avatar">
-						<img  src="{{asset('/image/'.'/'.$user_image->user_image)}}" alt="avatar">
+						<img  src="{{asset('/image/'.$user_image->user_image)}}" alt="avatar">
 					</figure>
 					<input type="file" id="user_image" name="user_image" style="display: none;">
 				</div>
@@ -74,7 +103,7 @@
 				         	{{csrf_field()}}
 				         		<label for="user_imagess" class="user_imagess"  style="position: relative; margin: 0px auto; width: 200px;height: 200px; background: #ccc;border-radius: 50%;">
 						        <input type='file' name="user_image" style="display: none;" id="user_imagess" onchange="readURL(this);" />
-						        <img id="blah" src="{{asset('/image/'.'/'.$user_image->user_image)}}" alt="" style=" width: 200px; height: 200px;border-radius: 50%;" />
+						        <img id="blah" src="{{asset('/image/'.$user_image->user_image)}}" alt="" style=" width: 200px; height: 200px;border-radius: 50%;" />
 
 						        <span class="image_upload"><span style="font-size: 35px" class="sl-icon icon-camera"></span></span>
 						        </label>
@@ -100,46 +129,7 @@
 		</div>
 		<!-- /SIDE MENU HEADER -->
 		<ul class="dropdown dark hover-effect interactive">
-		<li class="dropdown-item interactive">
-				<a href="#">
-                    <span class="sl-icon icon-tag"></span>
-                    Super Admin
-                    <!-- SVG ARROW -->
-					<svg class="svg-arrow">
-						<use xlink:href="#svg-arrow"></use>
-					</svg>
-					<!-- /SVG ARROW -->
-				</a>
-
-				<!-- INNER DROPDOWN -->
-				<ul class="inner-dropdown">
-					
-					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/gig-category')}}">Add Gig category</a>
-						
-					</li>
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/gig-subcategory')}}">Add sub category</a>
-					</li>
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/gig-metadata')}}">Add Sub Filter</a>
-					</li>
-
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/gig-pricescope')}}">Add gig price scope</a>
-					</li>
-
-					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/filter/')}}">Add Filter</a>
-					</li>
-					
-				</ul>
-				<!-- INNER DROPDOWN -->
-			</li>
-
-
-
-
+		
 		<p class="side-menu-title">Your Account</p>
 		<!-- /SIDE MENU TITLE -->
 		<!-- DROPDOWN ITEM -->
@@ -203,7 +193,7 @@
 				<ul class="inner-dropdown">
 					
 					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/workplace/job-post')}}">Post a Job</a>
+						<a href="{{url('dashboard/workplace/job-post')}}">Post a Job</a>
 						
 					</li>
 					
@@ -212,7 +202,7 @@
 					</li>
 
 					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/workplace/filter')}}">Add Filter</a>
+						<a href="{{url('dashboard/workplace/manage/buyer_order/active')}}">Add Orders</a>
 					</li>
 
 
@@ -224,45 +214,6 @@
 				</ul>
 				<!-- INNER DROPDOWN -->
 			</li>
-
-			<li class="dropdown-item interactive">
-				<a href="#">
-                    <span class="sl-icon icon-tag"></span>
-                    Workplace option
-                    <!-- SVG ARROW -->
-					<svg class="svg-arrow">
-						<use xlink:href="#svg-arrow"></use>
-					</svg>
-					<!-- /SVG ARROW -->
-				</a>
-
-				<!-- INNER DROPDOWN -->
-				<ul class="inner-dropdown">
-					
-					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/workplace/category')}}">Add category</a>
-						
-					</li>
-					
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/workplace/subchildcategory')}}">Add Sub child category</a>
-					</li>
-
-					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/workplace/filter')}}">Add Filter</a>
-					</li>
-
-
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/workplace/subfilter')}}">Add sub filter</a>
-					</li>
-
-					
-				</ul>
-				<!-- INNER DROPDOWN -->
-			</li>
-
-
 
 			<p class="side-menu-title">Seller Manage Items</p>
 			<!-- /DROPDOWN ITEM -->
@@ -290,7 +241,7 @@
 
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/create-gig')}}">Create Gigs</a>
+						<a href="{{url('dashboard/create-gig')}}">Create Gigs</a>
 					</li>
 					<!-- /INNER DROPDOWN ITEM -->
 				</ul>
@@ -299,45 +250,6 @@
 			</li>
 
 			<p class="side-menu-title">Theme option</p>
-
-			<li class="dropdown-item interactive">
-				<a href="#">
-                    <span class="sl-icon icon-tag"></span>
-                    Theme option
-                    <!-- SVG ARROW -->
-					<svg class="svg-arrow">
-						<use xlink:href="#svg-arrow"></use>
-					</svg>
-					<!-- /SVG ARROW -->
-				</a>
-
-				<!-- INNER DROPDOWN -->
-				<ul class="inner-dropdown">
-					
-					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/theme/category')}}">Add theme category</a>
-						
-					</li>
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/theme/subcategory')}}">Add sub category</a>
-					</li>
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/theme/subchildcategory')}}">Add Sub child category</a>
-					</li>
-
-					<li class="inner-dropdown-item">
-						<a href="{{url('/dashboard/theme/filter')}}">Add Filter</a>
-					</li>
-
-
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/theme/subfilter')}}">Add sub filter</a>
-					</li>
-
-					
-				</ul>
-				<!-- INNER DROPDOWN -->
-			</li>
 
 			<li class="dropdown-item interactive">
 				<a href="#">
@@ -354,16 +266,14 @@
 				<ul class="inner-dropdown">
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="dashboard-inbox.html">All Theme Manage (36)</a>
-						<!-- PIN -->
-						<span class="pin soft-edged secondary">2</span>
-						<!-- /PIN -->
+						<a href="{{route('manage_theme')}}">Manage Theme </a>
+						
 					</li>
 					<!-- /INNER DROPDOWN ITEM -->
 
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/theme/upload')}}">Theme Upload</a>
+						<a href="{{route('upload_theme')}}">Upload Theme</a>
 					</li>
 					<!-- /INNER DROPDOWN ITEM -->
 				</ul>
@@ -388,14 +298,14 @@
 		<ul class="dropdown dark hover-effect">
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="{{url('/dashboard/'.Auth::user()->username.'/manage/seller_order/priority')}}">
+				<a href="{{url('dashboard/'.Auth::user()->username.'/manage/seller_order/priority')}}">
                     <span class="sl-icon icon-people"></span>
                     Orders
                 </a>
 			</li>
 
 			<li class="dropdown-item">
-				<a href="{{url('/dashboard/'.Auth::user()->username.'/manage/buyer_order/active')}}">
+				<a href="{{url('dashboard/'.Auth::user()->username.'/manage/buyer_order/active')}}">
                     <span class="sl-icon icon-people"></span>
                     Buyer Orders
                 </a>
@@ -434,11 +344,14 @@
                     Withdrawals
                 </a>
 			</li>
-		</ul>
+		</ul><br/>
 		<!-- /DROPDOWN -->
 		<a href="#" class="button primary">Become a Buyer</a>
 
-        <a href="#" class="button medium secondary"><span class="sl-icon icon-logout"></span> Logout</a>
+        <a  class="button medium secondary" href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <span class="sl-icon icon-logout"></span> {{ __('Logout') }}</a>
+	<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
 	</div>
 	<!-- /SIDE MENU -->
 

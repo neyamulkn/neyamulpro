@@ -263,12 +263,12 @@ li.financial-institutes__logo {
                         <div class="cart-item-product">
                             <!-- ITEM PREVIEW -->
                             <div class="item-preview">
-                                <a href="{{url('themeplace/item/'.$show_theme->theme_url.'/'.$show_theme->theme_id)}}">
+                                <a href="{{url('themeplace/'.$show_theme->theme_url)}}">
                                     <figure class="product-preview-image small liquid">
                                         <img src="{{ asset('theme/images/'.$show_theme->main_image)}}" alt="">
                                     </figure>
                                 </a>
-                                <a href="{{url('themeplace/item/'.$show_theme->theme_url.'/'.$show_theme->theme_id)}}"><p class="text-header small">{{$show_theme->theme_name}}</p></a>
+                                <a href="{{url('themeplace/'.$show_theme->theme_url)}}"><p class="text-header small">{{$show_theme->theme_name}}</p></a>
                                 <a href=""><p class="text-header small" style="color: #888;font-weight:400">Item by {{$show_theme->username}}</p></a>
                                 
                                 <p class="text-header small"><span class="primary">Regular Lichance: </span></p>

@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-
+@section('title','Create gig ' )
 @section('css')
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,500i,700,700i,900" rel="stylesheet">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">

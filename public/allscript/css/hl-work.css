@@ -55,6 +55,11 @@
 }
 .up-dis {
     padding: 20px;
+   
+}
+
+.up-dis li{
+    list-style: initial !important;
 }
 .sidebar.right.up {
 	box-shadow: 0 1px 6px rgba(57,73,76,0.35);
@@ -487,6 +492,7 @@ a.hotlmanuss.active {
     height: auto;
     border-radius: 50%;
     margin: 0 10px;
+    height: 50px;
 }
 .usernamehot {
     position: relative;

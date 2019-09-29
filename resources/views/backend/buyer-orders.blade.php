@@ -148,7 +148,7 @@ figure.user-avatar.small {
     function get_order(status){
     	document.getElementById('open').style.display = 'block';
     	history.pushState('state/', '/buyer_order/', status);
-        var  link = '<?php echo URL::to("dashboard/manage/get_buyer_orders/");?>/'+status;
+        var  link = '<?php echo URL::to("dashboard/workplace/manage/get_buyer_orders/");?>/'+status;
        
         $.ajax({
             url:link,
@@ -166,8 +166,6 @@ figure.user-avatar.small {
         });
     }
     
-     </script>
-
 </script>
 
 

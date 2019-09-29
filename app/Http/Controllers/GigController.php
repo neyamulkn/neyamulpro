@@ -15,6 +15,8 @@ use App\gig_image;
 use App\filter;
 use App\gig_metadata_filter;
 use Image;
+use Toastr;
+use DB;
 use Auth;
 class GigController extends Controller
 {
@@ -58,9 +60,9 @@ class GigController extends Controller
                 }
             }
         }
+
         if($f == 0){ echo '</div>';  $f++; }
        
-
         foreach($get_filter_data as $filter_data){
             $create_array = explode(',', $filter_data->sub_category_id); //convert array for check 
           
@@ -113,8 +115,6 @@ class GigController extends Controller
 
         if(isset($request->filter_id)){
             $filter_id = implode(',', $request->filter_id);
-        }else{
-             $filter_id = ' ';
         }
         
         $gig_search_tag = $request->gig_search_tag;
@@ -125,33 +125,58 @@ class GigController extends Controller
 
         
         $alldata = [
-        'gig_title'=> $request->gig_title,
-        'gig_url'=> $gig_url,
-        'gig_dsc'=> '',
-        'category_name'=> $request->category_id,
-        'gig_subcategory'=> $request->subcategory,
-        'gig_metadata'=> $filter_id,
-        'gig_payment_type'=> $request->gig_payment_type,
-        'gig_search_tag'=> $gig_search_tag,
-        'gig_user_id'=> $get_id,
-        'gig_status' => 'unactive'
+            'gig_title'=> $request->gig_title,
+            'gig_url'=> $gig_url,
+            'gig_dsc'=> '',
+            'category_name'=> $request->category_id,
+            'gig_subcategory'=> $request->subcategory,
+            'gig_metadata'=> $filter_id,
+            'gig_payment_type'=> $request->gig_payment_type,
+            'gig_search_tag'=> $gig_search_tag,
+            'gig_user_id'=> $get_id,
+            'gig_status' => 'draft'
         ];
 
-       
-       $insert_id = gig_basic::insertGetId($alldata);
-        
-        if(isset($request->gig_metadata)){
-            foreach ($request->gig_metadata as $gig_metadata) {
-                $data = [
-                    'gig_id' => $insert_id,
-                    'metadata_id' => $gig_metadata
-                ];
+        $insertOrupdate = gig_basic::where('gig_url', $gig_url)->where('gig_user_id', $get_id)->first();
 
-               $succcess = gig_metadata_filter::create($data);
+        if($insertOrupdate){
 
+           $insert_id = gig_basic::where('gig_url', $gig_url)->update($alldata);
+            
+            if(isset($request->gig_metadata))
+            {
+                foreach ($request->gig_metadata as $gig_metadata) 
+                {
+                    $data = [
+                        'gig_id' => $insertOrupdate->gig_id,
+                        'metadata_id' => $gig_metadata
+                    ];
+
+                   $succcess = gig_metadata_filter::where('gig_id', $insertOrupdate->gig_id)->update($data);
+                }
             }
+            if($insert_id){Toastr::success('Gig update successfully');}else{ Toastr::error('Sorry gig did not update successfully'); }
+        }else{
+
+           $insert_id = gig_basic::insertGetId($alldata);
+            
+            if(isset($request->gig_metadata)){
+                foreach ($request->gig_metadata as $gig_metadata) {
+                    $data = [
+                        'gig_id' => $insert_id,
+                        'metadata_id' => $gig_metadata
+                    ];
+
+                   $succcess = gig_metadata_filter::create($data);
+
+                }
+            }
+            if($insert_id){Toastr::success('Gig inserted successfully');}else{ Toastr::error('Sorry gig did not insert successfully'); }
+            
         }
-        $link =  asset('/dashboard/create-gig/2nd').'/'.$gig_url;
+
+
+        $link = asset('/dashboard/create-gig/2nd').'/'.$gig_url;
         return redirect($link);
       
     }
@@ -178,7 +203,7 @@ class GigController extends Controller
             
         }else{
              return redirect('/hotlancer/error');
-         }
+        }
         
     }
 
@@ -221,7 +246,7 @@ class GigController extends Controller
 
             if($request->question){ // if question set Remains
                for($i=0; $i<count($request->question); $i++){
-                    $alldata = [ 
+                    $alldata = [
                         'gig_id' => $gig_id,
                         'user_id' => $get_user_id,
                         'question' => $request->question[$i],
@@ -317,6 +342,44 @@ class GigController extends Controller
         }
 
     }
+
+
+    public function upload_images(Request $request)
+    {
+
+    $gig_url = $request->gig_url;
+    	$allowedfileExtension=['jpg','png'];
+
+        if($request->hasFile('file')){
+            $images = $request->file('file');
+            foreach ($images as $image) {
+
+				$extension = $image->getClientOriginalExtension();
+				$check = in_array($extension,$allowedfileExtension);
+				if($check)
+				{
+	                $image_name = rand('123456', '999999').$image->getClientOriginalName();
+
+	                $image_path = public_path('gigimages/'.$image_name );
+	                Image::make($image)->save($image_path);
+	                
+	                $data = [
+	                    'gig_id' => $request->gig_id,
+	                    'image_path' => $image_name
+	                ];
+	               $succcess = gig_image::create($data); 
+	            }else{
+	            	$output = array('message' => 'Sorry Only Upload png, jpg', 'type' => 'error');
+	            	return json_encode($output);
+	            }
+            }
+            $output = array('message' => 'Image upload successfully', 'type' => 'success', 'url' => asset('/dashboard/create-gig/6th').'/'.$gig_url);
+        }else{
+            $output = array('message' => 'Please choose any image', 'type' => 'error');
+        }
+     
+     return json_encode($output);
+    }
     public function insert_gig_step_five(Request $request)
     {
         $gig_url = $request->gig_url;
@@ -324,61 +387,73 @@ class GigController extends Controller
         // check whice step form submit
         if($request->form_step == 'form_5th_step'){
 
-            foreach ($request->gig_image as $image) {
+            // foreach ($request->gig_image as $image) {
 
-                $image_name = rand('123456', '999999').$image->getClientOriginalName();
+            //     $image_name = rand('123456', '999999').$image->getClientOriginalName();
 
-                $image_path = public_path('gigimages/'.$image_name );
-                Image::make($image)->save($image_path);
+            //     $image_path = public_path('gigimages/'.$image_name );
+            //     Image::make($image)->save($image_path);
                 
-                $data = [
-                    'gig_id' => $request->gig_id,
-                    'user_id' => $get_user_id,
-                    'image_path' => $image_name
-                ];
+            //     $data = [
+            //         'gig_id' => $request->gig_id,
+            //         'user_id' => $get_user_id,
+            //         'image_path' => $image_name
+            //     ];
 
-               $succcess = gig_image::create($data);
-            }
+            //    $succcess = gig_image::create($data);
+            // }
            
-           if($succcess){
-                $link =  asset('/dashboard/create-gig/6th').'/'.$gig_url;
-                return redirect($link); 
-           }
-
+           
+            $link =  asset('/dashboard/create-gig/6th').'/'.$gig_url;
+            return redirect($link); 
         }else{
             return back();
         }
     }
 
-    public function insert_gig_step_finish()
+    public function insert_gig_step_finish(Request $request)
     {
-        return redirect('/dashboard/create-gig/');
+     
+        $gig_id = $request->gig_id;
+        $gig_url = $request->gig_url;
+
+        $insert_id = gig_basic::where('gig_url', $gig_url)->update(['gig_status' => 'active']);
+            if($insert_id){
+                DB::table('gigs_view')->insert(['gig_id' => $gig_id, 'gig_impress' => 1] ); 
+                Toastr::success('Gig successfully completed');}else{ Toastr::error('Sorry gig did not complete successfully'); }
+        return redirect('dashboard/manage-gigs/active');
     }
 
     //manage gigs
     public function manage_gigs()
-    {
-        return view('backend.gig-view');
+    {$user_id = Auth::user()->id;
+        $get_status = DB::table('gig_basics')
+            ->select('gig_status as status')
+            ->where('gig_user_id' , '=', $user_id)
+            ->get();
+         return view('backend.gig-view')->with(compact('get_status'));
     }
 
     public function get_gigs_by_status($status='active')
     {
          $user_id = Auth::user()->id;
-
+         $output = '';
         if($status == 'all'){
-            $get_gigs = DB::table('gig_basics')
-            ->join('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
-            ->where('gig_basics.gig_user_id' , '=', $user_id)->get();
+           $get_gigs = DB::table('gig_basics')->where('gig_user_id' , '=', $user_id)
+           ->leftJoin('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
+           ->leftJoin('gigs_view', 'gig_basics.gig_id', '=', 'gigs_view.gig_id')
+           ->groupBy('gig_images.gig_id')
+           ->get();
         }else{
             $get_gigs = DB::table('gig_basics')
-            ->join('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
-            ->where('gig_basics.gig_user_id' , '=', $user_id)
-            ->where( 'gig_basics.gig_status' , '=', $status)->get();
+            ->leftJoin('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
+            ->leftJoin('gigs_view', 'gig_basics.gig_id', '=', 'gigs_view.gig_id')
+            ->where('gig_user_id' , '=', $user_id)
+            ->where('gig_status' , '=', $status)->groupBy('gig_images.gig_id')->get();
         }
 
-          
-          if(count($get_gigs) > 0){
-                $output = '
+          if(count($get_gigs)>0){
+                $output .= '
                 <table class="responsive-table-input-matrix">
                     <thead>
                     <tr class="header-filter">
@@ -401,32 +476,42 @@ class GigController extends Controller
                 <tbody>';
                 foreach($get_gigs as $show_gig){
 
-                            $gig_img = DB::table('gig_images')->where('gig_id', $show_gig->gig_id)->first(); 
-                          
+                        //$gig_img = DB::table('gig_images')->where('gig_id', $show_gig->gig_id)->first(); 
+                      
                            $output .='
                         
-                            <tr class="tbgig">
+                            <tr class="tbgig" id="item'.$show_gig->gig_id.'">
                                 <td><input type="checkbox"></td>
                                 <td class="gig-pict-45">
                                     <span class="gig-pict-45">
-                                        <img src="'.asset('gigimages/').'/'.$gig_img->image_path.'" alt="gig_image" >
+                                        <a href="#"><img src="'.asset('gigimages/'.$show_gig->image_path).'" alt="" ></a>
                                     </span>
                                 </td>
                                 <td class="title js-toggle-gig-stats ">
                                     <div class="ellipsis1">
-                                        <a class="ellipsis" target="_blank" href="'.asset('/order/review/'.$show_gig->order_id).'">'.$show_gig->gig_title.'</a>
+                                        <a class="ellipsis" target="_blank" href="'.url('marketplace/'.$show_gig->gig_url).'">'.$show_gig->gig_title .'</a>
                                     </div>
                                 </td>
-                                <td>'.\Carbon\Carbon::parse($show_gig->created_at)->format('M d, Y').'</td>
-                                <td>'.\Carbon\Carbon::parse($show_gig->created_at)->format('M d, Y').'</td>
-                                <td>'.$show_gig->total.'</td>
-                                
+                                <td>'.$show_gig->gig_impress .' <i class="fa fa-long-arrow-up green"></i></td>
+                                <td>'.$show_gig->gig_click .' <i class="fa fa-long-arrow-up green"></i></td>
+                                <td>'.$show_gig->gig_view .' <i class="fa fa-long-arrow-up green"></i></td>
+                                <td>'.$show_gig->gig_impress .' <i class="fa fa-long-arrow-up green"></i></td>
+                                <td>'.$show_gig->gig_impress .' <i class="fa fa-long-arrow-down red"></i></td>
                                 <td>
                                     <label for="sv" class="select-block v3">
-                                        <span style="text-transform:uppercase;" class="alert alert-success">'.$show_gig->status.'
+                                        <select onchange="action_type(this.value,'.$show_gig->gig_id.' )" name="sv" id="sv">
+                                            <option value="0">select action</option>
+                                            <option value="1">Edit</option>
+                                            <option value="2">Delete</option>
+                                        </select>
+                                        <!-- SVG ARROW -->
+                                        <svg class="svg-arrow">
+                                            <use xlink:href="#svg-arrow"></use>
+                                        </svg>
+                                        <!-- /SVG ARROW -->
                                     </label>
                                 </td>
-                            </tr> 
+                            </tr>
                         ';
                  }
                  $output .='</tbody>
@@ -435,16 +520,45 @@ class GigController extends Controller
                 echo $output;
         }else{
 
-            echo 'No '.$status.' orders to show.';
+            echo 'No '.$status. ' gigs found.';
         }
+       
     }
 
-
+    public function gig_delete($id)
+    {
+        $user_id = Auth::user()->id;
+        $delete = gig_basic::where('gig_id', $id)->where('gig_user_id', $user_id)->delete();
+        if($delete){
+            try{
+                $get_image_path = gig_image::where('gig_id', $id)->get(); 
+                foreach ($get_image_path as $image_name) {
+                    $image_path = public_path('gigimages/'.$image_name->image_path );
+                    if(file_exists($image_path)){
+                        @unlink($image_path);
+                    }
+                }      
+                gig_image::where('gig_id', $id)->delete();
+                gig_requirement::where('gig_id', $id)->delete();
+                gig_metadata_filter::where('gig_id', $id)->delete();
+                gig_feature::where('gig_id', $id)->delete();
+                question_answer::where('gig_id', $id)->delete();
+                DB::table('gigs_view')->where('gig_id', $id)->delete();
+                
+                echo 'Gig deleted successfully.';  
+            }catch(\Exception $e){
+                return $e->getMessage();
+            }
+        }else{
+            echo 'Sorry gig not deleted.';  
+        }
+           
+    }
 
     public function question_answer_delete(Request $request)
     {
 
-            question_answer::where('id', $request->ques_ans_id)->delete();
+        question_answer::where('id', $request->ques_ans_id)->delete();
             
     }
 

@@ -1,4 +1,0 @@
-Inventory management system admin portal: 
-url: http://wholesalesbd.com/pos/
-email: owner@gmail.com
-pass: password

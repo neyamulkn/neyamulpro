@@ -264,8 +264,8 @@ display: inline-block;
 			  <input type="hidden" name="amount" value="{{$total}}">
 			  <input type="hidden" name="tax" value="2">
 			  <input type="hidden" name="currency_code" value="USD">
-			  <input type="hidden" name="return" value="{{url('themeplace/payment/completed/paypal')}}">
-			  <input type="hidden" name="cancel_return" value="{{url('themeplace/payment/cancel/paypal')}}">
+			  <input type="hidden" name="return" value="{{route('theme_payment_paypal')}}">
+			  <input type="hidden" name="cancel_return" value="{{route('theme_payment_cancel')}}">
 			  <input type="image" style="display: none" id="submit_btn" name="submit"
 			    value="Place Order">
 			</form>	
@@ -325,7 +325,7 @@ display: inline-block;
 
 
 					<script src="https://js.stripe.com/v3/"></script>
-					<form action="{{url('order/placeorder/stripe_payment/')}}" method="post" id="payment-form">
+					<form action="{{route('theme_stripe_payment')}}" method="post" id="payment-form">
 						{{csrf_field()}}
 						<input type="hidden" name="payment_method" value="card">
 					  <div class="form-row">

@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
 	<title>@yield('title')</title>
+	@yield('metatag')
 	@yield('css')
 	<link rel="stylesheet" href="{{ asset('allscript/css/style.css') }}">
 	<link rel="stylesheet" href="{{ asset('allscript/css/custom.css') }}">
+	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/toastr.css') }}">
 	<!-- favicon -->
 	<link rel="icon" href="favicon.ico">
 
@@ -37,6 +37,42 @@
 		.menu-bar .search-form{
 			top:15px !important;
 		}
+
+	#overlay {
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 9999;
+		background-color: rgba(0,0,0, .3);
+		background-image: url("{{asset('image/loading.gif')}}");
+		background-position: center;
+	    background-repeat: no-repeat;
+	}
+
+	#uploading {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background-color: rgba(0,0,0, .3);
+	background-image: url("{{asset('image/loading.gif')}}");
+	background-position: center;
+    background-repeat: no-repeat;
+}
+
+	}
+	.button.secondary:hover {
+	    background-color: #37c9ff;
+	    color: black;
+	}
+	.button.primary:hover {
+	    color: black;
+	}
+
 </style>
 </head>
 <body>
@@ -114,7 +150,7 @@
 							<a href="{{url('dashboard/profile/setting')}}">Account Settings</a>
 						</li>
 						<li class="dropdown-item">
-							<a href="{{url('themeplace/downloads')}}">Downloads Theme</a>
+							<a href="{{route('theme_downloads', Auth::user()->username)}}">Downloads Theme</a>
 						</li>
 						<li class="dropdown-item">
 							<a href="dashboard-statement.html">Sales Statement</a>
@@ -130,14 +166,14 @@
 						</li>
 						<li class="dropdown-item">
 							<a href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
+                               onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                                {{ __('Logout') }}
+                            </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
 						</li>
 					</ul>
 					<!-- /DROPDOWN -->
@@ -270,24 +306,16 @@
 					</div>
 				</div>
 
-
-
 			<?php } ?> 
 
 				<!-- ACCOUNT ACTIONS -->
 				<div class="account-actions no-space">
-					<!-- <a href="" class="interesting-link header-link-login">Find Jobs</a>
-					<a href="" class="interesting-link header-link-login">Find Gigs</a>
-					<a href="" class="interesting-link header-link-login">Find Themes</a> -->
-					<div class="account-information" style="margin: 0px !important; float: left;">
-					<?php if(!Auth::check()){ ?>
-						@if(Request::segment(1) == 'themeplace')
-							@include('frontend/theme/add-to-cart_head')
-						@endif
-				</div>
-					<a href="{{ route('register') }}" class="interesting-link header-link-login">Register</a>
-					<a href="{{ route('login') }}" class="interesting-link header-link-login">Login</a>
-					<?php } ?>
+				<?php if(!Auth::check()){ ?>
+					<a href="#" class="interesting-link">Our Blog</a>
+					<a href="#" class="interesting-link">How It Works</a>
+					<a href="{{ route('register') }}" class="button primary">Register</a>
+					<a href="{{ route('login') }}" class="button secondary">Login</a>
+				<?php } ?>
 				</div>
 
 				<!-- /ACCOUNT ACTIONS -->
@@ -312,139 +340,70 @@
 		</div>
 		<!-- /SIDE MENU HEADER -->
 
+		<?php 
+
+			if(Request::segment(1) == 'themeplace'){
+				$get_category = DB::table('theme_category')->orderBy('sorting', 'asc')->get();
+				$placename_url = 'themeplace';
+			}elseif(Request::segment(1) == 'marketplace'){
+				$get_category = DB::table('gig_home_category')->orderBy('sorting', 'asc')->get();
+				$placename_url = 'marketplace';
+			}
+			else{
+				$get_category = DB::table('workplace_category')->orderBy('sorting', 'asc')->get();
+				$placename_url = 'workplace';
+			}
+		?>
 		<!-- SIDE MENU TITLE -->
-		<p class="side-menu-title">Main Links</p>
+		<p class="side-menu-title">{{ Request::segment(1) }}</p>
 		<!-- /SIDE MENU TITLE -->
 
 		<!-- DROPDOWN -->
 		<ul class="dropdown dark hover-effect interactive">
 			
+
+
+			<?php
+
+					foreach ($get_category as $show_category) {
+						$category_id = $show_category->id;
+					
+				?>
+
 			<!-- MENU ITEM -->
-							<li class="dropdown-item  interactive ">
-					<a href="http://localhost/hotlancerd/item-filter/graphics-design">Graphics &amp; Design												<!-- SVG ARROW -->
+				<li class="dropdown-item  interactive ">
+					<a href="#">{{$show_category->category_name}}											<!-- SVG ARROW -->
 						<svg class="svg-arrow">
 							<use xlink:href="#svg-arrow"></use>
 						</svg>
 						<!-- /SVG ARROW -->
-											</a>						
-								<ul class="inner-dropdown">
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/logo-design">Logo Design</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/business-cards-stationery">Business Cards &amp; Stationery</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/illustration">Illustration</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/cartoons-caricatures">Cartoons &amp; Caricatures</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/flyers-brochures">Flyers &amp; Brochures</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/book-covers-packaging">Book Covers &amp; Packaging</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/web-mobile-design">Web &amp; Mobile Design</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/social-media-design">Social Media Design</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/banner-ads">Banner Ads</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/photoshop-editing">Photoshop Editing</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/3d-2d-models">3D &amp; 2D Models</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/t-shirts-merchandise">T-Shirts &amp; Merchandise</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/presentation-design">Presentation Design</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/infographics">infographics</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/vector-tracing">Vector Tracing</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/invitations">Invitations</a>
-						</li>
-											</ul>
-								</li>
-				<!-- /MENU ITEM -->
-							<li class="dropdown-item  interactive ">
-					<a href="http://localhost/hotlancerd/item-filter/digital-marketing">Digital Marketing												<!-- SVG ARROW -->
-						<svg class="svg-arrow">
-							<use xlink:href="#svg-arrow"></use>
-						</svg>
-						<!-- /SVG ARROW -->
-											</a>						
-								<ul class="inner-dropdown">
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/social-media-marketing">Social Media Marketing</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/seo">SEO</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/content-marketing">Content Marketing</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/video-marketing">Video Marketing</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/email-marketing">Email Marketing</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/search-display-marketing">Search &amp; Display Marketing</a>
-						</li>
-											</ul>
-								</li>
-				<!-- /MENU ITEM -->
-							<li class="dropdown-item ">
-					<a href="http://localhost/hotlancerd/item-filter/writing-translation">Writing &amp; Translation											</a>						
+					</a>						
+					<ul class="inner-dropdown">
+						<?php
+
+						if(Request::segment(1) == 'themeplace'){
+							$sub_category = DB::table('theme_subcategory')->where('category_id', $category_id)->get();
+						}elseif(Request::segment(1) == 'marketplace'){
+							$sub_category = DB::table('gig_subcategories')->where('category_id', $category_id)->get();
+						
+						}
+						else{
+							$sub_category = DB::table('workplace_subcategory')->where('category_id', $category_id)->get();
+							
+						}
+						
+						
+						?>
+						@if($sub_category)
+						@foreach ($sub_category as $show_subcategory)
+							<li class="inner-dropdown-item">
+								<a href="{{url($placename_url.'/'.$show_category->category_url.'/'.$show_subcategory->subcategory_url)}}"><?php echo $show_subcategory->subcategory_name; ?></a>
 							</li>
-				<!-- /MENU ITEM -->
-							<li class="dropdown-item ">
-					<a href="http://localhost/hotlancerd/item-filter/video-animation">Video &amp; Animation											</a>						
-							</li>
-				<!-- /MENU ITEM -->
-							<li class="dropdown-item ">
-					<a href="http://localhost/hotlancerd/item-filter/music-audio">Music &amp; Audio											</a>						
-							</li>
-				<!-- /MENU ITEM -->
-							<li class="dropdown-item ">
-					<a href="http://localhost/hotlancerd/item-filter/programming-tech">Programming &amp; Tech											</a>						
-							</li>
-				<!-- /MENU ITEM -->
-							<li class="dropdown-item  interactive ">
-					<a href="http://localhost/hotlancerd/item-filter/business">Business												<!-- SVG ARROW -->
-						<svg class="svg-arrow">
-							<use xlink:href="#svg-arrow"></use>
-						</svg>
-						<!-- /SVG ARROW -->
-											</a>						
-								<ul class="inner-dropdown">
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/career-advice">Career Advice</a>
-						</li>
-												<li class="inner-dropdown-item">
-							<a href="http://localhost/hotlancerd/item-filter/flyer-distribution">Flyer Distribution</a>
-						</li>
-											</ul>
-								</li>
-				<!-- /MENU ITEM -->
-							<li class="dropdown-item ">
-					<a href="http://localhost/hotlancerd/item-filter/fun-lifestyle">Fun &amp; Lifestyle											</a>						
-							</li>
-				<!-- /MENU ITEM -->
+						@endforeach
+						@endif
+					</ul>
+				</li>
+			<?php } ?>
 						
 		</ul>
 		<!-- /DROPDOWN -->
@@ -466,28 +425,28 @@
 		<ul class="dropdown dark hover-effect">
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="http://localhost/hotlancerd/item-filter/">Find Items</a>
+				<a href="{{url('workplace')}}">Workplace</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="http://localhost/hotlancerd/find-job/" class="interesting-link">Find Job</a>
+				<a href="{{url('marketplace')}}" class="interesting-link">Marketplace</a>
 			</li>
 			
 			<li class="dropdown-item">
-				<a href="http://localhost/hotlancerd/upload-job/" class="interesting-link">Post a Job</a>
+				<a href="{{url('themeplace')}}" class="interesting-link">Themeplace</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
 			
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="http://localhost/hotlancerd/register/">Register</a>
+				<a href="{{url('register')}}">Register</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
 
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="http://localhost/hotlancerd/login/">Login</a>
+				<a href="{{url('login')}}">Login</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
 
@@ -502,16 +461,16 @@
 				<a href="author-profile.html">
 				<div class="outer-ring">
 					<div class="inner-ring"></div>
+					<?php $get_user = DB::table('users')->leftJoin('userinfos', 'users.id', 'userinfos.user_id')->where('users.username', Auth::user()->username)->first(); ?>
 					<figure class="user-avatar">
-						<img src="{{ asset('allscript/images/avatars/avatar_01.jpg') }}" alt="avatar">
+						<img src="{{ asset('image/'.$get_user->user_image) }}" alt="avatar">
 					</figure>
 				</div>
 				</a>
 				<!-- /USER AVATAR -->
-
 				<!-- USER INFORMATION -->
-				<p class="user-name">Johnny Fisher</p>
-				<p class="user-money">$745.00</p>
+				<p class="user-money">{{Auth::user()->name}}</p>
+				<p class="user-name">$745.00</p>
 				<!-- /USER INFORMATION -->
 			</div>
 			<!-- /USER QUICKVIEW -->
@@ -520,25 +479,19 @@
 		<ul class="dropdown dark hover-effect">
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="dashboard-notifications.html">Notifications</a>
+				<a href="{{url('workplace')}}">Workplace</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
 
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="dashboard-inbox.html">Messages</a>
+				<a href="{{url('marketplace')}}">Marketplace</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
 
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="cart.html">Your Cart</a>
-			</li>
-			<!-- /DROPDOWN ITEM -->
-
-			<!-- DROPDOWN ITEM -->
-			<li class="dropdown-item">
-				<a href="favourites.html">Favourites</a>
+				<a href="{{url('themeplace')}}">Themeplace</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
 		</ul>
@@ -550,57 +503,40 @@
 
 		<!-- DROPDOWN -->
 		<ul class="dropdown dark hover-effect">
-			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="author-profile.html">Profile Page</a>
+				<a href="{{url('dashboard/profile/setting')}}">Dashboard</a>
 			</li>
-			<!-- /DROPDOWN ITEM -->
-
-			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="dashboard-settings.html">Account Settings</a>
+				<a href="{{url('/'.Auth::user()->username)}}">Profile Page</a>
 			</li>
-			<!-- /DROPDOWN ITEM -->
-
-			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="dashboard-purchases.html">Your Purchases</a>
+				<a href="{{url('dashboard/profile/setting')}}">Account Settings</a>
 			</li>
-			<!-- /DROPDOWN ITEM -->
+			<li class="dropdown-item">
+				<a href="{{url('themeplace/downloads')}}">Downloads Theme</a>
+			</li>
 
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
 				<a href="dashboard-statement.html">Sales Statement</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
-
-			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="dashboard-buycredits.html">Buy Credits</a>
-			</li>
-			<!-- /DROPDOWN ITEM -->
+				<a href="{{ route('logout') }}"
+	                       onclick="event.preventDefault();
+	                                     document.getElementById('logout-form').submit();">
+	                        {{ __('Logout') }}
+	            </a>
 
-			<!-- DROPDOWN ITEM -->
-			<li class="dropdown-item">
-				<a href="dashboard-withdrawals.html">Withdrawals</a>
+	            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+	                @csrf
+	            </form>
 			</li>
-			<!-- /DROPDOWN ITEM -->
-
-			<!-- DROPDOWN ITEM -->
-			<li class="dropdown-item">
-				<a href="dashboard-uploaditem.html">Upload Item</a>
-			</li>
-			<!-- /DROPDOWN ITEM -->
-
-			<!-- DROPDOWN ITEM -->
-			<li class="dropdown-item">
-				<a href="dashboard-manageitems.html">Manage Items</a>
-			</li>
-			<!-- /DROPDOWN ITEM -->
 		</ul>
 		<!-- /DROPDOWN -->
 
-		<a href="#" class="button medium secondary">Logout</a>
+		
+
 		@endguest
 	</div>
 	
@@ -610,15 +546,15 @@
 			<nav>
 				<ul class="main-menu manu2 top-highlight">
 						
-					<!-- MENU ITEM -->
-					<li class="menu-item {{(Request::segment(1) == 'workplace') ? 'manu-highlight' : null }}">
-						<a class="manu3" href="{{url('/workplace')}}"> Workplace </a>
-					</li>
-					<!-- /MENU ITEM -->
-
+					
 					<!-- MENU ITEM -->
 					<li class="menu-item {{(Request::segment(1) == 'marketplace') ? 'manu-highlight' : null }}" >
 						<a href="{{url('marketplace')}}">Marketplace</a>
+					</li>
+					<!-- /MENU ITEM -->
+					<!-- MENU ITEM -->
+					<li class="menu-item {{(Request::segment(1) == 'workplace') ? 'manu-highlight' : null }}">
+						<a class="manu3" href="{{url('/workplace')}}"> Workplace </a>
 					</li>
 					<!-- /MENU ITEM -->
 
@@ -634,11 +570,7 @@
 					</li>
 					<!-- /MENU ITEM -->
 
-					<!-- MENU ITEM -->
-					<li class="menu-item">
-						<a href="shop-gridview-v1.html">Learning</a>
-					</li>
-					<!-- /MENU ITEM -->
+					
 				</ul>
 			</nav>
 			
@@ -649,17 +581,27 @@
 		</div>
 	</div>
 
-@yield('menu')
+@include('frontend.layouts.menu')
 @yield('content')
 
 @include('frontend.layouts.footer')
 <!-- jQuery -->
 <script src="{{ asset('/allscript/js/vendor/jquery-3.1.0.min.js') }}"></script>
+<script src="{{ asset('/allscript/js/vendor/toastr.js') }}"></script>
+
+ {!! Toastr::message() !!}
+ 
 @yield('js')
 <!-- User Quickview Dropdown -->
 <script src="{{ asset('/allscript/js/user-board.js') }}"></script>
 <!-- Footer -->
 <script src="{{ asset('/allscript/js/footer.js') }}"></script>
+
+<script>
+jQuery(document).ready(function() {
+    jQuery('#overlay').fadeOut(1000);
+});
+</script>
 </body>
 
 </html>

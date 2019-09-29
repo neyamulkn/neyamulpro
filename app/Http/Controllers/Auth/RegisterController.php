@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Userinfo;
+use App\userinfo;
+use Session;
 class RegisterController extends Controller
 {
     /*
@@ -64,24 +65,31 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-       
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $country = file_get_contents('https://ipapi.co/'.$ip.'/country_name/');
-        $user = new user;
-        $user->name = $data['name'];
-        $user->username = str_slug($data['name']);
-        $user->email = $data['email'];
-        $user->password = Hash::make($data['password']);
-        $user->account_type = $data['account_type'];
-        $user->country = 'Bangldesh'; //$country
-        $user->save();
-       
-        $getlastId = [
-        'user_id' =>$user->id
-        ];
-    
-        Userinfo::create($getlastId);
+        $username = str_slug($data['name']);
+        $check_duplicate = User::where('username', $username)->first();
+        if($check_duplicate){
+            Session::flash('error', 'sorry username allready taken.');
+            return redirect('register');
+        }else{
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // $country = file_get_contents('https://ipapi.co/'.$ip.'/country_name/');
+            $user = new user;
+            $user->name = $data['name'];
+            $user->username = $username;
+            $user->email = $data['email'];
+            $user->password = Hash::make($data['password']);
+            $user->role_id = $data['account_type'];
+            $user->country = 'Bangldesh'; //$country
+            $user->save();
+           
+            $getlastId = [
+            'user_id' =>$user->id,
+            'user_image' => 'defualt.png'
+            ];
+        
+            Userinfo::create($getlastId);
 
-        return $user;
+            return $user;
+        }
     }
 }

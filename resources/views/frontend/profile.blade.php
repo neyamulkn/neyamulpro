@@ -199,25 +199,20 @@
 				<!-- DROPDOWN -->
 				<ul class="dropdown hover-effect">
 					<li class="dropdown-item">
-						<a href="author-profile.html">Profile Page</a>
+						<a href="{{url('user_url')}}">About us</a>
 					</li>
 					<li class="dropdown-item">
-						<a href="author-profile-items.html">Author's Items (103)</a>
+						<a href="{{url('user_url/Workplace')}}">Workplace</a>
 					</li>
 					<li class="dropdown-item">
-						<a href="author-profile-messages.html">Message Board</a>
+						<a href="{{url('user_url/Marketplace')}}">Marketplace</a>
 					</li>
 					<li class="dropdown-item">
-						<a href="author-profile-reviews.html">Customer Reviews (42)</a>
+						<a href="{{url('user_url/Themeplace')}}">Themeplace</a>
 					</li>
-					<li class="dropdown-item">
-						<a href="author-profile-followers.html">Followers (5)</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="author-profile-following.html">Following (2)</a>
-					</li>
+					
 					<li class="dropdown-item active">
-						<a href="author-badges.html">Author Badges (16)</a>
+						<a href="{{url('user_url/Themeplace')}}">Author Badges</a>
 					</li>
 				</ul>
 				<!-- /DROPDOWN -->

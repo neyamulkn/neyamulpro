@@ -31,6 +31,7 @@
                     ['users.id', '=', $get_cart->gig_user_id],
                 ])->first();
 
+                if($get_gigs){
 	               
 	                if($get_cart->package_name == 'basic'){
 	                    $gig_features = DB::table('gig_features')->where('gig_id', $get_gigs->gig_id)->where('feature_basic', 'Yes')->get();
@@ -83,24 +84,24 @@
 	                }
 
 
-		 ?>
-		<li class="dropdown-item">
-			<a href="{{url('order/checkout/'.$get_cart->cart_id)}}" class="link-to"></a>
-			<!-- SVG PLUS -->
-			<svg class="svg-plus">
-				<use xlink:href="#svg-plus"></use>
-			</svg>
-			<!-- /SVG PLUS -->
-			<div class="dropdown-triangle"></div>
-			<figure class="product-preview-image tiny">
-				<img src="{{ asset('gigimages/'.$gig_images)}}" alt="">
-			</figure>
-			<p class="text-header tiny">{{$gig_title}}</p>
-			
-			<p class="price tiny"><span>$</span>{{$price}}</p>
-			
-		</li>
-
+		 		?>
+					<li class="dropdown-item">
+						<a href="{{url('order/checkout/'.$get_cart->cart_id)}}" class="link-to"></a>
+						<!-- SVG PLUS -->
+						<svg class="svg-plus">
+							<use xlink:href="#svg-plus"></use>
+						</svg>
+						<!-- /SVG PLUS -->
+						<div class="dropdown-triangle"></div>
+						<figure class="product-preview-image tiny">
+							<img src="{{ asset('gigimages/'.$gig_images)}}" alt="">
+						</figure>
+						<p class="text-header tiny">{{$gig_title}}</p>
+						
+						<p class="price tiny"><span>$</span>{{$price}}</p>
+						
+					</li>
+			<?php } ?>
 	@endforeach
 		<!-- /DROPDOWN ITEM -->
 	

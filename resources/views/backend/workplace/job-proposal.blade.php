@@ -209,7 +209,7 @@ code {
 						<b class="up-subb">{{$get_job->job_title}}</b>
 						<div class="clearfix"></div>
 						<div class="tag-list primary"><a href="{{url($get_job->username)}}" class="tag-list-item">{{$get_job->username}}</a>  Posted {{ \Carbon\Carbon::parse($get_job->created_at)->diffForHumans()}}</div>
-						<P>{{$get_job->job_dsc}}</P>
+						<P>{!! $get_job->job_dsc !!}</P>
 						<a href="{{url('workplace/'.$get_job->job_title_slug)}}" target="_blank">View job posting</a>
 					</div>
 					<div class="up-sub2">
@@ -273,7 +273,7 @@ code {
 								</div>
 							</div>
 							<div class="up-items3">
-								<p class="text-header">/@if($get_job->price_type=='monthly')monthly @else fixed @endif</p>
+								<p class="text-header">@if($get_job->price_type=='monthly')monthly @else fixed @endif</p>
 							</div>
 						</div>
 				<form action="{{url('workplace/insert-proposal')}}" id="submit" method="post">{{csrf_field()}}
@@ -290,7 +290,7 @@ code {
 							</div>
 							<div class="up-items2">
 								<div class="">
-									<input form="submit" name="price_type" value="@if($exist_proposal) {{$exist_proposal->price_type}} @endif" class="updollar" placeholder="example, 10 day">
+									<input form="submit" name="work_duration" value="@if($exist_proposal) {{$exist_proposal->work_duration}} @endif" class="updollar" placeholder="example, 10 day">
 									
 								</div>
 							</div>
@@ -307,9 +307,9 @@ code {
 							</div>
 							<div class="up-items33">
 								<label for="sv" class="select-block">
-								<select form="submit" name="price_type" id="sv">
+								<select form="submit" name="work_duration" id="sv">
 									<?php for ($i=1; $i <= 12; $i++) {  ?>  
-                                        <option value="{{$i}}" <?php echo ($exist_proposal) ? ($exist_proposal->price_type == $i) ? 'selected' : ' ' : '';  ?> >Everyday {{$i}} hours</option>
+                                        <option value="{{$i}}" <?php echo ($exist_proposal) ? ($exist_proposal->work_duration == $i) ? 'selected' : ' ' : '';  ?> >Everyday {{$i}} hours</option>
                                     <?php } ?>
 								</select>
 								<!-- SVG ARROW -->
@@ -330,15 +330,6 @@ code {
 						<img class="up-img" src="{{asset('/allscript')}}/images/dd.png" alt="avatar">
 						<b class="up-subb v2">Includes Hotlancer <br/>Protection. Learn more</b>
 					</div>
-				</div>
-			</div>
-
-			<div class="hotlancer-work">
-				<h3 class="up-post-sub">Additional Details</h3>
-				<div class="up-sub-mainup">
-					<label for="item_description" class="rl-label required">Project Cover Letter</label>
-
-					<label class="rl-label required">Project files</label>
 				</div>
 			</div>
 

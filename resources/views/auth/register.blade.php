@@ -172,14 +172,14 @@ label{
 										<div class="p-lg-top-bottom ng-pristine ng-untouched ng-valid eo-button-box eo-button-box-radio ng-not-empty report_hidden " id="project_type__2">
 										<span class="glyphicon glyphicon-lg air-icon-project" aria-hidden="true"></span>
 										<p class="m-sm-bottom">Hire for A Project</p>
-										<input type="radio" id="Buyer" class="labbel_box_radio"  name="account_type" value="Buyer" onchange="select_radio_project_type(2)">
+										<input type="radio" id="Buyer" class="labbel_box_radio"  name="account_type" value="2" onchange="select_radio_project_type(2)">
 										</div>
                                     </label>
 									<label for="Seller" class="box-div labbel_box"  for="Seller" onclick="activeButton('project_type__1')">
 										<div class="p-lg-top-bottom ng-pristine ng-untouched ng-valid eo-button-box eo-button-box-radio ng-not-empty report_hidden " id="project_type__1">
 										<span class="glyphicon glyphicon-lg air-icon-freelancer" aria-hidden="true"></span>
 										<p class="m-sm-bottom">Work as a Frelancer</p>
-										<input type="radio" id="Seller" class="labbel_box_radio" name="account_type"  value="Seller" onchange="select_radio_project_type(1)">
+										<input type="radio" id="Seller" class="labbel_box_radio" name="account_type"  value="3" onchange="select_radio_project_type(1)">
 										</div>
 									</label>
 								@if ($errors->has('account_type'))

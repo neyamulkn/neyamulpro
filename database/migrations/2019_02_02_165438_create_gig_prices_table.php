@@ -14,8 +14,7 @@ class CreateGigPricesTable extends Migration
     public function up()
     {
         Schema::create('gig_prices', function (Blueprint $table) {
-            $table->increments('pirce_id');
-            $table->integer('gig_id');
+            $table->integer('gig_id')->unsigned();
             $table->integer('catetory_id');
             $table->string('basic_title');
             $table->string('plus_title');
@@ -42,7 +41,7 @@ class CreateGigPricesTable extends Migration
             $table->double('super_p', 8, 2);
             $table->double('platinum_p', 8, 2);
             $table->integer('user_id');
-            $table->timestamps();
+            $table->foreign('gig_id')->references('gig_id')->on('gig_basics')->onDelete('cascade');
         });
     }
 

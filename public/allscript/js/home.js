@@ -5,6 +5,10 @@
 		productCarousel_4 = '#pl-4',
 		productCarousel_5 = '#pl-5';
 		productCarousel_6 = '#pl-6';
+		productCarousel_7 = '#pl-7';
+		productCarousel_8 = '#pl-8';
+		productCarousel_9 = '#pl-9';
+		productCarousel_10 = '#pl-10';
 
 	var defaults = {
 		items: 4,
