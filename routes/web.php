@@ -135,8 +135,7 @@ Route::group(['prefix'=> 'dashboard/themeplace'],  function(){
 });
 Route::get('/tags/input/', 'themeController@tags')->name('theme_tags');
 
-
-// Themeplace route 
+//Start Themeplace route 
 Route::group(['prefix'=> 'themeplace'],  function(){
 	Route::get('/', 'themefrontController@themeplace');
 	Route::post('/theme_show_category', 'themefrontController@theme_show_category'); // show category home page
