@@ -31,7 +31,6 @@ Route::group(['prefix'=> 'admin', 'middleware' => ['admin', 'auth']], function()
 		Route::post('subfilter/', 'filterController@insert_theme_subfilter')->name('insert_theme_subfilter'); // filter
 	});
 
-
 	//workplace category & filter 
 	Route::group(['prefix'=> 'workplace'],  function(){
 
@@ -135,8 +134,9 @@ Route::group(['prefix'=> 'dashboard/themeplace'],  function(){
 
 });
 Route::get('/tags/input/', 'themeController@tags')->name('theme_tags');
-// Themeplace route 
 
+
+// Themeplace route 
 Route::group(['prefix'=> 'themeplace'],  function(){
 	Route::get('/', 'themefrontController@themeplace');
 	Route::post('/theme_show_category', 'themefrontController@theme_show_category'); // show category home page
