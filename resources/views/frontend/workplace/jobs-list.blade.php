@@ -15,6 +15,39 @@
     padding: 10px !important;
     margin-top: 10px !important;
 }
+
+.src-section{
+	width: 86%;
+	 position: relative;
+	margin: 0px auto;
+	background: #fff;
+    padding: 10px !important;
+    margin-top: 10px !important;
+}
+.search_bar{
+	position: absolute;
+    top: 60px;
+    left: 10;
+    margin: 0px auto;
+    width: 84%;
+    border:1px solid #ccc;
+    border-top: none;
+    background: #fafafa;
+    z-index: 999;
+    display: none;
+
+}
+.search_bar li{
+	padding: 10px;	
+	display: block;
+}
+.search_bar li a{
+	display: block;
+}
+.search_bar li:hover{
+	
+	background-color: #fff;
+}
 </style>
 
 @section('content')
@@ -24,13 +57,30 @@
 
 	<!-- SECTION -->
 	<div class="section-wrap">
+		
+		<div  class="src-section">
+				<form action=""  class="search-widget-form"  style="width: 100%;" >
+					<input type="text" autocomplete="off" onkeyup="search_bar(this.value)" style="width: 85%;border-radius:0px !important;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" id="item" placeholder="Search goods or services here...">
+					
+					<button class="button medium tertiary">Search Now!</button>
+				</form>
+				<div class="search_bar" id="search_bar" >
+					<ul>
+						<span id="show_suggest_key"></span>
+					</ul>
+				</div>
+			</div>
+				
+
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 		<div class="section">
+
+			
 			<!-- SIDEBAR -->
 			<div class="sidebar right">
 				
 				<div class="sidebar-item">
-                    <b>Category</b><br>
-                    <hr style="margin-top: 10px;" class="line-separator">
+                    <b>Category</b><br><br>
                     
 					<ul class="dropdown hover-effect">
 						@if(isset($get_subcategory))
@@ -41,6 +91,7 @@
                             @endforeach 
                         @endif
 					</ul>
+
 				</div>
 
                 <div class="sidebar-item">
@@ -139,13 +190,38 @@
 @section('js')
 <!-- Owl Carousel -->
 <script src="{{ asset('allscript/js/vendor/jquery.range.min.js') }}"></script>
-<!-- Side Menu -->
-<script src="{!! asset('allscript')!!}/js/side-menu.js"></script>
-<!-- User Quickview Dropdown -->
 
 <!-- XM LineFill -->
 <script src="{!! asset('allscript')!!}/js/vendor/jquery.xmlinefill.min.js"></script>
 
 <script src="{{ asset('allscript/js/shop.js') }}"></script>
 
+
+<script type="text/javascript">
+		function search_bar(src_key){
+		
+		$.ajax({
+			method:'post',
+			url:'{{ route('suggest_keyword') }}',
+			data:{src_key:src_key, _token: '{{csrf_token()}}'},
+			datatype: "text",
+			success:function(data){
+				if(data !=null){
+					
+					document.getElementById('search_bar').style.display = 'block';
+					document.getElementById('show_suggest_key').innerHTML = data;
+				}else{
+					
+					document.getElementById('search_bar').style.display = 'none';
+					
+				}
+			}
+		});
+	}
+
+	function search_field(src){
+	 	document.getElementById('item').value = src;
+	 	document.getElementById('search_bar').style.display = 'none';
+	}
+</script>
 @endsection

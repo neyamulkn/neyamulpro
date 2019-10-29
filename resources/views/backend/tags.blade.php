@@ -51,7 +51,7 @@
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       prefetch: {
-        url: '{{asset("tags/data/countries.php")}}',
+        url: '{{asset("tags/data/countries.json")}}',
         filter: function(list) {
           return $.map(list, function(name) {
             return { name: name }; });

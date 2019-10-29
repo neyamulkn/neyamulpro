@@ -303,7 +303,7 @@ li.financial-institutes__logo {
 
 @if($get_order->status == 'delivered')
 <div class="review_header" >
-  <div class="col-md-2 order_sign_review"">
+  <div class="col-md-2 order_sign_review">
     <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
     <div style="float: left;">requirements <br/> Submitted</div>
   </div>
@@ -373,7 +373,7 @@ li.financial-institutes__logo {
 										<img src="{{ asset('gigimages/'.$get_order->image_path)}}" alt="">
 									</figure>
 								</a>
-								<a href="{{url($get_order->username.'/'.$get_order->gig_url)}}"><p class="text-header small">I will {{$get_order->gig_title}}</p></a>
+								<p class="text-header small"><a href="{{url($get_order->username.'/'.$get_order->gig_url)}}">I will {{$get_order->gig_title}}</a> | <span style="color:#108a14"> {{$get_order->gig_payment_type}} price </span></p>
 								<p>
 									Seller: <a href="{{url('/'.$get_order->username)}}"> {{$get_order->username}}</a> | 
 									Order: <a href="{{url('/dashbord/'. Auth::user()->username .'/manage/orders/'.$get_order->order_id)}}">#{{$get_order->order_id}} </a> | 
@@ -399,9 +399,10 @@ li.financial-institutes__logo {
 						<div class="cart-header-product">
 							<p class="text-header small">Package name</p>
 						</div>
-						<div class="cart-header-category">
-							<p class="text-header small">Quantity</p>
-						</div>
+						
+            <div class="cart-header-category">
+              <p class="text-header small">Quantity</p>
+            </div>
 						<div class="cart-header-price">
 							<p class="text-header small">Duratation</p>
 						</div>
@@ -423,8 +424,7 @@ li.financial-institutes__logo {
 							<p>Subtotal</p>
 							<p>Service Fee</p>
 						</div>
-						<!-- /CART ITEM PRODUCT -->
-
+						
 						<!-- quantity -->
 						<div class="cart-item-category">
 							<p>{{$get_order->quantity}} </p>

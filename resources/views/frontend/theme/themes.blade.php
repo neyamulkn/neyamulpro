@@ -229,13 +229,13 @@ h1 {
 			<h5>WordPress themes, web templates and more. Brought to you by the largest global community of creatives.</h5>
 
 			<form action="{{ route('theme_search') }}" class="search-widget-form">
-				<input type="text" value="" required name="keyword" placeholder="Search goods or services here...">
+				<input type="text" value="" required name="item" placeholder="Search goods or services here...">
 				<label for="cat" class="select-block">
 					<select name="cat" id="cat">
 						<option value="">All Categories</option>
 						@foreach($theme_category as $show_category)
 
-							<option value="">{{$show_category->category_name}}</option>
+							<option {{ (isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url) ? 'selected' : ""}} value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
 						@endforeach
 					</select>
 					<!-- SVG ARROW -->

@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 
-@section('title', (isset($_GET['keyword'])) ? $_GET['keyword'] : $get_subcategory_id->subcategory_name .' – '. $get_category_id->category_name  .' – '. Request::segment(1) . ' – HOTLancer' )
+@section('title', (isset($_GET['item'])) ? $_GET['item'] : Request::segment(3) .' – '. Request::segment(2)  .' – '. Request::segment(1) . ' – HOTLancer' )
 
 @section('css')
 	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/simple-line-icons.css') }}">
@@ -8,7 +8,6 @@
 	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/tooltipster.css') }}">
 	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/jquery.range.css') }}">
 	<link rel="stylesheet" href="{{ asset('allscript')}}/css/c.css">
-
 @endsection
 <style type="text/css">
 	label:last-child {
@@ -46,29 +45,31 @@
 	background-color: #fff;
 }
 
+#loading
+{
+	text-align:center; 
+	background: url('{{ asset("image/loading.gif")}}') no-repeat center; 
+	height: 350px;
+}
+
+
 
 </style>
-@section('menu')
-	@include('frontend.layouts.theme-menu')
-@endsection
+
 
 @section('content')
 
-	<div style="position: relative; width: 100%;" onmousedown="search_bar_hide()">
-		@if(isset($_GET['keyword']))
+	<div style="position: relative; width: 100%;" >
+		@if(Request::segment(2)== 'search')
 			<form action="{{ route('theme_search') }}" style="width: 86%;" class="search-widget-form" >
-				<input type="text" style="width: 64%;" value="{{$_GET['keyword']}}" required="" onkeyup="search_bar(this.value)" name="keyword" placeholder="Search goods or services here...">
+				<input type="text" style="width: 64%;" value="{{$_GET['item']}}" required="" onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
 				<label for="cat" class="select-block">
 					<select name="cat" id="cat">
-						<option value="">All Categories</option>
-						<option value="1">PSD Templates</option>
-						<option value="2">Hero Images</option>
-						<option value="3">Shopify</option>
-						<option value="4">Icon Packs</option>
-						<option value="5">Graphics</option>
-						<option value="6">Flyers</option>
-						<option value="7">Backgrounds</option>
-						<option value="8">Social Covers</option>
+						<option  value="">All Categories</option>
+						@foreach($theme_category as $show_category)
+
+							<option selected="{{(isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url)? 'selected' : ''}}" value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
+						@endforeach
 					</select>
 					<!-- SVG ARROW -->
 					<svg class="svg-arrow">
@@ -81,7 +82,7 @@
 
 			@else
 			<form action=""  class="search-widget-form"  style="width: 86%;" >
-				<input type="text"  onmousedown="search_bar(this.value)" onkeyup="search_bar(this.value)" style="width: 85%;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" placeholder="Search goods or services here...">
+				<input type="text" autocomplete="off" onkeyup="search_bar(this.value)" style="width: 85%;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" id="item" placeholder="Search goods or services here...">
 				
 				<button class="button medium tertiary">Search Now!</button>
 			</form>
@@ -94,13 +95,13 @@
 		</div>
 	</div>
 	<!-- SECTION -->
-	<div class="section-wrap" onmousedown="search_bar_hide()">
+	<div class="section-wrap">
 		<div class="section">
 			<!-- CONTENT -->
-			<div class="content">
+			<div class="content filter_data">
 				<!-- HEADLINE -->
 				<div class="headline tertiary">
-					<h4>12.580 Products Found</h4>
+					<h4>{{$get_theme_info->total()}} Products Found</h4>
 					<form id="shop_filter_form" name="shop_filter_form">
 						<label for="price_filter" class="select-block">
 							<select name="price_filter" id="price_filter">
@@ -195,13 +196,14 @@
 										<p class="price small v2"><span>$</span>{{$show_theme_info->price_regular}}</p>
 										<a href="{{url('themeplace/'.$show_theme_info->theme_url)}}" target="_blank" class="button mid tertiary half v2">Preview</a>
 										<input type="hidden" name="price" value="{{$show_theme_info->price_regular}}" id="price">
-										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')" class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i></span></a>
+										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')" class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i>
+										</a>
 									</div>
 								</div>
 								<div class="theme4">
 									<ul >
 										<li class="prodlist-i-props"><b>Update</b> {!! Carbon\Carbon::parse($show_theme_info->updated_at)->format('d M, Y') !!}</li>
-										<li class="prodlist-i-props"><b>Sale </b> count</li>
+										<li class="prodlist-i-props"><b>Sale </b><?php echo DB::table('theme_orders')->where('theme_id',  $show_theme_info->theme_id)->count(); ?></li>
 										<li class="prodlist-i-props"><b>Review</b> count</li>
 										<li class="prodlist-i-props"><b>Comment</b> count</li>
 										<li class="prodlist-i-props"><b>Favourite </b> count</li>
@@ -230,9 +232,11 @@
 			<div class="sidebar">
 				<!-- DROPDOWN -->
 				<ul class="dropdown hover-effect tertiary">
+					@foreach($get_theme_info as $show_theme_info)
 					<li class="dropdown-item">
-						<a href="#">Digital Graphics</a>
+						<a href="#">Digital Graphics sdf</a>
 					</li>
+					@endforeach
 					<li class="dropdown-item active">
 						<a href="#">Illustration</a>
 					</li>
@@ -258,13 +262,13 @@
 						<!-- CHECKBOX -->
 					
 						@foreach($theme_subchild_category as $show_theme_subchild_category)
-							<input type="checkbox" id="{{$show_theme_subchild_category->id }}" value="{{$show_theme_subchild_category->id }}" class="common_selector metadata" name="filter1">
-							<label for="{{$show_theme_subchild_category->id }}">
-								<span class="checkbox tertiary"><span></span></span>
+							<input type="checkbox" id="tag{{$show_theme_subchild_category->id }}" value="{{$show_theme_subchild_category->id }}" class="common_selector platform" name="filter1">
+							<label for="tag{{$show_theme_subchild_category->id }}">
+								<span class="checkbox primary "><span></span></span>
 								{{$show_theme_subchild_category->subchild_category_name}}
 								<span class="quantity">3</span>
 							</label>
-							@endforeach
+						@endforeach
 
 						<!-- /CHECKBOX -->
 					</form>
@@ -278,12 +282,13 @@
 
 					@foreach($theme_filters as $theme_filter)
 						<!-- CHECKBOX -->
-						<input type="checkbox" id="ft1" name="ft1" form="shop_search_form">
-						<label for="ft1">
-							<span class="checkbox tertiary"><span></span></span>
-						{{$theme_filter->filter_name}}
-							<span class="quantity">72</span>
-						</label>
+					
+						<input type="checkbox" id="{{$theme_filter->filter_id }}" value="{{$theme_filter->filter_id }}" class="common_selector filter_type" name="filter1">
+							<label for="{{$theme_filter->filter_id }}">
+								<span class="checkbox primary primary"><span></span></span>
+								{{$theme_filter->filter_name }}
+								<span class="quantity">3</span>
+							</label>
 					<!-- /CHECKBOX -->
 					@endforeach
 				
@@ -322,35 +327,100 @@
 <script src="{{ asset('allscript/js/tooltip.js') }}"></script>
 <script type="text/javascript">
 
-	function search_bar(src_key){
-		
-				// var search = $(this).val();
-				// var action = $('#action').val();
+$(document).ready(function(){
+
+
+	$(document).on('click', '.pagination a', function(e){
+	e.preventDefault();
+
+		var page = $(this).attr('href').split('page=')[1];
+
+		filter_data(page);
+	});
+
+  
+	function filter_data(page)
+    {
+    	$('.filter_data').html('<div id="loading" style="" ></div>');
+        var tags = get_filter('platform');
+        var filter_type = get_filter('filter_type');
+        if(page == null){var page = 1;}
+        //var delivery = get_filter('delivery');
+		// var gig_sort = ($( "#gig_asc option:selected" ).val());
+		var category = "{{ Request::route('category') }}" ;
+		var subcategory = "{{ Request::route('subcategory') }}";
+		var src_item = "{{Request::input('item')}}";
+       	var  link = '<?php echo URL::to("themeplace/");?>/'+category+'/'+subcategory+'?item='+src_item+'&tags='+tags+'&filter_type='+filter_type+'&page='+page;
+		    history.pushState({id: 'Marketplace'}, category +' '+subcategory, link);
+
+ 		$.ajax({
+            url:link,
+            method:"get",
+            data:{
+				tags:tags,
+				category:category,
+				subcategory:subcategory,
+				filter:'filter',
+				//delivery:delivery,
 				
-				$.ajax({
-					method:'post',
-					url:'{{ route('suggest_keyword') }}',
-					data:{src_key:src_key, _token: '{{csrf_token()}}'},
-					datatype: "text",
-					success:function(data){
-						if(data !=null){
-							
-							document.getElementById('search_bar').style.display = 'block';
-							document.getElementById('show_suggest_key').innerHTML = data;
-						}else{
-							
-							document.getElementById('search_bar').style.display = 'none';
-							
-						}
+			},
+            success:function(data){
+            	if(data){
+                	$('.filter_data').html(data);
+               }else{
+               		$('.filter_data').html('Not Found');
+               }
+            }
+        });
+    }
+
+    function get_filter(class_name)
+    {
+        var filter = [];
+        $('.'+class_name+':checked').each(function(){
+            filter.push($(this).val());
+        });
+        return filter;
+    }
+    $('.common_selector').click(function(){
+		filter_data();
+    });
+
+    $('#gig_asc').on('change', function(){
+		filter_data();
+ 	});
+
+
+});
+
+function search_bar(src_key){
+		if(src_key != ''){
+			$.ajax({
+				method:'post',
+				url:'{{ route('suggest_keyword') }}',
+				data:{src_key:src_key, _token: '{{csrf_token()}}'},
+				datatype: "text",
+				success:function(data){
+					if(data !=null){
+						
+						document.getElementById('search_bar').style.display = 'block';
+						document.getElementById('show_suggest_key').innerHTML = data;
+					}else{
+						
+						document.getElementById('search_bar').style.display = 'none';
+						
 					}
-				});
-			
-		
+				}
+			});
+		}else{
+			document.getElementById('search_bar').style.display = 'none';
+		}
 	}
 
-function search_bar_hide(){
-	document.getElementById('search_bar').style.display = 'none';
-}
+	function search_field(src){
+	 	document.getElementById('item').value = src;
+	 	document.getElementById('search_bar').style.display = 'none';
+	}
 
 
 	function add_to_cart(theme_id){

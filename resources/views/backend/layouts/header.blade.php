@@ -7,8 +7,7 @@
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/simple-line-icons.css">
     <link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/font-awesome.min.css">
-    <link rel="stylesheet" href="{{asset('/allscript')}}/css/select2.min.css">
-	<script src="{{asset('/allscript')}}/gig/js/jquery.2.2.0.min.js"></script>
+   <script src="{{asset('/allscript')}}/gig/js/jquery.2.2.0.min.js"></script>
 
 	@yield('css')
 
@@ -154,7 +153,7 @@
 			<li class="dropdown-item">
 				<a href="{{url('dashboard/inbox/ ')}}">
                     <span class="sl-icon icon-envelope"></span>
-                    Messages
+                    Messenger
                 </a>
                 <!-- PIN -->
                 <span class="pin soft-edged big secondary">!</span>
@@ -171,9 +170,8 @@
 			<li class="dropdown-item">
 				<a href="{{url('dashboard/earnings/balance')}}">
                     <span class="sl-icon icon-star"></span>
-                    Earnings
+                    Earnings Statement
                 </a>
-                
 			</li>
 
 			<p class="side-menu-title">Workplace Setting</p>
@@ -181,7 +179,7 @@
 			<li class="dropdown-item interactive">
 				<a href="#">
                     <span class="sl-icon icon-tag"></span>
-                    Job post
+                    Workplace
                     <!-- SVG ARROW -->
 					<svg class="svg-arrow">
 						<use xlink:href="#svg-arrow"></use>
@@ -193,24 +191,17 @@
 				<ul class="inner-dropdown">
 					
 					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/workplace/job-post')}}">Post a Job</a>
+						<a href="{{url('dashboard/workplace/job-post')}}">Workplace add job</a>
 						
 					</li>
 					
 					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/workplace/job-list')}}">All job posts</a>
+						<a href="{{url('dashboard/workplace/job-list')}}">Workplace job list</a>
 					</li>
-
 					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/workplace/manage/buyer_order/active')}}">Add Orders</a>
+						<a href="{{route('job_manage_order')}}">Workplace Order History</a>
 					</li>
 
-
-					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/workplace/subfilter')}}">Add sub filter</a>
-					</li>
-
-					
 				</ul>
 				<!-- INNER DROPDOWN -->
 			</li>
@@ -222,7 +213,7 @@
 			<li class="dropdown-item interactive">
 				<a href="#">
                     <span class="sl-icon icon-tag"></span>
-                    GIG Manage
+                    Marketplace
                     <!-- SVG ARROW -->
 					<svg class="svg-arrow">
 						<use xlink:href="#svg-arrow"></use>
@@ -234,27 +225,31 @@
 				<ul class="inner-dropdown">
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/manage-gigs/active')}}">All GIG Items</a>
+						<a href="{{url('dashboard/manage-gigs/active')}}">Marketplace Items List</a>
 						
 					</li>
 					<!-- /INNER DROPDOWN ITEM -->
 
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="{{url('dashboard/create-gig')}}">Create Gigs</a>
+						<a href="{{url('dashboard/create-gig')}}">Marketplace Add Item</a>
 					</li>
+					<li class="inner-dropdown-item">
+						<a href="{{route('manage_seller_order', 'priority')}}">Marketplace Order History</a>
+					</li>
+				
 					<!-- /INNER DROPDOWN ITEM -->
 				</ul>
 				<!-- INNER DROPDOWN -->
 				
 			</li>
 
-			<p class="side-menu-title">Theme option</p>
+			<p class="side-menu-title">Themeplace</p>
 
 			<li class="dropdown-item interactive">
 				<a href="#">
                     <span class="sl-icon icon-tag"></span>
-                    Theme Manage
+                   Themeplace
                     <!-- SVG ARROW -->
 					<svg class="svg-arrow">
 						<use xlink:href="#svg-arrow"></use>
@@ -266,14 +261,13 @@
 				<ul class="inner-dropdown">
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="{{route('manage_theme')}}">Manage Theme </a>
-						
+						<a href="{{route('manage_theme', 'active')}}">Themeplace Item List</a>
 					</li>
 					<!-- /INNER DROPDOWN ITEM -->
 
 					<!-- INNER DROPDOWN ITEM -->
 					<li class="inner-dropdown-item">
-						<a href="{{route('upload_theme')}}">Upload Theme</a>
+						<a href="{{route('upload_theme')}}">Themeplace Add Item</a>
 					</li>
 					<!-- /INNER DROPDOWN ITEM -->
 				</ul>
@@ -297,12 +291,7 @@
 		<!-- DROPDOWN -->
 		<ul class="dropdown dark hover-effect">
 			<!-- DROPDOWN ITEM -->
-			<li class="dropdown-item">
-				<a href="{{url('dashboard/'.Auth::user()->username.'/manage/seller_order/priority')}}">
-                    <span class="sl-icon icon-people"></span>
-                    Orders
-                </a>
-			</li>
+			
 
 			<li class="dropdown-item">
 				<a href="{{url('dashboard/'.Auth::user()->username.'/manage/buyer_order/active')}}">
@@ -319,7 +308,7 @@
 			<li class="dropdown-item">
 				<a href="dashboard-statement.html">
                     <span class="sl-icon icon-energy"></span>
-                    Earning Statement
+                    Buying Statement
                 </a>
 			</li>
 			<li class="dropdown-item">

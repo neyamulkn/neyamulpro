@@ -11,10 +11,6 @@
 
 <style>
 
-
-
-
-
 figure.user-avatar.small {
     margin: 13px 13px 13px 0;
     float: left;
@@ -44,21 +40,22 @@ figure.user-avatar.small {
             <div class="post-tab xmtab" style="display: block;">
 
             	<?php 
-            	$buyer_id = Auth::user()->id;
-            	$active = $new = $waiting = $delivered = $missing = $completed = $cancel = $started= 0;
-            	$get_status = DB::table('job_orders')->where('buyer_id' , '=', $buyer_id)->get();
+            	$user_id = Auth::user()->id;
+            	$active =  $delivered =  $completed = $cancel =  0;
+            	$get_status = DB::table('job_orders')
+            				->where(function($query) use ($user_id) {
+				            $query->where('job_orders.buyer_id', $user_id)
+				            ->orWhere('job_orders.freelancer_id', $user_id);})->get();
             	foreach($get_status as $order_status){
       
             		if($order_status->status == 'active'){ $active +=1 ; }
             		if($order_status->status == 'delivered'){ $delivered +=1 ; }
             		if($order_status->status == 'completed'){ $completed +=1 ; }
             		if($order_status->status == 'cancel'){ $cancel +=1 ; }
-            		if($order_status->status == 'started'){ $started +=1 ; }
-            		if($order_status->status == 'waiting'){ $waiting +=1 ; }
-            		if($order_status->status == 'missing'){ $missing +=1 ; }
+            	
             	}
 
-            	$all = $active+$waiting +$delivered+ $missing+ $completed+ $cancel +$started;
+            	$all = $active +$delivered+ $completed+ $cancel;
 
             	?>
 				<!-- TAB HEADER -->
@@ -67,12 +64,8 @@ figure.user-avatar.small {
 					<div class="tab-item selected" onclick="get_order('active')">
 						<p class="text-header">ACTIVE ({{$active}})</p>
 					</div>
-					<div class="tab-item" onclick="get_order('missing')">
-						<p class="text-header">MISSING DETAILS ({{$missing}})</p>
-					</div>
-					<div class="tab-item" onclick="get_order('waiting')">
-						<p class="text-header" >WAITING MY REVIEW ({{$waiting}})</p>
-					</div>
+					
+					
 					<div class="tab-item" onclick="get_order('delivered')">
 						<p class="text-header" >DELIVERED ({{$delivered}})</p>
 					</div>
@@ -84,6 +77,7 @@ figure.user-avatar.small {
 					</div><div class="tab-item">
 						<p class="text-header" onclick="get_order('all')">All ({{$all}})</p>
 					</div>
+				</div>
 					
 				<div class="void open" id="open">
 					<!-- COMMENTS -->
@@ -147,15 +141,13 @@ figure.user-avatar.small {
 
     function get_order(status){
     	document.getElementById('open').style.display = 'block';
-    	history.pushState('state/', '/buyer_order/', status);
+    	window.history.pushState({}, "", status);
         var  link = '<?php echo URL::to("dashboard/workplace/manage/get_buyer_orders/");?>/'+status;
        
         $.ajax({
             url:link,
             method:"get",
-            data:{
-                status:status
-            },
+            
             success:function(data){
                 if(data){
                    
@@ -165,9 +157,6 @@ figure.user-avatar.small {
            	}
         });
     }
-    
-     </script>
-
 </script>
 
 @endsection

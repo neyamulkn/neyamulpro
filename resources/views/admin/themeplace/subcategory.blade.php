@@ -53,64 +53,57 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>	
 				</div>
 
-			<form action="{{url('dashboard/theme/subcategory')}}" data-parsley-validate method="post" id="profile_info">
-				 {{ csrf_field() }}
-	        <div class="modal-body form-box-item">
-
-				
-				<div class="input-container">
+				<form action="{{route('insert_theme_subcategory')}}" data-parsley-validate method="post" id="profile_info">
+					 {{ csrf_field() }}
+		        	<div class="modal-body form-box-item">
 					<div class="input-container">
-						<label class="rl-label">Category Name</label>
-						<input name="subcategory_name" value="" type="text" id="" placeholder="Enter category here...">
+						<div class="input-container">
+							<label class="rl-label">Subcategory Name</label>
+							<input name="subcategory_name" required="" value="" type="text" id="" placeholder="Enter category here...">
 
+						</div>
+		        	</div>
 
-
-					</div>
-	        	</div>
-
-	        	<div class="input-container">
-					<label for="Category" class="rl-label required">Category</label>
-					<label for="Category" class="select-block">
-						<select name="category_id" id="Category">
-							<option value="">Select Category</option>
-							<?php
-								$get_category = DB::table('theme_category')->get();
+		        	<div class="input-container">
+						<label for="Category" class="rl-label required">Category</label>
+						<label for="Category" class="select-block">
+							<select name="category_id" required="" id="Category">
+								<option value="">Select Category</option>
 								
-							 ?>
-							@foreach($get_category as $category)
-								<option value="{{$category->id}}">{{$category->category_name}}</option>
-							@endforeach
-						</select>
-						<!-- SVG ARROW -->
-						<svg class="svg-arrow">
-							<use xlink:href="#svg-arrow"></use>
-						</svg>
-						<!-- /SVG ARROW -->
-					</label>
-				</div>
+								@foreach($get_category as $category)
+									<option value="{{$category->id}}">{{$category->category_name}}</option>
+								@endforeach
+							</select>
+							<!-- SVG ARROW -->
+							<svg class="svg-arrow">
+								<use xlink:href="#svg-arrow"></use>
+							</svg>
+							<!-- /SVG ARROW -->
+						</label>
+					</div>
 
-	        	<div class="input-container">
-					<label for="status" class="rl-label required">Status</label>
-					<label for="status" class="select-block">
-						<select name="status" id="status">
-							<option value="1">Active</option>
-							<option value="2">Unactive</option>
-							
-						</select>
-						<!-- SVG ARROW -->
-						<svg class="svg-arrow">
-							<use xlink:href="#svg-arrow"></use>
-						</svg>
-						<!-- /SVG ARROW -->
-					</label>
-				</div>
+		        	<div class="input-container">
+						<label for="status" class="rl-label required">Status</label>
+						<label for="status" class="select-block">
+							<select name="status" id="status">
+								<option value="1">Active</option>
+								<option value="2">Unactive</option>
+								
+							</select>
+							<!-- SVG ARROW -->
+							<svg class="svg-arrow">
+								<use xlink:href="#svg-arrow"></use>
+							</svg>
+							<!-- /SVG ARROW -->
+						</label>
+					</div>
 
-	        <div class="modal-footer">
-	          <button type="reset" class="btn btn-sm btn-danger" data-dismiss="modal">Cancal</button>
-	          <button type="submit" class="btn btn-sm btn-success">Update</button>
-	        </div>
-	        </form>
-	      </div>
+			        <div class="modal-footer">
+			          <button type="reset" class="btn btn-sm btn-danger" data-dismiss="modal">Cancal</button>
+			          <button type="submit" class="btn btn-sm btn-success">Insert</button>
+			        </div>
+		        </form>
+	      	</div>
 	    </div>
 	</div>
 	<!-- End location model---->

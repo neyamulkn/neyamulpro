@@ -24,6 +24,7 @@ class CreateEarningsTable extends Migration
             $table->char('ref_username', 25)->nullable();
             $table->double('ref_earning', 8, 2)->nullable();
             $table->char('status',15);
+            $table->char('platform',15);
             $table->timestamps();
         });
     }

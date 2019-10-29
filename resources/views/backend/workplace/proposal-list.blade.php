@@ -22,7 +22,10 @@
         <div class="dashboard-content">
             <div class="hlot-manus">
 				<div class="breadcrumhot">
-					<a class="hotlmanuss" href="#">
+					<?php foreach($get_proposals as $show_proposal){ 
+						$job_url=$show_proposal->job_title_slug;
+					} ?>
+					<a class="hotlmanuss" href="{{url('workplace/'.$job_url)}}" target="_blank">
 						<span class="d-md-none">View Job</span> <span class="d-none d-md-inline">View Job Post</span>
 					</a>
 					<a class="hotlmanuss" href="#">
@@ -32,7 +35,7 @@
 						<span> Review<span class="d-none d-md-inline"> Proposals</span>
 						<strong class="text-muted d-none d-sm-inline"> (<span>16</span>) </strong></span>
 					</a>
-					<a class="hotlmanuss" href="{{url('dashboard/workplace/applicant-hire/45/')}}">
+					<a class="hotlmanuss" href="{{route('job_manage_order')}}">
 						<div> <span> <span>Hire</span><strong class="text-muted d-none d-sm-inline"> (<span>0</span>) </strong></span></div>
 					</a>
 				</div>
@@ -43,25 +46,10 @@
 					<div class="tab-header tertiary">
 						<!-- TAB ITEM -->
 						<div class="tab-item selected">
-							<p class="text-header">Item Details</p>
+							<p class="text-header">Applicant List</p>
 						</div>
 						<!-- /TAB ITEM -->
 
-						<!-- TAB ITEM -->
-						<div class="tab-item">
-							<p class="text-header">Reviews</p>
-						</div>
-						<!-- /TAB ITEM -->
-
-						<!-- TAB ITEM -->
-						<div class="tab-item">
-							<p class="text-header">Comments</p>
-						</div>
-						
-						<div class="tab-item">
-							<p class="text-header">Support</p>
-						</div>
-						<!-- /TAB ITEM -->
 					</div>
 					<!-- /TAB HEADER -->
 
@@ -99,10 +87,7 @@
 										</div>
 									</div>
 									<div class="hot-workr1">
-										<div class="hot-work3x">
-											<a href="user-profile.html" class="hot-worklike"><span class="sl-icon icon-like"></span></a>
-											<a href="user-profile.html" class="hot-worklike"><span class="sl-icon icon-like"></span></a>
-										</div>
+										
 										<div class="hot-work2">
 											<a href="user-profile.html" class="timestamp2"><span class="sl-icon icon-like"></span> Send Message </a>
 											<a href="{{url('dashboard/workplace/applicant-hire/')}}/{{$show_proposal->job_id}}/{{$show_proposal->freelancer_id}}" class="timestamp2"><span class="sl-icon icon-like"></span> Hire Freelancer</a>

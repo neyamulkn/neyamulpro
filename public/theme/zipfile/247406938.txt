@@ -1,0 +1,40 @@
+
+secure.ovalfleet.com:8443
+
+	
+Username: abaacorp
+
+Password: IK~qc+A&+5`5I4tdSeHPA
+
+
+
+
+1. Sign up for exclusive offers will end up to this email - triadmobilitysupply@gmail.com
+Done 2. Move the Menu items a bit towards right
+Done 3. Home, About Us, Wheelchair, Parts, Contact Us
+Done 4. Footer: Contact info - remove the 24/7 thing and move the address up - 
+	Triad Mobility Supply, LLC 
+	2738 Corporation Pkwy, Suite D 
+	Burlington, NC 27215
+	214.736.5989
+	contact@triadmobilitysupply.com
+
+Done 5. Cannge the font in the entire site
+Done 6. Next to the slider, remove the video and place a FREE SHIPPING still image there
+Done 7. Make the menu bar a light navy blue instead of deep navy blue or light blue
+Done 8. Remove the Free Delivery boxes below the slide
+Done 9. Place the phone number like this site - https://marcsmobility.com/
+Done 10. Remove the cart from top left
+Done 11. On top - remove Store Locations and Track your order and move up the Love Signs
+Done 12. Footer - Inromation> About Us, Shipping Policy, My Account, Order History
+Done 13. Affiliate > Affiliation Form >
+Done 14. Customer Service > Sitemap, Delivery Information, Return Policy, 
+Done 15. Social Medias - fb, twitter, linkedin
+Done 16. Copyright - fix it
+Done 17. On the extreme right of the bottom footer - keep the visa,mastercard etc card icons
+Done 18. Right above the footer - place the manufacturer logos just like this site - https://marcsmobility.com/
+Done 19. On the Contact Us Page - http://triadmobilitysupply.com/contact.php  -- Remove "Tell Us Your Project"
+Done 20. On contact page - directly write the address. Don't have to write ADDRESS:
+Done 21. On top right - where it says $152, use a cart sign like the logolike cart on left
+22. Login/Register - make it functional - ref - https://marcsmobility.com/customer/account/create/   - insert google captcha
+23. Link it up with paypal

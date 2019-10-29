@@ -184,16 +184,12 @@
 
 }
 
-
-
-
-
     	.step{
     		color:#00668c; font-size: 16px;
     	}
 
     	.deliver_header{
-    		display:flex;padding:10px;background: #fff;border-bottom: 1px solid #ccc;
+    		display:flex;padding:10px;background: #fff;border-bottom: 1px solid #ccc;font-size: 12px;font-weight: bold;
     	}
     	.order_sign , .order_progress{
 		    font-size: 11px; 
@@ -212,8 +208,14 @@
     		color: #cc8808; 
     	}
     	.order_requirement{margin-bottom: 10px; text-align:center;color: #7b7b7b;}
-    	
-    	#work_file, #order_id, #buyer_id{display: none;}
+    	.user_image{
+        text-align: left; padding: 10px; position: relative;
+      }
+    	#work_file, #order_id, #attach_file, #buyer_id{display: none;}
+
+      .revision{
+        position: absolute;right: 30px;top: 8px;width: 30%;border-left: 1px solid #ccc;height: 75%;padding: 10px;text-align: center;
+      }
     	@media (min-width: 576px){
 .modal-dialog {
     max-width: 735px;
@@ -223,33 +225,55 @@
 @endsection
 
 @section('content')
-<div class="deliver_header">
-	<div class="col-md-2 order_sign">
-		<div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
-		<div style="float: left;">Buyer Submitted<br/> Information</div>
-	</div>
-	<div class="col-md-5 order_progress ">
-		<div class="order_sign2"><i class="fa fa-map-marker" aria-hidden="true"></i></i></div> 
-		<div style="float: left;">order in progress<br/> deliver soon</div>
-	</div>
-	<div class="col-md-2"><button class="btn btn-success btn-sm" style="float: right;" type="button" data-toggle="modal" data-target="#work_deliver">Deliver Your Oder</button></div>
+  <div class="deliver_header" style="{{ ($get_order_details->status == 'completed') ? 'background: #268220;color: #fff' : '' }}">
+    
+ 
+  @if(($get_order_details->status == 'active' OR $get_order_details->status == 'delivered') AND (Auth::user()->role_id == env('FRELANCER')) )
+
+      <div class="col-md-2 order_sign">
+        <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
+        <div style="float: left;">Buyer Submitted<br/> Information</div>
+      </div>
+
+     <div class="col-md-5 order_progress">
+      <div class="order_sign2"><i class="fa fa-map-marker" aria-hidden="true"></i></div> 
+      <div style="float: left;">Order in progress<br/> deliver soon</div>
+     </div>
+
+     <div class="col-md-2"><button class="btn btn-success btn-sm" style="float: right;" type="button" data-toggle="modal" data-target="#work_deliver">Deliver Your Oder</button></div>
+  @endif
+
+
+    
+<!-- for buyer & seller both bar -->
+  @if($get_order_details->status == 'completed' OR $get_order_details->status == 'cancel')
+    
+      <div class="col-md-2 order_sign_review">
+        <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
+        <div style="float: left;">Requirements <br/> Submitted</div>
+      </div>
+
+      <div class="col-md-2 order_sign_review">
+        <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
+        <div style="float: left;">Delivery <br/> Submitted</div>
+      </div>
+
+      <div class="col-md-5 ">
+            <div style="font-size: 26px;text-transform: uppercase;"> &#x2713; ORDER <em style="font-weight: bold;">{{$get_order_details->status}}</em ></div>  
+      </div>
+   
+    @endif
 </div>
 <!-- DASHBOARD CONTENT -->
 <div class="dashboard-content">
     <div class="order12lt">
 		<div class="order121">
 			<div class="order122">
-				<?php 
-					$buyer_info = DB::table('users')
-                    ->select('users.username')
-                    ->where('users.id', $get_order_details->buyer_id)->first(); 
-                   
-				?>
 
-				<h1 class="ordertitle"><span class="sl-icon icon-star"></span> Order #{{$get_order_details->order_id}} <a class="gig-view33" href="{{url($get_order_details->username.'/'.$get_order_details->gig_url)}}">view gig</a></h1>
+				<h1 class="ordertitle"><span class="sl-icon icon-star"></span> Order #{{$get_order_details->order_id}} <a class="gig-view33" href="{{url('marketplace/'.$get_order_details->gig_url)}}">view gig</a></h1>
 				<br>
 				<ul class="order-header-info cf">
-					<li class="order-header-info">Buyer: <a href="{{url($buyer_info->username)}}">{{$buyer_info->username}}</a> 
+					<li class="order-header-info"> Buyer: <a href="{{url($get_order_details->username)}}">{{$get_order_details->username}}</a> 
 						(<a href="#" class="buyer-history">view history</a>) 
 						<time datetime="2018-12-17"><em>{{\Carbon\Carbon::parse($get_order_details->created_at)->format('M d, Y')}}</em></time></li>
 				</ul>
@@ -263,6 +287,7 @@
 				<thead>
 					<tr>
 						<th>Title </th>
+            <th>Project Type </th>
 						<th>Quantity</th>
 						<th>Duration</th>
 						<th>Amount</th>
@@ -308,34 +333,61 @@
 							@endforeach
 						</div>
 					</td>
-					<td>{{$get_order_details->quantity}}</td>
+					<td> {{$get_order_details->gig_payment_type}} price</td>
+          <td>{{$get_order_details->quantity}}</td>
 					<td>{{$get_order_details->delivery_time}} Days</td>
 					<td>${{$get_order_details->subtotal}}</td>
 				</tr>
 				
 				<tr>
-					<td class="total" colspan="4">Total <em>${{$get_order_details->subtotal}}</em></td>
+					<td class="total" colspan="5">Total <em>${{$get_order_details->subtotal}}</em></td>
 				</tr>
 				</tbody>
 			</table><br/>
 
-			<div class="counterWrap">
-				<div class="counter"></div>
+
+    @if(($get_order_details->status == 'active') OR ($get_order_details->status == 'delivered'))
+      <div class="counterWrap">
+        
+        <?php 
+        
+           $date = \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y');
+          if($get_order_details->gig_payment_type == 'monthly'){
+            $date = strtotime(date("m/d/Y", strtotime($date)) . " +1 month");
+            $date = date("m/d/Y", $date);
+            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
+          }else{
+            $date =  date('m/d/Y', strtotime($date. ' + '.$get_order_details->delivery_time.' days')); 
+            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
+          }
+        ?>
+        <div class="counter"></div>
+
 				<div class="labelsq"><ul><li>days</li><li>hours</li><li>minutes</li><li>seconds</li></ul></div>
-				<div style="display:none;" id="dataSet"><?php echo \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y h:m:i'); ?></div>
-				<!-- формат даты - номер месяца/число месяца/год  время  например: 5/10/2019 12:45:00 -->
-			</div>
-				<hr/>
+				<div style="display:none;" id="dataSet">
+           <?php echo  $date;  ?>
+        </div>
+        @if($get_order_details->gig_payment_type != 'monthly')
+        <form action="{{route('order_timeorcancel')}}" onsubmit="return confirm('Do you want submit this form.?')" method="POST">
+          <input id="order_id" required="required" type="text" value="{{$get_order_details->order_id}}" name="order_id">
+          {{csrf_field()}}
+          <div id="expired_time" style="text-align: center;margin:20px 0px 0px;"></div>
+         
+        </form>
+        @endif
+      </div><hr/>
+    @endif
+
 			<div>
 				<div style="margin-bottom: 10px; text-align:center;color: #7b7b7b;">
 					<span class="step"><span class="sl-icon icon-docs"></span><br/>ORDER REQUIREMENTS</span><br/>
-					<span>Your buyer has filled out the requirements <a style="color:#1DBF73;cursor: pointer;" data-toggle="collapse" data-target="#demo">Show requirements &#709;</a></span>
+					<span>Your buyer has filled out the requirements <a style="color:#1DBF73;cursor: pointer;" data-toggle="collapse" data-target="#requirement">Show requirements &#709;</a></span>
 				</div>
 				
 				<hr class="line-separator" style="margin-top: 0px;">
 					
 				<div class="cart-item-product" style=" font-size: 14px; margin-bottom: 10px">
-					<span id="demo" class="collapse">
+					<span id="requirement" class="collapse">
 						{{$get_order_details->requirement }}
 						<p>{{$get_order_details->requirement_ans }}</p><hr/>
 					</span>
@@ -347,25 +399,69 @@
 					<span>The order countdown is now ticking.<br/> Don't waste your time reading this message. <a style="color:#1DBF73;cursor: pointer;">STARTED </a></span>
 			</div>
 			<hr/>
-			<div>
-				<div class="order_requirement">
-					<span class="step"><i class="fa fa-archive" aria-hidden="true"></i><br/>HERE'S YOUR DELIVERY!</span><br/>
-					<span>This order will be marked as complete in {{$get_order_details->delivery_time}} days.</span>
-				</div>
-				
-				<hr class="line-separator" style="margin-top: 0px;">
-					
-				<div class="cart-item-product" style=" font-size: 14px; margin-bottom: 10px">
-					<span id="demo" class="collapse">
-						{{$get_order_details->requirement }}
-						<p>{{ $get_order_details->requirement_ans }}</p><hr/>
-					</span>
-				</div>
-
-			</div>
 
 			<div class="order_requirement">
-				<button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#work_deliver">Deliver Your Oder</button></div>
+					<span class="step"><i class="fa fa-archive" aria-hidden="true"></i><br/>HERE'S YOUR DELIVERY!</span><br/>
+					<span>This order will be marked as complete in {{$get_order_details->delivery_time}} days.</span>
+          <?php
+              $get_deliver_info = DB::table('order_delivers')
+                ->join('userinfos', 'order_delivers.user_id', '=', 'userinfos.user_id')
+                ->join('users', 'order_delivers.user_id', '=', 'users.id')
+                ->select('order_delivers.msg','order_delivers.work_file', 'order_delivers.status','users.username', 'userinfos.user_image')
+                ->where('order_delivers.deliver_order_id' , '=', $get_order_details->order_id)
+                ->orderBy('order_delivers.deliver_id', "ASC")->get();
+          ?>
+        @if($get_deliver_info)
+           @foreach($get_deliver_info  as $deliver_info)
+           
+           
+            <div class=" user_image">
+              <span class="">
+                <img src="{{asset('image/'.$deliver_info->user_image)}}" alt="gig_image" > 
+              </span> {{$deliver_info->username}} <br/>
+                <div style="margin-left: 30px;width: 60%;">{{$deliver_info->msg}}<br/> 
+                  @if($deliver_info->work_file != null)
+                   <span style="font-size: 12px;font-weight: bold;">DELIVERED FILES:</span><br/>
+                   <a href="{{url('deliver_file/'.$deliver_info->work_file)}}" download>{{$deliver_info->work_file}}</a>
+                   @endif
+
+                </div>
+               
+                @if($deliver_info->status == 'revision')
+                  <div class="revision">
+                    <i class="fa fa-refresh" aria-hidden="true"></i><br/>
+                  REVESION REQUESTED</div>
+                @endif
+            </div>
+            <hr/>
+
+            @endforeach
+          @endif
+				</div>
+
+    @if($get_order_details->status != 'completed')
+			<span>Use Quick Response:</span>
+      <form action="{{route('quick_response')}}" method="POST" enctype="multipart/form-data">
+        {{csrf_field()}}
+
+          <input id="order_id" required="required" type="text" value="{{$get_order_details->order_id}}" name="order_id">
+          
+          <div style="position: relative;display: flex;">
+            <textarea name="msg"  maxlength="1200" required="required" class="ttinput-grouptddd" style="border: 1px solid rgb(204, 204, 204);" placeholder="Describe your delivery in details."></textarea>
+            <label style="position: absolute;bottom: -18px;right: 0; font-size: 16px; padding: 5px;" for="attach_file"><i class="fa fa-paperclip" aria-hidden="true"></i> Attach
+              <input id="attach_file" type="file" name="work_file">
+              <button type="submit" class="btn btn-success btn-sm" >Send</button>
+            </label>
+        </div>
+      </form><br/>
+		@else <h2 style="color: #000; text-align: center;">Your Order is completed.</h2> @endif
+    
+    @if(($get_order_details->status == 'active' OR $get_order_details->status == 'delivered') AND (Auth::user()->role_id == env('FRELANCER')) )
+			<div class="order_requirement">
+				<button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#work_deliver">Deliver Your Oder</button>
+      </div>
+      @endif
+
 		</div>
 	</div>
 	<div class="order12rt">
@@ -376,11 +472,6 @@
 				<button><span class="sl-icon icon-docs"></span> Add note</button>
 			</div>
 		</div>
-		<div class="order-notes-wrapper note-order-page">
-			<p>Need to contact Customer Support?</p>
-			<a href="#" class="button mid dark spaced"><span class="primary">Purchase Now!</span></a>
-		</div>
-		
 	</div>
 	
 	<div class="clearfix"></div>			
@@ -389,34 +480,64 @@
 	<!-- /FORM BOX ITEMS -->
 </div>
 <!-- DASHBOARD CONTENT -->
-        <!-- Modal -->
+ <!-- Modal  deliver order-->
 <div id="work_deliver" class="modal fade " role="dialog">
   <div class="modal-dialog">
-  	<form action="{{url('dashboard/order/deliver/'.$get_order_details->order_id)}}" method="post" enctype="multipart/form-data">
-  		{{csrf_field()}}
+  
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header">
-        
-        <h4 class="modal-title">Deliver Complated work</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>Some text in the modal.</p>
-        <label style="border:1px solid #ccc; font-size: 16px; padding: 5px; width: 30%;" for="work_file"><i class="fa fa-paperclip" aria-hidden="true"></i> Upload work
-        	<input id="work_file" required="required" type="file" name="work_file">
-        	<input id="buyer_id" required="required" value="{{$get_order_details->buyer_id}}" type="text" name="buyer_id">
-        	<input id="order_id" required="required" type="text" value="{{$get_order_details->order_id}}" name="order_id">
-        </label>
-        <p>Max size 1GB</p>
-        <span>Use Quick Response:</span>
-        <textarea name="msg"  maxlength="1200" required="required" class="ttinput-grouptddd" style="border: 1px solid rgb(204, 204, 204);" placeholder="Describe your delivery in details."></textarea>
-        <p>0/2500</p>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-success btn-sm" >Deliver Work</button>
-      </div>
-	</form>
+      <form action="{{url('dashboard/order/deliver/'.$get_order_details->order_id)}}" method="post" enctype="multipart/form-data">
+        {{csrf_field()}}
+        <div class="modal-header">
+          
+          <h4 class="modal-title">Deliver Complated work</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+          <label style="border:1px solid #ccc; font-size: 16px; padding: 5px; width: 30%;" for="work_file"><i class="fa fa-paperclip" aria-hidden="true"></i> Upload work
+          	<input id="work_file" required="required" type="file" name="work_file">
+          	<input id="buyer_id" required="required" value="{{$get_order_details->buyer_id}}" type="text" name="buyer_id">
+          	<input id="order_id" required="required" type="text" value="{{$get_order_details->order_id}}" name="order_id">
+          </label>
+          <p>Max size 1GB</p>
+          <span>Use Quick Response:</span>
+          <textarea name="msg"  maxlength="1200" required="required" class="ttinput-grouptddd" style="border: 1px solid rgb(204, 204, 204);" placeholder="Describe your delivery in details."></textarea>
+          <p>0/2500</p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success btn-sm" >Deliver Work</button>
+        </div>
+	    </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Revision order modal -->
+
+<div id="revision_delivery" class="modal fade " role="dialog">
+  <div class="modal-dialog">
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <form action="{{route('revision_delivery',$get_order_details->order_id)}}" method="post" >
+        {{csrf_field()}}
+        <div class="modal-header">
+          
+          <h4 class="modal-title">Revision delivery work</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+         
+            <input id="buyer_id" required="required" value="{{$get_order_details->buyer_id}}" type="text" name="buyer_id">
+            <input id="order_id" required="required" type="text" value="{{$get_order_details->order_id}}" name="order_id">
+            <textarea name="revision_msg"  maxlength="1200" required="required" class="ttinput-grouptddd" style="border: 1px solid rgb(204, 204, 204);" placeholder="Describe your revision delivery in details."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" value="order_revision" name="order_revision" class="btn btn-success btn-sm" >Send</button>
+        </div>
+      </form>
     </div>
 
   </div>
@@ -426,8 +547,8 @@
 
 @section('js')
 	<!-- XM Pie Chart -->
-	<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
-
+<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
+ @if(($get_order_details->status == 'active') OR ($get_order_details->status == 'delivered'))
 <script>
 ;(function ($) {
 
@@ -532,6 +653,23 @@ $(function() {
 });
 </script>
 
+<script> 
+    var deadline = new Date(" <?php echo  $date;  ?>").getTime(); 
+    var x = setInterval(function() { 
+    var now = new Date().getTime(); 
+    var t = deadline - now; 
+    var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
+    var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
+    var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
+    var seconds = Math.floor((t % (1000 * 60)) / 1000); 
+
+        if (t < 0) { 
+            clearInterval(x); 
+            document.getElementById("expired_time").innerHTML = '<span >Time Expired</span><br/><button class="btn btn-success btn-sm" value="extra_time" name="order_review_time" type="submit">Extra Time</button> <button class="btn btn-success btn-sm" value="cancel" name="order_review_time" type="submit">Chancal Order</button>'; 
+        } 
+    }, 1000); 
+</script> 
+@endif
 @endsection
 
 

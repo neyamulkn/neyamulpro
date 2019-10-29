@@ -3,7 +3,7 @@
 
 @section('css')
 <link rel="stylesheet" href="{{asset('/allscript')}}/css/c.css">
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
+<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
 
 
 	<style>
@@ -340,7 +340,7 @@ code {
 				</div>
 				<!-- /INPUT CONTAINER -->
 				<div class="clearfix"></div>
-				
+				 
 			<form action="{{ route('insert_theme') }}" id="main_form" method="post" data-parsley-validate  enctype="multipart/form-data">
 				{{csrf_field()}}
 				<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
@@ -529,7 +529,7 @@ code {
 					  <label class="ttinput-groupt" for="name">Search Tags</label>
 						<div class="inputs">
 							<label class="select-block va">
-							<input type="text" value="fasd,fldsf," style="border:none !important;" name="search_tag" value="" id="tags-input" data-role="tagsinput" />
+							<input type="text" value="" style="border:none !important;" name="search_tag" value="" id="tags-input" data-role="tagsinput" />
 							</label>
 							<small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</a></small>
 						</div>
@@ -799,7 +799,7 @@ $(document).ready(function(){
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       prefetch: {
-        url: '{{ route("theme_tags")}}',
+        url: '{{ url("/tags/input/") }}',
         filter: function(list) {
           return $.map(list, function(name) {
             return { name: name }; });

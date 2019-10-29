@@ -172,6 +172,12 @@ height: 76px;
 	padding: 5px 0;
 	font-size: 20px;
 }
+
+.price_left{
+	text-transform: capitalize;
+    text-align: left!important;
+    padding: 10px !important;
+}
 </style>
 @endsection
 
@@ -457,7 +463,7 @@ height: 76px;
 					<input type="hidden" name="gig_id" value=" {{ $get_gig_info->gig_id }}">
 					<input type="hidden" name="gig_user_id" value=" {{ $get_gig_info->gig_user_id }}">
 					<hr class="line-separator"><br>
-					<a class="gigs-cat" href="#">Gigs / Graphics & Design / Web & Mobile Design</a>
+					<a class="gigs-cat" href="#">Marketplace > {{$get_gig_info->category_name}} > {{$get_gig_info->subcategory_name}}</a>
 				</div>
 
 				
@@ -534,28 +540,28 @@ height: 76px;
 					</thead>
 					<tbody>
 					  <tr>
-						<td><br>Price</td>
+						<td class="price_left">{{$get_gig_info->gig_payment_type}} Price</td>
 						<td><h3 class="panel-title price">$ {{ $get_gig_price->basic_p }}</h3></td>
 						<td><h3 class="panel-title price">$ {{ $get_gig_price->plus_p }}</h3></td>
 						<td><h3 class="panel-title price">$ {{ $get_gig_price->super_p }}</h3></td>
 						<td><h3 class="panel-title price">$ {{ $get_gig_price->platinum_p }}</h3></td>
 					  </tr>
 					  <tr>
-						<td><b>Packages</b></td>
+						<td class="price_left"><b>Packages</b></td>
 						<td> {{ $get_gig_price->basic_title }}</td>
 						<td> {{ $get_gig_price->plus_title }}</td>
 						<td> {{ $get_gig_price->super_title }}</td>
 						<td> {{ $get_gig_price->platinum_title }}</td>
 					  </tr>
 					  <tr>
-						<td>Description</td>
+						<td class="price_left">Description</td>
 						<td> {{ $get_gig_price->basic_dsc }}</td>
 						<td> {{ $get_gig_price->plus_dsc }}</td>
 						<td> {{ $get_gig_price->super_dsc }}</td>
 						<td> {{ $get_gig_price->platinum_dsc }}</td>
 					  </tr>
 					  <tr>
-						<td>Revisions</td>
+						<td class="price_left">Revisions</td>
 						<td> {{ $get_gig_price->rivision_b }}</td>
 						<td> {{ $get_gig_price->rivision_p }}</td>
 						<td> {{ $get_gig_price->rivision_s }}</td>
@@ -574,7 +580,7 @@ height: 76px;
 					 
 					@if($get_gig_info->gig_payment_type == 'monthly')
 					 	<tr>
-						<td>Daily Work</td>
+						<td class="price_left">Daily Work</td>
 						<td> 1 hour</td>
 						<td> 3 hour</td>
 						<td> 4 hour</td>
@@ -583,7 +589,7 @@ height: 76px;
 					@endif
 					
 					 <tr>
-						<td>Delivery time</td>
+						<td class="price_left">Delivery time</td>
 						<td> {{ $get_gig_price->delivery_time_b . $time_type }} </td>
 						<td> {{ $get_gig_price->delivery_time_p . $time_type }} </td>
 						<td> {{ $get_gig_price->delivery_time_s . $time_type }} </td>
@@ -593,7 +599,7 @@ height: 76px;
 					  <tr>
 						</tr><tr><td></td>
 						<td style="margin: 0 10px;">
-							<b>$ {{ $get_gig_price->basic_p }}</b><br>
+							<b>$ {{ $get_gig_price->basic_p }} </b><br>
 							<button class="btn-info"  name="package" value="basic">Select</button>
 						</td>
 						<td>

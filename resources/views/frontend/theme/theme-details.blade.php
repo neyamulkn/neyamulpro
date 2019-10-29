@@ -184,8 +184,8 @@ span.icon-arrow-right.small {
   color: #000;
   padding: 10px !important;
     padding-bottom: 7px !important; 
+    margin-left: 0px !important;
 }
-
 
 </style>
 @endsection
@@ -204,7 +204,7 @@ span.icon-arrow-right.small {
 					<p class="price large"><span>$</span><b id="cng_price">{!! $get_theme_detail->price_regular !!} </b></p>
 					<hr class="line-separator">
 					
-				<form action="{!! url('themeplace/buy') !!}" method="post" id="aux_form">
+				<form action="{!! route('theme_checkout') !!}" method="post" id="aux_form">
 					{!! csrf_field() !!}
 					
 					<input type="hidden" name="theme_id" value="{!! $get_theme_detail->theme_id !!}">
@@ -224,10 +224,12 @@ span.icon-arrow-right.small {
 						Extended License
 					</label>
 					<!-- /CHECKBOX -->
-					<p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
-					<button type="submit" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
-				</form>
+
 					<input type="hidden" name="price" value="{!! $get_theme_detail->price_regular !!}" id="price">
+					<p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
+					<button type="submit" name="purchase" value="purchase" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
+				</form>
+					
 					<button onclick="add_to_cart('{!! $get_theme_detail->theme_id !!}')" class="button mid tertiary half">Add to Cart </button>
 					<button class="button mid secondary wicon half"><span class="icon-heart"></span>652</button>
 					<div class="clearfix"></div>
@@ -499,7 +501,7 @@ span.icon-arrow-right.small {
 						
 						<!-- INFORMATION LAYOUT ITEM -->
 						<div class="information-layout-item">
-							<p class="text-header">Upload Date:</p>
+							<p class="text-header">Create Date:</p>
 							<p>{!!  \Carbon\Carbon::parse($get_theme_detail->created_at)->format('M d, Y') !!}</p>
 						</div>
 						<!-- /INFORMATION LAYOUT ITEM -->
@@ -518,10 +520,7 @@ span.icon-arrow-right.small {
 									<p>{!! $get_theme_feature->feature_name !!}</p>
 								</div>
 							@endif
-						@endforeach
-
-						<!-- /select ITEM -->
-						@foreach($get_theme_features as $get_theme_feature)
+					
 							@if($get_theme_feature->feature_type=='select')
 								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
 								<div class="information-layout-item">
@@ -529,10 +528,7 @@ span.icon-arrow-right.small {
 									<p>{!! $get_theme_feature->feature_name !!}</p>
 								</div>
 							@endif
-						@endforeach
-
-						<!-- /dropdown ITEM -->
-						@foreach($get_theme_features as $get_theme_feature)
+						
 							@if($get_theme_feature->feature_type=='dropdown')
 								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
 								<div class="information-layout-item">
@@ -575,56 +571,10 @@ span.icon-arrow-right.small {
 							<img src="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}" alt="">
 						</figure>
 						<!-- SLIDE CONTROLS -->
-						<div class="slide-control-wrap">
-							<div class="slide-control rounded left">
-								<!-- SVG ARROW -->
-								<svg class="svg-arrow">
-									<use xlink:href="#svg-arrow"></use>
-								</svg>
-								<!-- /SVG ARROW -->
-							</div>
-
-							<div class="slide-control rounded right">
-								<!-- SVG ARROW -->
-								<svg class="svg-arrow">
-									<use xlink:href="#svg-arrow"></use>
-								</svg>
-								<!-- /SVG ARROW -->
-							</div>
-						</div>
+						
 						
 					</div>
-					<div class="post-image-slides">
-						<!-- IMAGE SLIDES WRAP -->
-						<div class="image-slides-wrap full">
-							<!-- IMAGE SLIDES -->
-							<div class="image-slides" data-slide-visible-full="8" 
-													  data-slide-visible-small="2"
-													  data-slide-count="9">
-								<!-- IMAGE SLIDE -->
-								<div class="image-slide selected">
-									<div class="overlay"></div>
-									<figure class="product-preview-image thumbnail liquid">
-										<img src="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}" alt="">
-									</figure>
-								</div>
-								<!-- /IMAGE SLIDE -->
-								@foreach($theme_additiona_images as $theme_additiona_image)
-									<!-- IMAGE SLIDE -->
-									<div class="image-slide">
-										<div class="overlay"></div>
-										<figure class="product-preview-image thumbnail liquid">
-											<img src="{!!  asset('theme/images/'.$theme_additiona_image->theme_additiona_img) !!}" alt="">
-										</figure>
-									</div>
-									<!-- /IMAGE SLIDE -->
-								@endforeach
-								
-							</div>
-							<!-- IMAGE SLIDES -->
-						</div>
-						<!-- IMAGE SLIDES WRAP -->
-					</div>
+					
 					<hr class="line-separator">
 					
 					<div class="item-preview__actions">

@@ -19,29 +19,29 @@
 	<link rel="icon" href="favicon.ico">
 	<title>@yield('title')</title>
 
-	<style type="text/css">
-		.image_upload{
-			position: absolute;left:0; border-radius: 50%; background:rgba(255,255,255,.7); text-align: center; padding-top:40%; width: 100%; height: 100%; display: none;transition: 2s;
-		}
+<style type="text/css">
+	.image_upload{
+		position: absolute;left:0; border-radius: 50%; background:rgba(255,255,255,.7); text-align: center; padding-top:40%; width: 100%; height: 100%; display: none;transition: 2s;
+	}
 
-		.user_imagess:hover .image_upload{
-				display: block;
-				position: absolute;left:0;
-				top: 0px;
-				transition: 2s;
-		}
-		#overlay {
-			position: fixed;
-			left: 0px;
+	.user_imagess:hover .image_upload{
+			display: block;
+			position: absolute;left:0;
 			top: 0px;
-			width: 100%;
-			height: 100%;
-			z-index: 9999;
-			background-color: rgba(0,0,0, .3);
-			background-image: url("{{asset('image/loading.gif')}}");
-			background-position: center;
-		    background-repeat: no-repeat;
-		}
+			transition: 2s;
+	}
+	#overlay {
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 9999;
+		background-color: rgba(0,0,0, .3);
+		background-image: url("{{asset('image/loading.gif')}}");
+		background-position: center;
+	    background-repeat: no-repeat;
+	}
 
 	.uploading {
 		position: absolute;
@@ -98,20 +98,20 @@
 							<button type="button" class="close" data-dismiss="modal">&times;</button>	
 						</div>
 				        <form action="{{url('user/image/upload')}}" method="post" enctype="multipart/form-data" id="form1" runat="server">
-				        <div class="modal-body">
-				         
-				         	{{csrf_field()}}
-				         		<label for="user_imagess" class="user_imagess"  style="position: relative; margin: 0px auto; width: 200px;height: 200px; background: #ccc;border-radius: 50%;">
-						        <input type='file' name="user_image" style="display: none;" id="user_imagess" onchange="readURL(this);" />
-						        <img id="blah" src="{{asset('/image/'.'/'.$user_image->user_image)}}" alt="" style=" width: 200px; height: 200px;border-radius: 50%;" />
+					        <div class="modal-body">
+					         
+					         	{{csrf_field()}}
+					         		<label for="user_imagess" class="user_imagess"  style="position: relative; margin: 0px auto; width: 200px;height: 200px; background: #ccc;border-radius: 50%;">
+							        <input type='file' name="user_image" style="display: none;" id="user_imagess" onchange="readURL(this);" />
+							        <img id="blah" src="{{asset('/image/'.'/'.$user_image->user_image)}}" alt="" style=" width: 200px; height: 200px;border-radius: 50%;" />
 
-						        <span class="image_upload"><span style="font-size: 35px" class="sl-icon icon-camera"></span></span>
-						        </label>
-						   
-				        </div>
-				        <div class="modal-footer">
-				          <button type="submit" class="btn btn-default" >Update</button>
-				        </div>
+							        <span class="image_upload"><span style="font-size: 35px" class="sl-icon icon-camera"></span></span>
+							        </label>
+							   
+					        </div>
+					        <div class="modal-footer">
+					          <button type="submit" class="btn btn-default" >Update</button>
+					        </div>
 				         </form>
 				      </div>
 				      
@@ -177,7 +177,7 @@
 			<li class="dropdown-item interactive">
 				<a href="#">
                     <span class="sl-icon icon-tag"></span>
-                   Manage Workplace
+                   	Manage Workplace
                     <!-- SVG ARROW -->
 					<svg class="svg-arrow">
 						<use xlink:href="#svg-arrow"></use>
@@ -216,7 +216,7 @@
 			<li class="dropdown-item interactive">
 				<a href="#">
                     <span class="sl-icon icon-tag"></span>
-                    Manage Themeplace
+                    Themeplace 
                     <!-- SVG ARROW -->
 					<svg class="svg-arrow">
 						<use xlink:href="#svg-arrow"></use>
@@ -251,10 +251,18 @@
 				</ul>
 				<!-- INNER DROPDOWN -->
 			</li>
-
+			<li class="dropdown-item">
+				<a href="{{route('admin_manage_theme', 'active')}}">
+                    <span class="sl-icon icon-star"></span>
+                    Manage Theme
+                </a>
+                
+			</li>
+			
 		</ul>
+		
 		<!-- /DROPDOWN -->
-<!-- SIDE MENU TITLE -->
+		<!-- SIDE MENU TITLE -->
 		<p class="side-menu-title">Info &amp; Statistics</p>
 		<!-- /SIDE MENU TITLE -->
 
@@ -359,6 +367,15 @@
 
     <!-- DASHBOARD BODY -->
     <div class="dashboard-body">
+    	@if ($errors->any())
+		    <div class="alert alert-danger">
+		        <ul>
+		            @foreach ($errors->all() as $error)
+		                <li>{{ $error }}</li>
+		            @endforeach
+		        </ul>
+		    </div>
+		@endif
         <!-- DASHBOARD HEADER -->
         <div class="dashboard-header retracted">
             <!-- DB CLOSE BUTTON -->

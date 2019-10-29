@@ -16,6 +16,7 @@ class earning extends Model
         'type',
         'ref_username',
         'ref_earning',
-        'status'
+        'status',
+        'platform'
     ];
 }

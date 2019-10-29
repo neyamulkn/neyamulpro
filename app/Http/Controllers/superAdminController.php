@@ -26,6 +26,10 @@ class superAdminController extends Controller
     }
 
     public function create_gig_category(Request $request){
+      $request->validate([
+          'category_name' => 'required|unique:gig_home_category',
+      ]);
+
       $insertOrupdate = DB::table('gig_home_category')->where('id', $request->id)->first();
         
   		$data = [
@@ -36,25 +40,18 @@ class superAdminController extends Controller
   		];
   		
   		if($insertOrupdate){
-              $success = DB::table('gig_home_category')->where('id', $request->id)->update($data);
-              if($success){
-                Toastr::success('update successfully', 'Category');
-                echo "update";
-             }else{
-                Toastr::error('Sorry category not updated.'); 
-             }
-          return redirect('admin/marketplace/gig-category');
+            $success = DB::table('gig_home_category')->where('id', $request->id)->update($data);
+            if($success){
+              Toastr::success('update successfully', 'Category');
+              echo "update";
+           }else{ Toastr::error('Sorry category not updated.'); }
         }
         else{
             $success = gig_home_category::create($data);
-            if($success){
-
-              Toastr::success('Inserted successfully', 'Category');
-           }else{
-              Toastr::error('Sorry category not insert.'); 
-           }
-          return redirect('admin/marketplace/gig-category');
+            if($success){ Toastr::success('Inserted successfully', 'Category');
+            }else{ Toastr::error('Sorry category not insert.');} 
         }
+      return back();
     }
 
     public function marketplace_category_edit($id){
@@ -111,6 +108,8 @@ class superAdminController extends Controller
 
 
   public function create_gig_subcategory(Request $request){
+        $request->validate(['subcategory_name' => 'required:unique:gig_subcategories',]);
+
         $insertOrupdate = DB::table('gig_subcategories')->where('id', $request->id)->first();
        
      		$data = [
@@ -301,11 +300,14 @@ class superAdminController extends Controller
     //theme option
 
     public function theme_category(){
-        return view('admin.themeplace.category');
+        $get_category = DB::table('theme_category')->paginate(2);
+        return view('admin.themeplace.category')->with(compact('get_category'));
     }
 
     public function create_theme_category(Request $request){
-
+        $request->validate([
+            'category_name' => 'required|unique:theme_category',
+        ]);
         $data = [
             'category_name' => $request->category_name,
             'category_url' => str_slug($request->category_name),
@@ -315,20 +317,24 @@ class superAdminController extends Controller
 
          $insert = DB::table('theme_category')->insert($data);
          if($insert){
-             return back()->with('msg', 'category inserted successfully');
-         }else{
-             return back()->with('msg', 'sorry category not inserted.');
-         }
+              Toastr::success('Category intert successfully');
+           }else{
+              Toastr::error('Sorry category not interted.'); 
+           }
+          return back();
         
     }
 
 
     public function theme_subcategory(){
-         return view('admin.themeplace.subcategory');
+      $get_category = DB::table('theme_category')->get();
+      return view('admin.themeplace.subcategory')->with(compact('get_category'));
     }
 
     public function create_theme_subcategory(Request $request){
-
+        $request->validate([
+            'subcategory_name' => 'required|unique:theme_subcategory',
+        ]);
         $data = [
             'subcategory_name' => $request->subcategory_name,
             'subcategory_url' => str_slug($request->subcategory_name),
@@ -337,10 +343,11 @@ class superAdminController extends Controller
         ];
         $insert = DB::table('theme_subcategory')->insert($data);
          if($insert){
-             return back()->with('msg', 'category inserted successfully');
+            Toastr::success('Subcategory inserted successfully');
          }else{
-             return back()->with('msg', 'sorry category not inserted.');
+            Toastr::error('Sorry subcategory not inserted.');
          }
+         return back();
     } 
 
     public function theme_subchildcategory(){
@@ -348,13 +355,9 @@ class superAdminController extends Controller
     }
 
     public function create_theme_subchildcategory(Request $request){
-
-        // $get_subcategory = DB::table('theme_subchild_category')->where('subchild_category_url', str_slug($request->subchild_category_url))->get();
-
-        // if($get_subcategory){
-        //   $subchild_category_url = str_slug($request->subchild_category_url).rand(4,4);
-        // }
-
+        $request->validate([
+            'subchild_category_name' => 'required|unique:theme_subchild_category',
+        ]);
         $data = [
             'subchild_category_name' => $request->subchild_category_name,
             'subchild_category_url' => str_slug($request->subchild_category_name),
@@ -363,10 +366,11 @@ class superAdminController extends Controller
         ];
         $insert = DB::table('theme_subchild_category')->insert($data);
          if($insert){
-             return back()->with('msg', 'category inserted successfully');
+            Toastr::success('sub childcategory inserted successfully');
          }else{
-             return back()->with('msg', 'sorry category not inserted.');
+            Toastr::error('sorry sub childcategory not inserted.');
          }
+      return back();
     }
 
 

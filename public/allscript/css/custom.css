@@ -234,6 +234,25 @@ color: #fff;
 }
 
 .user_image img {
-    height: 26px !important;
-    widows: 26px !important;
+   height: 30px !important;
+    border-radius: 50%;
+    width: 30px !important;
+    border: 1px solid #ccc;
+    padding: 1px;
 }
+
+.page {
+    float: right;
+    margin-top: 24px;
+    overflow: visible !important;
+}
+.page-link{
+ 
+    background-color: #535d5f;
+    color: #fff;
+ 
+}.pagination.active {
+    background-color: #00d7b3 !important;
+}
+
+

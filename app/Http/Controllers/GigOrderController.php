@@ -11,6 +11,7 @@ use App\ref_count;
 use DB;
 use Auth;
 use Session;
+use Toastr;
 class GigOrderController extends Controller
 {
     
@@ -326,7 +327,7 @@ class GigOrderController extends Controller
             $quantity = session::get('item_quantity');
             $subtotal = session::get('subtotal');
             $total = $quantity*$subtotal+2;
-            
+            date_default_timezone_set('GMT');
             $data = [
                 'order_id' => $gig_order_id,
                 'gig_id' => session::get('gig_id'),
@@ -405,7 +406,7 @@ class GigOrderController extends Controller
             ->leftJoin('order_requirement_ans', 'gig_orders.order_id', '=', 'order_requirement_ans.order_id')
             ->Join('gig_images', 'gig_orders.gig_id', '=', 'gig_images.gig_id')
             ->Join('users', 'gig_orders.seller_id', '=', 'users.id')
-            ->select('gig_orders.*','order_requirement_ans.*', 'gig_requirements.*', 'gig_basics.gig_id', 'gig_basics.gig_title', 'gig_basics.gig_url', 'gig_images.image_path', 'users.id', 'users.username', 'users.name')
+            ->select('gig_orders.*','order_requirement_ans.requirement_ans', 'gig_requirements.requirement', 'gig_basics.gig_id', 'gig_basics.gig_title', 'gig_basics.gig_url', 'gig_images.image_path', 'gig_basics.gig_payment_type', 'users.id', 'users.username', 'users.name')
             ->where('gig_orders.buyer_id', '=', $buyer_id)
             ->where('gig_orders.order_id', '=', $order_id)->first();
            Session::put('msg', 'Order started');
@@ -415,10 +416,10 @@ class GigOrderController extends Controller
              return redirect('/hotlancer/error');
         }
     }    
-        
+    // order review in home page   
     public function order_review($order_id)
     {
-         $get_order = DB::table('gig_orders')
+        $get_order = DB::table('gig_orders')
             ->join('gig_basics', 'gig_orders.gig_id', '=', 'gig_basics.gig_id')
             ->leftJoin('gig_requirements', 'gig_orders.gig_id', '=', 'gig_requirements.gig_id')
             ->leftJoin('order_requirement_ans', 'gig_orders.order_id', '=', 'order_requirement_ans.order_id')
@@ -427,7 +428,7 @@ class GigOrderController extends Controller
             ->Join('users', 'gig_orders.seller_id', '=', 'users.id')
             ->select('gig_orders.*','order_requirement_ans.requirement_ans', 
                 'order_requirement_ans.attach_file',
-                'gig_requirements.*', 'gig_basics.gig_id', 'gig_basics.gig_title', 'gig_basics.gig_url', 'gig_images.image_path', 'users.id', 'users.username', 'users.name', 'userinfos.user_image')
+                'gig_requirements.requirement', 'gig_basics.gig_id', 'gig_basics.gig_title','gig_basics.gig_payment_type', 'gig_basics.gig_url', 'gig_images.image_path', 'users.id', 'users.username', 'users.name', 'userinfos.user_image')
             ->where('gig_orders.order_id', '=', $order_id)->first();
             if($get_order){
                 return view('frontend.order-review')->with(compact('get_order'));
@@ -445,7 +446,7 @@ class GigOrderController extends Controller
 
      }
 
-    public function get_seller_orders_by_status($status)
+    public function get_seller_orders_by_status($status='active')
     {
         $seller_id = Auth::user()->id;
 
@@ -502,7 +503,7 @@ class GigOrderController extends Controller
                                 </td>
                                 <td class="title js-toggle-gig-stats ">
                                     <div class="ellipsis1">
-                                        <a class="ellipsis" href="'.asset('dashboard/'.$show_order->username.'/manage/order/'.$show_order->order_id).'">'.$show_order->gig_title.'</a>
+                                        <a class="ellipsis" href="'.route('gig_order_details',$show_order->order_id).'">'.$show_order->gig_title.'</a>
                                     </div>
                                 </td>
                                 <td>'.\Carbon\Carbon::parse($show_order->created_at)->format('M d, Y').'</td>
@@ -527,28 +528,82 @@ class GigOrderController extends Controller
             echo 'No '.$status.' orders to show.';
         }
     }
-
-    public function manage_order_details($username, $gig_order)
+    // order details buyer and freelancer both
+    public function gig_order_details($gig_order)
     {
-        $seller_id = Auth::user()->id;
+        $user_id = Auth::user()->id;
+        $user_role = Auth::user()->role_id;
         $username = Auth::user()->username;
         $get_order_details = DB::table('gig_orders')
             ->join('gig_basics', 'gig_orders.gig_id', 'gig_basics.gig_id')
-            ->join('users', 'gig_orders.seller_id', '=', 'users.id')
             ->leftJoin('gig_requirements', 'gig_orders.gig_id', '=', 'gig_requirements.gig_id')
-            ->leftJoin('order_requirement_ans', 'gig_orders.order_id', '=', 'order_requirement_ans.order_id')
-                
-            ->select('gig_orders.*', 'users.username', 'gig_basics.gig_title', 'gig_basics.gig_url', 'order_requirement_ans.requirement_ans', 'gig_requirements.requirement')
-            ->where('gig_orders.seller_id', $seller_id)
-            ->where('gig_orders.order_id', $gig_order)->first();
+            ->leftJoin('order_requirement_ans', 'gig_orders.order_id', '=', 'order_requirement_ans.order_id');
+             
+            
+            if($user_role == env('FRELANCER')){ //check seller
+                $get_order_details =  $get_order_details->join('users', 'gig_orders.buyer_id', '=', 'users.id');
+                $get_order_details =  $get_order_details->where('gig_orders.seller_id', $user_id);
+            }
+            if($user_role == env('BUYER')){ // check buyer 
+                $get_order_details =  $get_order_details->join('users', 'gig_orders.seller_id', '=', 'users.id');
+                $get_order_details =  $get_order_details->where('gig_orders.buyer_id', $user_id);
+            }
+
+            $get_order_details =  $get_order_details->join('userinfos', 'users.id', '=', 'userinfos.user_id')->select('gig_orders.*', 'users.username', 'userinfos.user_image', 'gig_basics.gig_title', 'gig_basics.gig_url', 'gig_basics.gig_payment_type', 'order_requirement_ans.requirement_ans', 'gig_requirements.requirement')->where('gig_orders.order_id', $gig_order)->first();
+
             if($get_order_details){
-                return view('backend.order-details')->with(compact('get_order_details'));
+                if($user_role == env('BUYER')){ // check buyer or freelancer
+                    return view('backend.buyer-order-details')->with(compact('get_order_details'));
+                }else{
+                    return view('backend.order-details')->with(compact('get_order_details'));
+                }
+               
             }else{
-                 return redirect('dashboard/'.$username .'/manage/seller_order/active');
+                Toastr::error('Sorry order not found.');
+                return back();
             }
        
     }
+    // messaging about order delivery
+    public function quick_response(Request $request){
+        $user_id = Auth::user()->id;
+        $new_image_name = null ;
+        if ($request->hasFile('work_file')) {   
+            $this->validate($request, [
+                'work_file' => 'max:2048'
+            ]);
 
+            $image = $request->file('work_file');
+            $new_image_name = rand() .'.'. $image->getClientOriginalExtension();
+
+            $image->move(public_path('deliver_file'), $new_image_name);
+        }
+        $data = [
+            'deliver_order_id' => $request->order_id,
+            'user_id' => $user_id,
+            'work_file' => $new_image_name,
+            'msg' => $request->msg
+        ];
+        $order_deliver = DB::table('order_delivers')->insert($data);
+        return back();
+    }
+
+    // Order extra time or cancel order
+    public function order_timeExtra_cancel(Request $request){
+        $type = $request->order_review_time;
+        $time = \Carbon\Carbon::now();
+        $data =  DB::table('gig_orders')->where('order_id', $request->order_id);
+            if($type == 'extra_time'){
+                Toastr::success('Extra time started.');
+                $data = $data->update(['created_at' => $time]);
+            }else{
+                Toastr::success('Your Order Cancel.!');
+                $data = $data->update(['status' => 'cancel']);
+            }   
+        return back();
+    }
+
+    // order delivered 
     public function order_deliver(Request $request){
         $seller_id = Auth::user()->id;
 
@@ -581,94 +636,113 @@ class GigOrderController extends Controller
                 ->where('seller_id', $seller_id)
                 ->update(['status' => 'delivered']);
             if($order_deliver){
-                return back()->with('delivered_msg', 'Your order successfully delivered');
+                Toastr::success('Your order successfully delivered.');
+                return back();
             }else{
-                 return back()->with('delivered_msg', 'Your order not successfully delivered');
+                Toastr::success('Your order not successfully delivered.');
+                return back();
             }
         }else{
-                 return back()->with('delivered_msg', 'Your order not successfully delivered');
-            }
+            Toastr::success('Your order not successfully delivered.');
+            return back();
+        }
     }
 
+    // order revision delivery
+    public function revision_delivery(Request $request){
+        $user_id = Auth::user()->id;
+        $request->validate([
+            'revision_msg' => 'required|max:255',
+        ]);
+        $data = [
+            'deliver_order_id' => $request->order_id,
+            'user_id' => $user_id,
+            'msg' => $request->revision_msg,
+            'status' => 'revision'
+        ];
+        DB::table('order_delivers')->insert($data);
+        Toastr::success('Your order revision send successfully.');
+        return back();
+    }
+
+    // order completed 
     public function order_completed(Request $request, $order_id){
         $buyer_id = Auth::user()->id;
 
         $get_order_info = gig_order::where('order_id', $order_id)->where('buyer_id', $buyer_id)->first();
-
-        $price = $get_order_info->quantity*$get_order_info->subtotal;
-        $earning = $price;
-        $type = 'direct';
-        $ref_earning = 0;
-        // if refferel exist 
-        if($get_order_info->ref_user){
-            $ref_earning = ($price*5)/100;
-            $type = 'refferel';
-            $earning = $price-$ref_earning;
-        }
-
-        $data = [
-            'seller_id' => $get_order_info->seller_id,
-            'buyer_id' => $get_order_info->buyer_id,
-            'item_id' => $get_order_info->gig_id,
-            'price' => $price,
-            'earning' => $earning,
-            'type' => $type,
-            'ref_username' => $get_order_info->ref_user,
-            'ref_earning' => $ref_earning,
-            'status' => 'active'
-            
-        ];
-        $success = earning::create($data);
-
-        if($success){ 
-             $order_deliver = DB::table('gig_orders')
-            ->where('order_id', $order_id)
-            ->where('buyer_id', $buyer_id)
-            ->update(['status' => 'completed']);
-            // if refferel user exist
+        if($get_order_info){
+            $price = $get_order_info->quantity*$get_order_info->subtotal;
+            $earning = $price;
+            $type = 'direct';
+            $ref_earning = 0;
+            // if refferel exist 
             if($get_order_info->ref_user){
-                ref_count::create([
-                    'ref_username' => $get_order_info->ref_user,
-                    'total_view' => 0,
-                    'total_item' => 1,
-                    'ref_earning' => $ref_earning,
-                ]);
+                $ref_earning = ($price*5)/100;
+                $type = 'refferel';
+                $earning = $price-$ref_earning;
             }
 
-            return redirect('/order/feadback/'.$order_id);
-        }else{
-             return back()->with('delivered_msg', 'Your order not successfully completed');
+            $data = [
+                'seller_id' => $get_order_info->seller_id,
+                'buyer_id' => $get_order_info->buyer_id,
+                'item_id' => $get_order_info->gig_id,
+                'price' => $price,
+                'earning' => $earning,
+                'type' => $type,
+                'ref_username' => $get_order_info->ref_user,
+                'ref_earning' => $ref_earning,
+                'status' => 'completed',
+                'platform' => 'marketplace'
+                
+            ];
+            $success = earning::create($data);
+
+            if($success){ 
+                 $order_deliver = DB::table('gig_orders')
+                ->where('order_id', $order_id)
+                ->where('buyer_id', $buyer_id)
+                ->update(['status' => 'completed']);
+                // if refferel user exist
+                if($get_order_info->ref_user){
+                    ref_count::create([
+                        'ref_username' => $get_order_info->ref_user,
+                        'total_view' => 0,
+                        'total_item' => 1,
+                        'ref_earning' => $ref_earning,
+                    ]);
+                }
+
+                return redirect('/order/feadback/'.$order_id);
+                exit();
+            }
         }
-        
+        Toastr::error('Sorry your order not completed.')
+        return back();
+            
     }
 
-     public function manage_buyer_order(){
+    // buyer order manage 
+    public function manage_buyer_order(){
         $buyer_id = Auth::user()->id;
 
         $get_order = DB::table('gig_orders')
             ->where('gig_orders.buyer_id' , '=', $buyer_id)->get();
             return view('backend.buyer-orders')->with(compact('get_order'));
-
     }
 
+    // get buyer order by status
     public function get_orders_by_status($status='active')
     {
         $buyer_id = Auth::user()->id;
-
-        if($status == 'all'){
             $get_order = DB::table('gig_orders')
             ->Join('gig_basics', 'gig_orders.gig_id', '=', 'gig_basics.gig_id')
             ->Join('users', 'gig_orders.seller_id', '=', 'users.id')
-            ->select('gig_orders.*', 'gig_basics.gig_title', 'gig_basics.gig_url', 'users.id', 'users.username', 'users.name' )
-            ->where('gig_orders.buyer_id' , '=', $buyer_id)->get();
-        }else{
-            $get_order = DB::table('gig_orders')
-            ->Join('gig_basics', 'gig_orders.gig_id', '=', 'gig_basics.gig_id')
-            ->Join('users', 'gig_orders.seller_id', '=', 'users.id')
-            ->select('gig_orders.*', 'gig_basics.gig_title', 'gig_basics.gig_url', 'users.id', 'users.username', 'users.name' )
-            ->where( 'gig_orders.status' , '=', $status)
-            ->where('gig_orders.buyer_id' , '=', $buyer_id)->get();
-        }
+            ->select('gig_orders.*', 'gig_basics.gig_title', 'gig_basics.gig_url', 'users.id', 'users.username', 'users.name' );
+            if($status != 'all'){
+                $get_order = $get_order->where('gig_orders.status' , '=', $status);
+            }
+            $get_order = $get_order->where('gig_orders.buyer_id' , '=', $buyer_id)->get();
+        
 
           
           if(count($get_order) > 0){
@@ -706,7 +780,7 @@ class GigOrderController extends Controller
                                 </td>
                                 <td class="title js-toggle-gig-stats ">
                                     <div class="ellipsis1">
-                                        <a class="ellipsis" target="_blank" href="'.asset('/order/review/'.$show_order->order_id).'">'.$show_order->gig_title.'</a>
+                                        <a class="ellipsis" target="_blank" href="'.route('gig_order_details',$show_order->order_id).'">'.$show_order->gig_title.'</a>
                                     </div>
                                 </td>
                                 <td>'.\Carbon\Carbon::parse($show_order->created_at)->format('M d, Y').'</td>
@@ -800,12 +874,10 @@ class GigOrderController extends Controller
             $insert_feadback = DB::table('feedback')->insert($data);  
 
             if($insert_feadback){
-                return redirect('/order/completed/'.$order_id);
+                return redirect::route('/order/completed/'.$order_id);
             }else{
                 return back();
             }
         }
-           
-
     }
 }

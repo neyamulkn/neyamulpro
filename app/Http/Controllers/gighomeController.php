@@ -16,6 +16,7 @@ use App\User;
 use App\ref_count;
 use DB;
 use Session;
+use Illuminate\Support\Facades\Input;
 
 class gighomeController extends Controller
 {
@@ -28,92 +29,15 @@ class gighomeController extends Controller
     }
 
 
-    public function gig_view($category, $subcatery){
+    public function gig_view(Request $request){
 
-		$get_cat_sub = DB::table('gig_home_category')
-            ->join('gig_subcategories', 'gig_home_category.id', 'gig_subcategories.category_id')
-            ->where('gig_home_category.category_url', $category)
-            ->where('gig_subcategories.subcategory_url', $subcatery)->first();
 
-		$get_filters = DB::table('gig_subcategories')
+        $get_filters = DB::table('gig_subcategories')
         ->join('filter_subcategories', 'gig_subcategories.id', 'filter_subcategories.subcategory_id')
         ->join('filters', 'filter_subcategories.filter_id', 'filters.filter_id')
-        ->where('gig_subcategories.subcategory_url', $subcatery)
+        ->where('gig_subcategories.subcategory_url', $request->subcategory)
         ->groupBy('filter_subcategories.filter_id')->get();
 
-			//$get_gig_basic = gig_basic::where('gig_subcategory', $get_subcategory_id->id)->where('gig_status', 'active')->paginate(3); 
-
-			
-        if($get_filters){
-			return view('frontend.gigs-categories')->with(compact('get_filters','get_cat_sub'));
-
-		}
-        return back();
-    }
-
-    public function gig_details($gig_url){
-
-    	
-        $get_gig_info = gig_basic::where('gig_url', $gig_url)->first();
-        $get_user_info = user::where('id', $get_gig_info->gig_user_id)->first();
-    	// refferel_user_name
-        if(isset($_GET['ref'])){
-            Session::put('refferel_user_name', $_GET['ref']);
-
-            ref_count::create([
-                'ref_username' => $_GET['ref'],
-                'platform_type' => 'marketplace',
-                'total_view' => 1,
-                'total_item' => 0,
-                'ref_earning' => 0,
-            ]);
-            
-        }
-    	if($get_gig_info){
-    		$gig_id = $get_gig_info->gig_id;
-          
-            // if exist gig view table
-            $get_info = DB::table('gigs_view')->where('gig_id', $gig_id)->first();
-            if($get_info){ DB::table('gigs_view')->where('gig_id', $gig_id)->update([
-                    'gig_impress' => $get_info->gig_impress+1,
-                    'gig_click' => $get_info->gig_click+1,
-                    'gig_view' => $get_info->gig_view+1,
-                ]);
-            }
-            else{  DB::table('gigs_view')->insert(['gig_id' => $gig_id, 'gig_impress' => 1] );  }
-
-            $get_gig_price = gig_price::where('gig_id', $gig_id)->first();
-            $get_gig_feature = gig_feature::where('gig_id', $gig_id)->get();
-            $get_question_answer = question_answer::where('gig_id', $gig_id)->get();
-    		$get_feedback = DB::table('feedback')
-                        ->leftjoin('users', 'feedback.buyer_id', 'users.id')
-                        ->leftjoin('userinfos', 'feedback.buyer_id', 'userinfos.user_id')
-                        ->where('gig_id', $gig_id)->get();
-
-            $get_gig_image = gig_image::where('gig_id', $gig_id)->get();
-
-    		$alldata = [
-    			'get_user_info' => $get_user_info,
-                'get_gig_info' => $get_gig_info,
-    			'get_gig_image' => $get_gig_image,
-                'get_gig_price' => $get_gig_price,
-                'get_gig_feature' => $get_gig_feature,
-                'get_question_answer' => $get_question_answer,
-    			'get_feedback' => $get_feedback,
-    		];
-    		return view('frontend.gig-details')->with($alldata);
-           
-
-    	}else{
-    		return redirect('/');
-    	}
-    	
-    }
-
-
-    public function gig_filter(Request $request)
-    {
-     
        $get_gigs = DB::table('gig_basics')
             ->join('gig_prices', 'gig_basics.gig_id', '=', 'gig_prices.gig_id')
             ->leftJoin('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
@@ -129,17 +53,27 @@ class gighomeController extends Controller
         if(isset($request->payment)){
             $get_gigs->where('gig_basics.gig_payment_type',  $request->payment);  
         }
+        $src = Input::get('item');
+        if(Input::has('item') && !empty(Input::get('item'))){
+            $get_gigs =  $get_gigs->where('gig_basics.gig_title', 'LIKE', '%'.$src.'%');
+            $get_gigs =  $get_gigs->orWhere('gig_basics.gig_search_tag', 'LIKE', '%'.$src.'%');
+        }
 
         // if(isset($request->delivery)){
         //     $get_gigs->whereBetween('gig_prices.delivery_time_p',  array($request->delivery));  
         // }
 
-        if(isset($request->metadata)){
-            $metadata = implode(',', $request->metadata);
-            $get_metadata = gig_metadata_filter::whereIn('metadata_id', [$metadata])->get();    
+        if(isset($request->tags)){
+            if(!is_array($request->tags)){ // direct url tags
+                 $tags = explode(',', $request->tags);
+             }else{ // filter by ajax
+                $tags = implode(',', $request->tags);
+             }
+           
+            $get_tags = gig_metadata_filter::whereIn('metadata_id', [$tags])->get();    
 
-            foreach ($get_metadata as $show_metadata){
-               $array[] = $show_metadata->gig_id;
+            foreach ($get_tags as $show_tags){
+               $array[] = $show_tags->gig_id;
             }
             $get_gigs = $get_gigs->whereIn('gig_basics.gig_id', $array);
         }
@@ -147,146 +81,98 @@ class gighomeController extends Controller
         if(isset($request->gig_sort)){
              $get_gigs = $get_gigs->orderBy('basic_p', $request->gig_sort);
         }
+        
+        $get_gigs = $get_gigs->paginate(2);
 
-        $get_gigs = $get_gigs->paginate(3);
-
-        if($get_gigs){
-            echo '<!-- PRODUCT SHOWCASE -->
-                    <div class="product-showcase">
-                        <!-- PRODUCT LIST -->
-                        <div class="product-list grid column3-4-wrap">';
-      
-            foreach($get_gigs as $show_gig){
-                ?>
-                <!-- PRODUCT ITEM -->
-                            <div class="product-item column">
-                                <!-- PRODUCT PREVIEW ACTIONS -->
-                                <div class="product-preview-actions">
-                                    <!-- PRODUCT PREVIEW IMAGE -->
-                                    <figure class="product-preview-image">
-                                        
-                                        <img src="<?php echo asset('/gigimages/'.$show_gig->image_path); ?>">
-                                    </figure>
-                                    <!-- /PRODUCT PREVIEW IMAGE -->
-
-                                    <!-- PREVIEW ACTIONS -->
-                                    <div class="preview-actions">
-                                        <!-- PREVIEW ACTION -->
-                                        <div class="preview-action">
-                                            <a href="<?php echo url($show_gig->username.'/'.$show_gig->gig_url); ?>" target="_blank">
-                                                <div class="circle tiny primary">
-                                                    <span class="icon-tag"></span>
-                                                </div>
-                                            </a>
-                                            <a href="<?php echo url('marketplace/'.$show_gig->gig_url); ?>" target="_blank">
-                                                <p>Go to Item</p>
-                                            </a>
-                                        </div>
-                                        <!-- /PREVIEW ACTION -->
-
-                                        <!-- PREVIEW ACTION -->
-                                        <div class="preview-action">
-                                            <a href="#">
-                                                <div class="circle tiny secondary">
-                                                    <span class="icon-heart"></span>
-                                                </div>
-                                            </a>
-                                            <a href="#">
-                                                <p>Favourites +</p>
-                                            </a>
-                                        </div>
-                                        <!-- /PREVIEW ACTION -->
-                                    </div>
-                                    <!-- /PREVIEW ACTIONS -->
-                                </div>
-                                <!-- /PRODUCT PREVIEW ACTIONS -->
-
-                                <!-- PRODUCT INFO -->
-                                <div class="product-info">
-                                    <a href="<?php echo url('marketplace/'.$show_gig->gig_url); ?>">
-                                        <p class="text-header">I will <?php echo $show_gig->gig_title; ?></p>
-                                    </a>
-                                   
-                                    <a href="shop-gridview-v1.html">
-                                        <p class="category primary"><?php 
-                                        if($show_gig->gig_payment_type == "monthly"){
-                                         echo '<span style="color:red">'.ucfirst($show_gig->gig_payment_type). '</span>';
-                                        }else{
-                                            echo ucfirst($show_gig->gig_payment_type). ' Price';
-                                        }
-
-                                        ?></p>
-                                    </a>
-                                    <p class="price"><span>$</span><?php echo $show_gig->basic_p; ?> </p>
-                                </div>
-                                <!-- /PRODUCT INFO -->
-                                <hr class="line-separator">
-
-                                <!-- USER RATING -->
-                                <div class="user-rating">
-                                    <a href="<?php echo url($show_gig->username); ?>" target="_blank">
-                                        <figure class="user-avatar small user_image">
-                                            <img src="<?php echo asset('/image/'.$show_gig->user_image); ?>">
-                                        </figure>
-                                    </a>
-                                    <a href="<?php echo url($show_gig->username); ?>" target="_blank">
-                                        <p class="text-header tiny"><?php echo $show_gig->name; ?></p>
-                                    </a>
-                                    <ul class="rating tooltip" title="Author's Reputation">
-                                        <li class="rating-item">
-                                            <!-- SVG STAR -->
-                                            <svg class="svg-star">
-                                                <use xlink:href="#svg-star"></use>
-                                            </svg>
-                                            <!-- /SVG STAR -->
-                                        </li>
-                                        <li class="rating-item">
-                                            <!-- SVG STAR -->
-                                            <svg class="svg-star">
-                                                <use xlink:href="#svg-star"></use>
-                                            </svg>
-                                            <!-- /SVG STAR -->
-                                        </li>
-                                        <li class="rating-item">
-                                            <!-- SVG STAR -->
-                                            <svg class="svg-star">
-                                                <use xlink:href="#svg-star"></use>
-                                            </svg>
-                                            <!-- /SVG STAR -->
-                                        </li>
-                                        <li class="rating-item">
-                                            <!-- SVG STAR -->
-                                            <svg class="svg-star">
-                                                <use xlink:href="#svg-star"></use>
-                                            </svg>
-                                            <!-- /SVG STAR -->
-                                        </li>
-                                        <li class="rating-item empty">
-                                            <!-- SVG STAR -->
-                                            <svg class="svg-star">
-                                                <use xlink:href="#svg-star"></use>
-                                            </svg>
-                                            <!-- /SVG STAR -->
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- /USER RATING -->
-                            </div>
-                            <!-- /PRODUCT ITEM -->
-            <?php 
-                }
-                echo '</div>
-                       <!-- /gig LIST -->
-                                
-                </div>
-
-                <!-- /gig SHOWCASE -->
-            
-                <!-- PAGER -->
-                <div class="page primary paginations">
-                   '. $get_gigs->links() .'
-                </div>
-                <!-- /PAGER -->';
+        if(!isset($_GET['filter'])){
+            return view('frontend.gigs-categories')->with(compact('get_gigs', 'get_filters'));
+        }else{
+             return view('frontend.gig-filter-data')->with(compact('get_gigs'));
         }
+       
+
     }
+
+
+
+    public function gig_details($gig_url){
+
+        
+        $get_gig_info = gig_basic::where('gig_url', $gig_url)
+        ->leftJoin('gig_home_category','gig_basics.category_name', 'gig_home_category.id')
+        ->leftJoin('gig_subcategories','gig_basics.gig_subcategory', 'gig_subcategories.id')
+        ->first();
+        $get_user_info = user::where('id', $get_gig_info->gig_user_id)->first();
+        // refferel_user_name
+        if(isset($_GET['ref']) && !Session::has('refferel_user_name')){
+
+            $get_ads = DB::table('affiliate_ads')->where('ref_username', $_GET['ref'])->first();
+           
+            if($get_ads){
+                DB::table('affiliate_ads')->where('ref_username', $_GET['ref'])->increment('total_view');
+            }else{
+                $data = [
+                    'ref_username' => $_GET['ref'],
+                    'platform_type' => 'marketplace',
+                    'total_view' => 1
+                ];
+                DB::table('affiliate_ads')->insert($data); 
+            }
+            Session::put('refferel_user_name', $_GET['ref']);  
+        }
+
+        if($get_gig_info){
+            $gig_id = $get_gig_info->gig_id;
+          
+            // if exist gig view table
+            $get_info = DB::table('gigs_view')->where('gig_id', $gig_id)->first();
+            if($get_info){ DB::table('gigs_view')->where('gig_id', $gig_id)->update([
+                    'gig_impress' => $get_info->gig_impress+1,
+                    'gig_click' => $get_info->gig_click+1,
+                    'gig_view' => $get_info->gig_view+1,
+                ]);
+            }
+            else{  DB::table('gigs_view')->insert(['gig_id' => $gig_id, 'gig_impress' => 1] );  }
+
+            $get_gig_price = gig_price::where('gig_id', $gig_id)->first();
+            $get_gig_feature = gig_feature::where('gig_id', $gig_id)->get();
+            $get_question_answer = question_answer::where('gig_id', $gig_id)->get();
+            $get_feedback = DB::table('feedback')
+                        ->leftjoin('users', 'feedback.buyer_id', 'users.id')
+                        ->leftjoin('userinfos', 'feedback.buyer_id', 'userinfos.user_id')
+                        ->where('gig_id', $gig_id)->get();
+
+            $get_gig_image = gig_image::where('gig_id', $gig_id)->get();
+
+            $alldata = [
+                'get_user_info' => $get_user_info,
+                'get_gig_info' => $get_gig_info,
+                'get_gig_image' => $get_gig_image,
+                'get_gig_price' => $get_gig_price,
+                'get_gig_feature' => $get_gig_feature,
+                'get_question_answer' => $get_question_answer,
+                'get_feedback' => $get_feedback,
+            ];
+            return view('frontend.gig-details')->with($alldata);
+           
+
+        }else{
+            return redirect('/');
+        }
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

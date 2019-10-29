@@ -219,23 +219,18 @@ display: inline-block;
 					<hr class="line-separator">
 					<!-- CART OVERVIEW ITEM -->
 					
-						<?php $total = 0; $qty = 0; ?>
-						@foreach($get_themecart_info as $show_cart)
+					<?php $total = 0; $qty = 0; ?>
+						@foreach($get_theme_info as $show_themeinfo)
 							
 							<?php
-								$total += $show_cart->price;
+								$total += $show_themeinfo->price;
 								$qty += 1;
-
-					            $get_theme = DB::table('themes')
-					            	->join('users', 'themes.user_id', 'users.id')
-					                ->where('theme_id', $show_cart->theme_id)->first();
-
-
-							 ?>
+							?>
 							<div class="cart-overview-item">
-								<a href="{{url('themeplace/item/'.$get_theme->theme_url.'/'.$get_theme->theme_id)}}"><p class="text-header small theme-title">{{$get_theme->theme_name}}</p></a> <p class="price"><span>$</span>{{$show_cart->price}}</p>
+								<a href="{{url('themeplace/'.$show_themeinfo->theme_url)}}">
+								<p class="text-header small theme-title">{{$show_themeinfo->theme_name}}</p></a> 
+								<p class="price"><span>$</span>{{$show_themeinfo->price}}</p>
 							</div>
-							
 						@endforeach
 					
 					<div class="cart-overview-item">
@@ -252,8 +247,6 @@ display: inline-block;
 						<p class="text-header small"><span class="primary">Total: </span></p>
 						<p id="total_price" class="price"><span>$</span>{{$total}}</p>
 					</div>
-
-					
 				</div>
 			</div>
 			<!-- /SIDEBAR -->

@@ -43,28 +43,28 @@
 			  </table>
         </div>
         <!-- DASHBOARD CONTENT -->
-      	    <!-- update Modal -->
+<!-- update Modal -->
   <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
-    <form action="{{url('admin/marketplace/create-gig-category')}}" data-parsley-validate method="post" id="profile_info">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          
-          <h4 class="modal-title">Update category</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body form-box-item">
-     		
-				 {{ csrf_field() }}
-			<div id="edit_form"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-           <button type="submit" class="btn btn-sm btn-success">Update</button>
-        </div>
-      </div>
-       </form>
+	    <form action="{{url('admin/marketplace/create-gig-category')}}" data-parsley-validate method="post" id="profile_info">
+	      <!-- Modal content-->
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          
+	          <h4 class="modal-title">Update category</h4>
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        </div>
+	        <div class="modal-body form-box-item">
+	     		
+					{{ csrf_field() }}
+				<div id="edit_form"></div>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	           <button type="submit" class="btn btn-sm btn-success">Update</button>
+	        </div>
+	      </div>
+	    </form>
     </div>
   </div> 
  <!-- insert modal --->  

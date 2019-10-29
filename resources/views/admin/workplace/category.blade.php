@@ -49,24 +49,24 @@
     <!-- update Modal -->
   <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          
-          <h4 class="modal-title">Update sub category</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body form-box-item">
-     		<form action="{{url('admin/workplace/category')}}" data-parsley-validate method="post" id="profile_info">
+    	<form action="{{url('admin/workplace/category')}}" data-parsley-validate method="post" id="profile_info">
 				 {{ csrf_field() }}
-			<div id="edit_form"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-           <button type="submit" class="btn btn-sm btn-success">Update</button>
-        </div>
-      </div>
+	      <!-- Modal content-->
+		    <div class="modal-content">
+		        <div class="modal-header">
+		          
+		          <h4 class="modal-title">Update sub category</h4>
+		          <button type="button" class="close" data-dismiss="modal">&times;</button>
+		        </div>
+		        <div class="modal-body form-box-item">
+		     		
+					<div id="edit_form"></div>
+		        </div>
+		        <div class="modal-footer">
+		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		           <button type="submit" class="btn btn-sm btn-success">Update</button>
+		        </div>
+      		</div>
        </form>
     </div>
   </div>  
@@ -108,10 +108,10 @@
 					</label>
 				</div>
 
-	        <div class="modal-footer">
-	          <button type="reset" class="btn btn-sm btn-danger" data-dismiss="modal">Cancal</button>
-	          <button type="submit" class="btn btn-sm btn-success">Insert</button>
-	        </div>
+		        <div class="modal-footer">
+		          <button type="reset" class="btn btn-sm btn-danger" data-dismiss="modal">Cancal</button>
+		          <button type="submit" class="btn btn-sm btn-success">Insert</button>
+		        </div>
 	        </form>
 	      </div>
 	    </div>

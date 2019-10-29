@@ -14,7 +14,7 @@
         <!-- DASHBOARD CONTENT -->
         <div class="dashboard-content">
 			<div class="headline simple primary">
-				<h4>Buy Credits</h4>
+				<h4>Work Lists</h4>
 				<a href="#" class="button mid-short secondary">Rehire a Freelancer</a>
 				<a href="#" class="button primary">Post a Job</a>
 			</div>
@@ -33,13 +33,10 @@
 						<h3 class="up-post-sub">Additional Details</h3>
 						<p style="color: green">{{Session::get('success')}}</p>
 						@foreach($get_jobs as $show_job)
-							<div class="hotl-work">
+							<div class="hotl-work" >
 								<div class="workj1">
-									<h4 class="text-header"><a href="{{route('job-details', $show_job->job_title_slug )}}">{{$show_job->job_title}}</a></h4>
-									<div class="workj2">
-									<span class="icon-like workj4"></span>
-									<span class="icon-heart workj4"></span>
-									</div>
+									<h4 class="text-header" style="width: 100%;"><a href="{{route('job-details', $show_job->job_title_slug )}}">{{$show_job->job_title}}</a></h4>
+									
 								</div>
 								<div class="hot-work">
 									<p>@if($show_job->price_type=='monthly') Monthly Price @else Fixed Price @endif<p>
@@ -55,7 +52,7 @@
 										<div class="counts-value">
 											<a href="{{url('dashboard/workplace/proposals-list/'.$show_job->job_id)}}">
 												<strong>{{$get_proposal}}</strong>
-												<strong class="blueberry-text" data-ng-if="counts.newApplicants">(16 NEW)</strong>
+												<strong class="blueberry-text" data-ng-if="counts.newApplicants">(1 NEW)</strong>
 											</a>
 										</div>
 										<p class="text-muted">Proposals</p>
@@ -63,8 +60,8 @@
 									<div class="p-0-right">
 										<div class="counts-value">
 											<a href="#">
-												<strong>16</strong>
-												<strong class="blueberry-text" data-ng-if="counts.newApplicants">(16 NEW)</strong>
+												<strong>1</strong>
+												<strong class="blueberry-text" data-ng-if="counts.newApplicants">(1 NEW)</strong>
 											</a>
 										</div>
 										<p class="text-muted">Messages</p>
@@ -72,8 +69,8 @@
 									<div class="p-0-right">
 										<div class="counts-value">
 											<a href="#">
-												<strong>16</strong>
-												<strong class="blueberry-text" data-ng-if="counts.newApplicants">(16 NEW)</strong>
+												<strong>0</strong>
+												<strong class="blueberry-text" data-ng-if="counts.newApplicants">(0 NEW)</strong>
 											</a>
 										</div>
 										<p class="text-muted">Hired</p>
@@ -88,11 +85,8 @@
 					<h3 class="up-post-sub">Additional Details</h3>
 					<div class="hotl-work">
 						<div class="workj1">
-							<h4 class="text-header"><a href="https://www.hotlancer.com/work1.html">Help me sell my spare WordPress WPEngine site installs</a></h4>
-							<div class="workj2">
-							<span class="icon-like workj4"></span>
-							<span class="icon-heart workj4"></span>
-							</div>
+							<h4 class="text-header" style="width: 100%;"><a href="https://www.hotlancer.com/work1.html">Help me sell my spare WordPress WPEngine site installs</a></h4>
+							
 						</div>
 						<div class="hot-work">
 							<p>Saved 30 days ago<p>

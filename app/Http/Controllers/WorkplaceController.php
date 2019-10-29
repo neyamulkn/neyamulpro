@@ -138,23 +138,21 @@ class WorkplaceController extends Controller
         
            $subfilter_id = implode(',', $request->subfilter_id);
          
-                
+                $data = [
+                    'job_id' => $request->post_id,
+                    'filter_id' => $value,
+                    'subfilter_id' => $subfilter_id,
+                    
+                ];
 
-                    $data = [
-                        'job_id' => $request->post_id,
-                        'filter_id' => $value,
-                        'subfilter_id' => $subfilter_id,
-                        
-                    ];
-
-                    $check_job = DB::table('job_expertise')->where('job_id', $request->post_id)->first();
-                   if($check_job){
-                       $success =  DB::table('job_expertise')->where('job_id', $request->post_id)->update($data);
-                       
-                   }else{
-                    $success = DB::table('job_expertise')->insert($data);
-                       
-                   }
+                $check_job = DB::table('job_expertise')->where('job_id', $request->post_id)->first();
+               if($check_job){
+                   $success =  DB::table('job_expertise')->where('job_id', $request->post_id)->update($data);
+                   
+               }else{
+                $success = DB::table('job_expertise')->insert($data);
+                   
+               }
         }
 
         return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/5');
@@ -369,7 +367,7 @@ class WorkplaceController extends Controller
                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
                 $payment_success = \Stripe\Charge::create ([
                         "amount" => $get_proposal->proposal_budget,
-                        "currency" => "usd",
+                        "currency" => "USD",
                         "source" => $request->stripeToken,
                         "description" => $get_proposal->job_title,
                         'statement_descriptor' => $get_proposal->username,
@@ -441,103 +439,6 @@ class WorkplaceController extends Controller
             Toastr::error('Sorry something is wrong try again.!');
             return back();
         } 
-    }
-
-     public function order_details($order_id){
-
-        $user_id = Auth::user()->id;
-
-        $get_order_details = DB::table('job_orders')
-        ->join('jobs', 'job_orders.job_id', 'jobs.job_id')
-        ->join('job_proposals', 'job_orders.proposal_id', 'job_proposals.proposal_id')
-        ->select('job_orders.*', 'jobs.job_title', 'jobs.job_title_slug', 'jobs.price_type', 'job_proposals.work_duration')
-        ->where('order_id', $order_id)
-        ->where(function($query) use ($user_id) {
-            $query->where('job_orders.buyer_id', $user_id)
-            ->orWhere('job_orders.freelancer_id', $user_id);
-        })
-        ->limit(1)->first();
-        return view('backend.workplace.order-details')->with(compact('get_order_details'));
-     }
-
-     public function manage_buyer_order(){
-        return view('backend.workplace.orders');
-     }
-
-    public function get_orders_by_status($status='active')
-    {
-        $buyer_id = Auth::user()->id;
-        $output = '';
-        if($status == 'all'){
-        $get_order= DB::table('job_orders')
-            ->leftJoin('jobs', 'job_orders.job_id', 'jobs.job_id')
-            ->leftJoin('job_proposals', 'job_orders.proposal_id', 'job_proposals.proposal_id')
-            ->select('job_orders.*', 'jobs.job_title', 'jobs.job_title_slug', 'jobs.price_type', 'job_proposals.work_duration')
-            ->where('job_orders.buyer_id', $buyer_id)->get();
-
-        }else{
-            $get_order= DB::table('job_orders')
-            ->leftJoin('jobs', 'job_orders.job_id', 'jobs.job_id')
-            ->leftJoin('job_proposals', 'job_orders.proposal_id', 'job_proposals.proposal_id')
-            ->select('job_orders.*', 'jobs.job_title', 'jobs.job_title_slug', 'jobs.price_type', 'job_proposals.work_duration')
-            ->where('job_orders.status', $status)
-            ->where('job_orders.buyer_id', $buyer_id)->get();
-        }
-
-          
-          if(count($get_order) > 0){
-                $output .= '
-                <table class="responsive-table-input-matrix">
-                    <thead>
-                    <tr class="header-filter">
-                    <td colspan="12" class="js-filter-title">'.$status.' gigs</td>
-                    
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th>Job Title </th>
-                        <th>Project Type</th>
-                        <th>Order date</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        
-                    </tr>
-                    </thead>
-                <tbody>';
-                foreach($get_order as $show_order){
-
-                           
-                          
-                           $output .='
-                        
-                            <tr class="tbgig">
-                                <td><input type="checkbox"></td>
-                                
-                                <td class="title js-toggle-gig-stats ">
-                                    <div class="ellipsis1">
-                                        <a class="ellipsis" target="_blank" href="'.url('dashboard/workplace/order-details/'.$show_order->order_id).'">'.$show_order->job_title.'</a>
-                                    </div>
-                                </td>
-                                <td>'.$show_order->price_type.'</td>
-                                <td>'.\Carbon\Carbon::parse($show_order->created_at)->format('M d, Y').'</td>
-                                <td>'.$show_order->proposal_budget.'</td>
-                                
-                                <td>
-                                    <label for="sv" class="select-block v3">
-                                        <span style="text-transform:uppercase;" class="alert alert-success">'.$show_order->status.'
-                                    </label>
-                                </td>
-                            </tr> 
-                        ';
-                 }
-                 $output .='</tbody>
-                </tbody>
-            </table>';
-                echo $output;
-        }else{
-
-            echo 'No '.$status.' orders to show.';
-        }
     }
 
 

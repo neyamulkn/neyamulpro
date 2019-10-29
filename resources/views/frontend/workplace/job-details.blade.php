@@ -330,10 +330,6 @@
 
 @section('js')
 
-<!-- Side Menu -->
-<script src="{!! asset('allscript')!!}/js/side-menu.js"></script>
-<!-- User Quickview Dropdown -->
-
 <!-- XM LineFill -->
 <script src="{!! asset('allscript')!!}/js/vendor/jquery.xmlinefill.min.js"></script>
 

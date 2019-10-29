@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Session;
 use DB;
+use Redirect;
 class ThemeOrderController extends Controller
 {
     
@@ -14,19 +15,35 @@ class ThemeOrderController extends Controller
         if(!Auth::check()){
             return Redirect::route('login');
         }
-        $session_id = 0;
-        $session_id =  Session::get('session_id');
-        $user_id = null;
-        if(Auth::check()){
-            $user_id = Auth::user()->id;
+         $user_id = null;
+        if(Auth::check()){  $user_id = Auth::user()->id; }
+
+        //if direct purchase buy now button
+        if(isset($request->purchase)){
+            $data = [
+                'theme_id' => $request->theme_id,
+                'price' => $request->price,
+                'user_id' => $user_id
+            ];
+            $insertId = DB::table('theme_add_to_cart')->insertGetId($data);
+
+            $get_theme_info = DB::table('theme_add_to_cart')
+            ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
+            ->where('theme_add_to_cart.cart_id', $insertId)
+            ->get();
+            Session::put('buy_theme_cart_id', $insertId);
+           
+        }else{
+            $session_id = 0;
+            $session_id =  Session::get('session_id');
+           
+            $get_theme_info = DB::table('theme_add_to_cart')
+            ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
+            ->where('theme_add_to_cart.user_id', $user_id)
+            ->orWhere('session_id', $session_id)
+            ->get();
         }
-
-        $get_themecart_info = DB::table('theme_add_to_cart')
-        ->where('user_id', $user_id)
-        ->orWhere('session_id', $session_id)
-        ->get();
-
-        return view('frontend/theme/theme-payment')->with(compact('get_themecart_info'));
+       return view('frontend/theme/theme-payment')->with(compact('get_theme_info'));
     }
 
 

@@ -592,6 +592,11 @@
  {!! Toastr::message() !!}
  
 @yield('js')
+
+
+<!-- Side Menu -->
+<script src="{{ asset('allscript/js/side-menu.js') }}"></script>
+
 <!-- User Quickview Dropdown -->
 <script src="{{ asset('/allscript/js/user-board.js') }}"></script>
 <!-- Footer -->

@@ -23,7 +23,11 @@ class themeController extends Controller
 
     public function search_tags(){
        $keyword_name = DB::table('key_keyword')->select('keyword_name')->get();
-        echo json_encode($keyword_name);
+       $tags = array(); 
+       foreach ($keyword_name as $value) {
+           array_push($tags, $value->keyword_name);
+       }
+        echo json_encode($tags);
     }
 
     public function theme_upload_title(Request $request){
@@ -160,57 +164,58 @@ class themeController extends Controller
 			    'search_tag' => strtolower($search_tag),
 			    'price_regular' => $request->price_regular,
 			    'price_extented' => $request->price_extented,
-			  	'status'  => '1'
+			  	'status'  => 'pending'
 		  	];
+          
 		  	$insert_id = theme::where('theme_url',  $theme_url)->update($data);
 		  	if($insert_id)
 		  	{
 		  		if(isset($request->radio)){
-		            foreach($request->radio as $feature_id => $feature_name){
-		            	$data = [
-					    'theme_id' => $insert_id,
-					    'feature_type' => 'radio',
-					    'feature_id' => $feature_id,
-					    'feature_name' => $feature_name
-					];
-					DB::table('theme_features')->insert($data);
+		      foreach($request->radio as $feature_id => $feature_name){
+	            	$data = [
+    					    'theme_id' => $insert_id,
+    					    'feature_type' => 'radio',
+    					    'feature_id' => $feature_id,
+    					    'feature_name' => $feature_name
+      					];
+      					DB::table('theme_features')->insert($data);
 			        }
 			    }
 
 			    if(isset($request->select)){
 		            foreach($request->select as $feature_id => $feature_name){
 		            	$data = [
-					    'theme_id' => $insert_id,
-					    'feature_type' => 'select',
-					    'feature_id' => $feature_id,
-					    'feature_name' => $feature_name
-					];
-					DB::table('theme_features')->insert($data);
-					 
+      					    'theme_id' => $insert_id,
+      					    'feature_type' => 'select',
+      					    'feature_id' => $feature_id,
+      					    'feature_name' => $feature_name
+      					];
+      					DB::table('theme_features')->insert($data);
+      					 
 			        } 
 			    }
 
 			    if(isset($request->dropdown)){
 		            foreach($request->dropdown as $feature_id => $feature_name){
 		            	$data = [
-					    'theme_id' => $insert_id,
-					    'feature_type' => 'dropdown',
-					    'feature_id' => $feature_id,
-					    'feature_name' => $feature_name
-					];
-					DB::table('theme_features')->insert($data);
-					 
+      					    'theme_id' => $insert_id,
+      					    'feature_type' => 'dropdown',
+      					    'feature_id' => $feature_id,
+      					    'feature_name' => $feature_name
+      					];
+      					DB::table('theme_features')->insert($data);
+      					 
 			        } 
 			    }
 
 			    if($request->file('additonal_image')){
 		            foreach($request->additonal_image as $additonal_image){
 		            
-	   				$additional_image_newname = 'theme-image-'.rand('123456', '999999').'.'. $additonal_image->getClientOriginalExtension();
-	  				$additonal_image->move(public_path('theme/images/'), $additional_image_newname);
+      	   				$additional_image_newname = 'theme-image-'.rand('123456', '999999').'.'. $additonal_image->getClientOriginalExtension();
+      	  				$additonal_image->move(public_path('theme/images/'), $additional_image_newname);
 
-					DB::table('theme_additiona_img')->insert(['theme_id' => $insert_id, 'theme_additiona_img' => $additional_image_newname]);
-			        }
+      					 DB::table('theme_additiona_img')->insert(['theme_id' => $insert_id, 'theme_additiona_img' => $additional_image_newname]);
+      			   }
 			    }
 
             	Toastr::success('Thanks your theme insert successfully completed.');
@@ -227,18 +232,45 @@ class themeController extends Controller
 	    }
 	}
 
-	public function manage_theme(){
+	public function manage_theme($status='active'){
 		$user_id = Auth::user()->id;
-		 $data['get_theme_info'] = DB::table('themes')
-                ->leftJoin('theme_orders', 'themes.theme_id', 'theme_orders.theme_id')
-                ->leftJoin('theme_category', 'themes.category_id', 'theme_category.category_url')
-                ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.subcategory_url')
-                ->selectRaw('themes.*, count(theme_orders.theme_id) total_sell, sum(theme_orders.total_price) total_earn, theme_category.category_name, theme_subcategory.subcategory_name')
-                ->where('themes.user_id', $user_id)
-                ->groupBy('themes.theme_id')->paginate(3);
+        // get status bar
+        $get_status = DB::table('themes');
+        if(Auth::user()->role_id != 1){
+            $get_status = $get_status->where('themes.user_id' , '=', $user_id);
+        }
+        $get_status = $get_status->get();
+        // show theme by status
+        $get_theme_info = DB::table('themes')
+            ->leftJoin('theme_orders', 'themes.theme_id', 'theme_orders.theme_id')
+            ->leftJoin('theme_category', 'themes.category_id', 'theme_category.category_url')
+            ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.subcategory_url')
+            ->selectRaw('themes.*, count(theme_orders.theme_id) total_sell, sum(theme_orders.total_price) total_earn')
+            ->where('themes.user_id', $user_id);
+           
+            if($status != 'all'){
+                $get_theme_info = $get_theme_info->where('themes.status', $status);
+            }
+           
+            $get_theme_info = $get_theme_info->groupBy('themes.theme_id')->paginate(2);
         
-         	return view('backend.theme.manage')->with($data); 
-	}
+        // $_get for pagination
+        if(!isset($_GET['type'])){
+            if(Auth::user()->role_id == 1){
+                return view('admin.themeplace.manage')->with(compact('get_theme_info', 'get_status')); 
+            }
+            return view('backend.theme.manage')->with(compact('get_theme_info', 'get_status')); 
+        }else{
+            // view page data
+            if(count($get_theme_info)>0){
+              echo view('backend.theme/include/manage-themeview')->with(compact('get_theme_info'));
+           
+            }else{
+                echo 'No '.$status. ' theme found.';
+            }
+        }
+}
+
 
 	public function delete_theme(Request $request)
     {

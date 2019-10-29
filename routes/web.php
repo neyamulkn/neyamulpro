@@ -1,5 +1,11 @@
 <?php
 
+// view add page for testing
+Route::get('view/add', function(){
+	return view('add');
+});
+
+
 Route::get('/','HomeController@index');
 
 Auth::routes();
@@ -11,12 +17,12 @@ Route::group(['prefix'=> 'admin', 'middleware' => ['admin', 'auth']], function()
 	
 	//theme category & filter 
 	Route::group(['prefix'=> 'themeplace'],  function(){
-		Route::get('/category', 'superAdminController@theme_category');
-		Route::post('create_theme_category', 'superAdminController@create_theme_category');
+		Route::get('/category', 'superAdminController@theme_category')->name('theme_category');
+		Route::post('/create_theme_category', 'superAdminController@create_theme_category')->name('insert_theme_cat');
 
 		// insert sub category
-		Route::get('/subcategory', 'superAdminController@theme_subcategory');
-		Route::post('/subcategory', 'superAdminController@create_theme_subcategory');
+		Route::get('/subcategory', 'superAdminController@theme_subcategory')->name('theme_subcategory');
+		Route::post('/subcategory', 'superAdminController@create_theme_subcategory')->name('insert_theme_subcategory');
 
 		// insert sub child category
 		Route::get('/subchildcategory', 'superAdminController@theme_subchildcategory');
@@ -29,6 +35,10 @@ Route::group(['prefix'=> 'admin', 'middleware' => ['admin', 'auth']], function()
 		/// sub filter theme
 		Route::get('subfilter/', 'filterController@theme_subfilter'); // filter
 		Route::post('subfilter/', 'filterController@insert_theme_subfilter')->name('insert_theme_subfilter'); // filter
+
+		//manage theme
+
+		Route::get('/manage/{status?}', 'themeController@manage_theme')->name('admin_manage_theme');
 	});
 
 	//workplace category & filter 
@@ -95,13 +105,10 @@ Route::group(['prefix'=> 'admin', 'middleware' => ['admin', 'auth']], function()
 		Route::get('gig-pricescope/edit/{id}', 'superAdminController@marketplace_pricescope_edit');
 		Route::get('gig-pricescope/delete/{id}', 'superAdminController@marketplace_pricescope_delete');
 
-
 	});
-
 
 });
 //End super admin routes
-
 
 Route::get('adsense/view', 'AdsenseController@index');
 
@@ -126,21 +133,21 @@ Route::group(['prefix'=> 'dashboard/themeplace'],  function(){
 	Route::post('/file/upload', 'themeController@file_upload')->name('file_upload');
 	Route::post('/image/upload', 'themeController@image_upload')->name('image_upload');
 	Route::post('/upload/', 'themeController@insert_theme')->name('insert_theme');
-	Route::get('/manage', 'themeController@manage_theme')->name('manage_theme');
+	Route::get('/manage/{status?}', 'themeController@manage_theme')->name('manage_theme');
 	Route::post('/delete', 'themeController@delete_theme')->name('delete_theme');
 
 
 	Route::get('delete/folder_item/', 'themeController@delete_folder_item')->name('delete_folder_item');
 
 });
-Route::get('/tags/input/', 'themeController@tags')->name('theme_tags');
+Route::get('/tags/input/', 'themeController@search_tags')->name('theme_tags');
 
-//Start Themeplace route 
+//Start Themeplace route frontend
 Route::group(['prefix'=> 'themeplace'],  function(){
 	Route::get('/', 'themefrontController@themeplace');
 	Route::post('/theme_show_category', 'themefrontController@theme_show_category'); // show category home page
 	
-	Route::get('/{category}/{subcategory}', 'themefrontController@theme_view');
+	Route::get('/{category}/{subcategory}', 'themefrontController@theme_view')->name('theme_category');
 	Route::get('/{theme_url}/', 'themefrontController@theme_details')->name('theme_detail');
 	
 
@@ -152,8 +159,8 @@ Route::group(['prefix'=> 'themeplace'],  function(){
 	Route::get('/cart/view/{username}', 'AddToCartController@view_cart');
 	// delete cart
 	Route::get('/cart/delete/{id}', 'AddToCartController@theme_delete_cart');
-	
-	Route::post('/checkout', 'ThemeOrderController@theme_checkout');
+
+	Route::post('/checkout', 'ThemeOrderController@theme_checkout')->name('theme_checkout');
 	Route::get('/payment/completed/paypal', 'ThemeOrderController@payment_success')->name('theme_payment_paypal');
 	Route::get('/order/payment/cancel', 'ThemeOrderController@payment_cancel')->name('theme_payment_cancel'); 
 	Route::post('/payment/completed/stripe', 'ThemeOrderController@stripe_payment')->name('theme_stripe_payment'); // stripe payment
@@ -201,13 +208,23 @@ Route::group(['prefix'=> 'dashboard/workplace'],  function(){
 	Route::post('/payment_stripe/', 'WorkplaceController@payment_stripe')->name('payment_stripe.post');
 	Route::get('/work-description/{order_id}', 'WorkplaceController@work_description');
 	Route::post('/insert-workdsc/', 'WorkplaceController@insert_workdsc');
-	Route::get('/order-details/{order_id}', 'WorkplaceController@order_details');
-	Route::get('/manage/buyer_order/{status?}', 'WorkplaceController@manage_buyer_order');
-	Route::get('/manage/get_buyer_orders/{status}', 'WorkplaceController@get_orders_by_status');
-
-
-	Route::post('/job-post/', 'WorkplaceController@insert_job');
+	// order route
+	Route::get('/manage/order/{status?}', 'JobOrderController@job_manage_order')->name('job_manage_order');
+	Route::get('/order-details/{order_id}', 'JobOrderController@order_details')->name('job_order_details');
 	
+	Route::get('/manage/get_buyer_orders/{status}', 'JobOrderController@get_orders_by_status');
+
+	
+	Route::post('/order/quick-response', 'JobOrderController@quick_response')->name('job_quick_response'); 
+	Route::post('/order/extratime-cancel', 'JobOrderController@order_timeExtra_cancel')->name('job_order_timeorcancel'); 
+	// order deliver 
+	Route::post('/order/deliver/{order_id}', 'JobOrderController@order_deliver')->name('job_order_delivery'); 
+	Route::post('/revision/order', 'JobOrderController@revision_delivery')->name('job_revision_delivery'); 
+	Route::post('/order/completed/{order_id}', 'JobOrderController@order_completed')->name('job_order_completed');
+	Route::get('/order/feadback/{order_id}', 'JobOrderController@job_feadback')->name('job_feadback');
+	Route::post('/order/feadback/{order_id}', 'JobOrderController@job_insert_feadback');
+
+
 
 });
 
@@ -245,7 +262,6 @@ Route::post('/dashboard/upload/images', 'GigController@upload_images')->name('up
 Route::post('/dashboard/create-gig/finish', 'GigController@insert_gig_step_finish'); // insert gig step finish
 
 Route::get('dashboard/manage-gigs/{status?}', 'GigController@manage_gigs');
-Route::get('dashboard/get_gigs_by_status/{status}', 'GigController@get_gigs_by_status');
 Route::get('dashboard/marketplace/gig/delete/{id}', 'GigController@gig_delete');
 
 Route::post('/dashboard/create/price', 'GigController@insert_price'); // update gig
@@ -272,14 +288,12 @@ Route::get('/hotlancer/error', function(){
 
 //frontend
 
-Route::get('/marketplace/', 'gighomeController@marketplace');
+Route::get('marketplace/', 'gighomeController@marketplace');
 
-Route::get('/{id}', 'profileController@profile_view');
+Route::get('{id}', 'profileController@profile_view');
 
-Route::get('/marketplace/{category}/{subcategory}', 'gighomeController@gig_view');
-Route::get('/marketplace/{gig_url}', 'gighomeController@gig_details');
-
-Route::post('/marketplace/{category}/{subcategory}', 'gighomeController@gig_filter');
+Route::get('marketplace/{category}/{subcategory}', 'gighomeController@gig_view');
+Route::get('marketplace/{gig_url}', 'gighomeController@gig_details');
 
 // order 
 Route::post('/order/add_card/', 'GigOrderController@add_to_cart'); // add to cart
@@ -312,18 +326,21 @@ Route::post('/order/feadback/{order_id}', 'GigOrderController@insert_feadback');
 Route::get('/order/payment/{order_id}', 'GigOrderController@order_payment'); // 
 
 // manage seller order
-Route::get('dashboard/{username}/manage/seller_order/{status?}', 'GigOrderController@manage_seller_order'); 
+Route::get('dashboard/marketplace/manage/seller_order/{status?}', 'GigOrderController@manage_seller_order')->name('manage_seller_order'); 
 // get seller order by status
 Route::get('dashboard/manage/get_seller_orders/{status}', 'GigOrderController@get_seller_orders_by_status'); 
 // get order details
-Route::get('dashboard/{username}/manage/order/{order_id}', 'GigOrderController@manage_order_details'); 
+Route::get('dashboard/marketplace/order-details/{order_id}', 'GigOrderController@gig_order_details')->name('gig_order_details'); 
 // order deliver 
 Route::post('dashboard/order/deliver/{order_id}', 'GigOrderController@order_deliver'); 
+Route::post('dashboard/order/quick-response', 'GigOrderController@quick_response')->name('quick_response'); 
+Route::post('dashboard/revision/order-delivery', 'GigOrderController@revision_delivery')->name('revision_delivery'); 
+Route::post('dashboard/order/order-timeorcancel', 'GigOrderController@order_timeExtra_cancel')->name('order_timeorcancel'); 
 
 // buyer 
 Route::get('dashboard/{username}/manage/buyer_order/{status?}/', 'GigOrderController@manage_buyer_order'); 
 // get_orders_by_status
-Route::get('dashboard/manage/get_buyer_orders/{status}', 'GigOrderController@get_orders_by_status'); 
+Route::get('dashboard/marketplace/manage/get_buyer_orders/{status?}', 'GigOrderController@get_orders_by_status'); 
 
 Route::get('dashboard/{username}/manage/buyer_order_details/{order_id}', 'GigOrderController@buyer_order_details'); // all orders
 
@@ -334,7 +351,8 @@ Route::get('dashboard/earnings/balance', 'earningController@earnings_view');
 
 // affiliate program
 
-Route::get('dashboard/affiliate/program', 'affiliateController@affiliate_program'); 
+Route::post('dashboard/generate/affiliatecede', 'AffiliateAddsController@affiliate_code')->name('affiliate_code'); 
+Route::get('dashboard/affiliate/program', 'AffiliateAddsController@affiliate_program'); 
 // Referell
 Route::get('affiliate/view', 'AffiliateAddsController@index'); 
 

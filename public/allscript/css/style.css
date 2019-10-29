@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
 /***************************************/
 /* 1. RESET */
 /***************************************/
@@ -468,7 +468,7 @@ input[type="checkbox"] {
   font-family: "Titillium Web", sans-serif;
   font-size: 0.75em;
   font-weight: 700;
-  line-height: 30px;
+  line-height: 35px;
   text-align: center; }
   .button.primary {
     background-color: #00d7b3; }
@@ -3813,7 +3813,6 @@ header {
       border-top-color: #e61852; }
     .post-tab .tab-header .tab-item {
       float: left;
-      width: 289px;
       height: 60px;
       border-right: 1px solid #ebebeb;
       cursor: pointer; }
@@ -3826,7 +3825,8 @@ header {
       .post-tab .tab-header .tab-item > p {
         color: #b2b2b2;
         line-height: 60px;
-        text-align: center; }
+        text-align: center;
+        padding: 0px 10px; }
   .post-tab .tab-content {
     width: 100%;
     border: 1px solid #ebebeb;
@@ -4781,7 +4781,7 @@ header {
     width: 416px;
     padding-left: 23px; }
   .cart .cart-header-category, .cart .cart-item-category {
-    width: 142px; }
+    width: 115px; }
   .cart .cart-header-price, .cart .cart-item-price {
     width: 50px; }
   .cart .cart-header-actions, .cart .cart-item-actions {

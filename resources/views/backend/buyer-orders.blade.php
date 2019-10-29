@@ -11,10 +11,6 @@
 
 <style>
 
-
-
-
-
 figure.user-avatar.small {
     margin: 13px 13px 13px 0;
     float: left;
@@ -91,7 +87,7 @@ figure.user-avatar.small {
 						<!-- COMMENT -->
 					<div class="product-list list full v2">
 								<!-- data show-->
-								<div class="show_order"></div> 
+						<div class="show_order"></div> 
 					</div>
 						<!-- /COMMENT REPLY -->
 					</div>
@@ -148,7 +144,7 @@ figure.user-avatar.small {
     function get_order(status){
     	document.getElementById('open').style.display = 'block';
     	history.pushState('state/', '/buyer_order/', status);
-        var  link = '<?php echo URL::to("dashboard/workplace/manage/get_buyer_orders/");?>/'+status;
+        var  link = '<?php echo URL::to("dashboard/marketplace/manage/get_buyer_orders/");?>/'+status;
        
         $.ajax({
             url:link,
@@ -167,10 +163,6 @@ figure.user-avatar.small {
     }
     
 </script>
-
-
-
-
 
 
 @endsection

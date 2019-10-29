@@ -1,245 +1,226 @@
 @extends('backend.layouts.master')
-<?php $title = strtolower(Auth::user()->username) ; ?>
-@section('title', 'Manage theme | Hotlancer')
 
+@section('title', 'Manage orders')
 @section('css')
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/bootstrap-datepicker3.standalone.min.css">
 
-	<style type="text/css">
-		.text-header.big {
-			    font-size: 25px !important;
-			    text-align: center !important;
-		}
-		.sale-data-item{
-			width: 20% !important;
-		}
-		.sale-data-item .sale-data-item-info .text-header {
-		    margin-bottom: 20px !important;
-		}
-		.sale-data-item {
-			  height: 100px !important;
-		    text-align: center !important;
-		    padding: 16px 0 0 25px !important;
-		    
-		}
 
-		.sale-data-item .text-header.big, .sale-data-item .price.big {
-		     float: none !important; 
+<link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/simple-line-icons.css">
+    <link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/font-awesome.min.css">
+	<link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/tooltipster.css">
+	<link rel="stylesheet" href="{{asset('/allscript')}}/css/c.css">
 
-		}
-		.transaction-list-header-item, .transaction-list-item-item {
-		    width: 30% !important;
-		}
-		.page {
-		    float: right;
-		    margin-top: 24px;
-		    overflow: visible !important;
-		}
+<style>
 
-				.page-link{
-		 
-		    background-color: #535d5f;
-		    color: #fff;
-		 
-		}.pagination.active {
-		    background-color: #00d7b3 !important;
-		}
-		.transaction-list-item, .transaction-list{
-			padding: 3px 8px;
-		}
-	</style>
+
+
+
+
+figure.user-avatar.small {
+    margin: 13px 13px 13px 0;
+    float: left;
+}
+.transaction-list-item-earnings {
+    margin-top: 9px;
+}
+
+.transaction-list-header-item, .transaction-list-item-item {
+    width: 25%;
+}
+.transaction-list-header {
+    padding-left: 30px;
+}
+.transaction-list-item {
+    padding-left: 30px;
+}
+.post-tab .tab-header .tab-item{
+	width: 145px !important;
+}
+
+</style>
 @endsection
 
 @section('content')
-        <!-- DASHBOARD CONTENT -->
-        <div class="dashboard-content">
-      
-            
-			<!-- SALE DATA -->
-			<div class="sale-data">
-				<!-- SALE DATA ITEM -->
-				<div class="sale-data-item">
-					<div class="sale-data-item-info">
-						<p class="text-header">Net Income</p>
-						
-					</div>
-					<p class="text-header big">8.530</p>
-					
-				</div>
-				<!-- /SALE DATA ITEM-->
+	
+       <div class="dashboard-content">
+            <div class="post-tab xmtab" style="display: block;">
 
-				<!-- SALE DATA ITEM -->
-				<div class="sale-data-item">
-					<div class="sale-data-item-info">
-						<p class="text-header">Total Sales</p>
-						
-					</div>
-					<p class="text-header big">234</p>
-					
-				</div>
-				<!-- /SALE DATA ITEM-->
+            	<?php 
+            	$user_id = Auth::user()->id;
+            	$active = $draft = $pending = $reject = 0;
+            	foreach($get_status as $count_status){
+            		if($count_status->status == 'active'){ $active +=1 ; }
+            		if($count_status->status == 'draft'){ $draft +=1 ; }
+            		if($count_status->status == 'pending'){ $pending +=1 ; }
+            		if($count_status->status == 'reject'){ $reject +=1 ; }
+            	}
 
-				<!-- SALE DATA ITEM -->
-				<div class="sale-data-item">
-					<div class="sale-data-item-info">
-						<p class="text-header">User for purchas</p>
-						
-					</div>
-					<p class="text-header big"><span>$</span>12.450</p>
-					
-				</div>
-				<!-- /SALE DATA ITEM-->
+            	if(Request::route('status')){
+            		$status = Request::route('status');
+            	}else{
+            		$status = 'active';
+            	}
+            	
+            	$all = $active+$draft +$pending+$reject;
 
-				<!-- SALE DATA ITEM -->
-				<div class="sale-data-item">
-					<div class="sale-data-item-info">
-						<p class="text-header">Pending Clearanc</p>
-						
+            	?>
+				<!-- TAB HEADER -->
+				<div class="tab-header primary" >
+					<!-- TAB ITEM -->
+					<div class="tab-item {{($status == 'active') ? 'selected': ''}}" onclick="get_themebyStatus('active')">
+						<p class="text-header">ACTIVE ({{$active}})</p>
 					</div>
-					<p class="text-header big"><span>$</span>10.630</p>
-					
-				</div>
-				<!-- /SALE DATA ITEM--><!-- SALE DATA ITEM -->
-				<div class="sale-data-item">
-					<div class="sale-data-item-info">
-						<p class="text-header">Available for Withdrawal</p>
-						
+					<div class="tab-item {{($status == 'draft')? 'selected': ''}}" onclick="get_themebyStatus('draft')">
+						<p class="text-header">DRAFT ({{$draft}})</p>
 					</div>
-					<p class="text-header big"><span>$</span>10.630</p>
-					
+					<div class="tab-item {{($status == 'pending')? 'selected': ''}}" onclick="get_themebyStatus('pending')">
+						<p class="text-header" >PENDING ({{$pending}})</p>
+					</div>
+					<div class="tab-item {{($status == 'reject')? 'selected': ''}}" onclick="get_themebyStatus('reject')">
+						<p class="text-header" >REJECT ({{$reject}})</p>
+					</div>
+					<div class="tab-item {{($status == 'all')? 'selected': ''}}">
+						<p class="text-header" onclick="get_themebyStatus('all')">All ({{$all}})</p>
+					</div>
 				</div>
-				<!-- /SALE DATA ITEM-->
+				<div class="void open" id="open">
+							<!-- COMMENTS -->
+					<div class="comment-list"><br>
+								<!-- COMMENT -->
+						<div class="product-list list full v2">
+										<!-- data show-->
+							<div class="show_order">
+								@if(count($get_theme_info)>0)
+				               
+				                <table class="responsive-table-input-matrix">
+				                    <thead>
+					                    
+					                    <tr>
+					                        <th>Image</th>
+					                        <th>Item</th>
+					                        <th>Total Sell</th>
+					                        <th>Price</th>
+					                        <th>Earnings</th>
+					                        <th>Status</th>
+					                        <th>Action</th>
+					                        
+					                    </tr>
+				                    </thead>
+					                <tbody>
+				                		@foreach($get_theme_info as $view_theme)
+				                            <tr id="item{{$view_theme->theme_id}}">
+				                               
+				                                <td class="gig-pict-45">
+				                                    <span class="gig-pict-45">
+				                                        <a href="#"><img src="{{asset('theme/images/'.$view_theme->main_image)}}" alt="" ></a>
+				                                    </span>
+				                                </td>
+				                                <td class="title js-toggle-gig-stats ">
+				                                    <div class="ellipsis1">
+				                                        <a class="ellipsis" target="_blank" href="{{route('theme_detail', $view_theme->theme_url)}}">{{$view_theme->theme_name}}</a>
+				                                    </div>
+				                                </td>
+				                                <td>{{$view_theme->total_sell}}</td>
+				                                <td>${{$view_theme->price_regular}}</td>
+				                                <td>${{($view_theme->total_earn)? $view_theme->total_earn : 0}}</td>
+				                                <td>{{$view_theme->status}}</td>
+				                               
+				                                <td>
+				                                    <label for="sv" class="select-block v3">
+				                                        <select onchange="action_type(this.value,'{{$view_theme->theme_url}}', '{{$view_theme->theme_id}}')"  name="sv" id="sv">
+				                                            <option value="0">select action</option>
+				                                            <option value="edit">Edit</option>
+				                                            <option value="delete">Delete</option>
+				                                        </select>
+				                                        <!-- SVG ARROW -->
+				                                        <svg class="svg-arrow">
+				                                            <use xlink:href="#svg-arrow"></use>
+				                                        </svg>
+				                                        <!-- /SVG ARROW -->
+				                                    </label>
+				                                </td>
+				                            </tr>
+				               			 @endforeach
+			                 		</tbody>
+			            		</table>
+				            	<div class="page primary paginations">
+				                  {{ $get_theme_info->links()}}
+				             	</div>
+
+					        	@else No  theme found @endif
+
+							</div> 
+						</div>
+							<!-- /COMMENT REPLY -->
+					</div>
+					<!-- /COMMENTS -->
+				</div>
+				
 			</div>
-			<!-- /SALE DATA -->
-      <!-- HEADLINE -->
-            <div class="headline statement primary">
-                <h4>Theme List</h4>
-				<button form="statement_filter_form" class="button dark-light">Search</button>
-				<form id="statement_filter_form" name="statement_filter_form" class="statement-form">
-					<!-- DATEPICKER -->
-					<div class="datepicker-wrap">
-						<input type="text" id="date_from" name="date_from" class="datepicker" value="02/22/2016">
-						<span class="icon-calendar"></span>
-					</div>
-					<!-- /DATEPICKER -->
-					<label>to:</label>
-					<!-- DATEPICKER -->
-					<div class="datepicker-wrap">
-						<input type="text" id="date_to" name="date_to" class="datepicker" value="02/22/2017">
-						<span class="icon-calendar"></span>
-					</div>
-					<!-- /DATEPICKER -->
-					<label for="ss_filter" class="select-block">
-						<select name="ss_filter" id="ss_filter">
-							<option value="0">All Purchases</option>
-							<option value="marketplace">Marketplace</option>
-							<option value="workplace">Workplace</option>
-							<option value="themeplace">Themeplace</option>
-							<option value="referrel">Referrel</option>
-						</select>
-						<!-- SVG ARROW -->
-						<svg class="svg-arrow">
-							<use xlink:href="#svg-arrow"></use>
-						</svg>
-						<!-- /SVG ARROW -->
-					</label>
-				</form>
-            </div>
-            <!-- /HEADLINE -->
-			<!-- TRANSACTION LIST -->
-			<div class="transaction-list">
-				<!-- TRANSACTION LIST HEADER -->
-				<div class="transaction-list-header">
-					<div class="transaction-list-header-price">
-						<p class="text-header small">#Sl</p>
-					</div>
-					
-					<div class="transaction-list-header-earnings">
-						<p class="text-header small">Image</p>
-					</div>
-					<div class="transaction-list-header-item">
-						<p class="text-header small">Item</p>
-					</div>
-					
-					<div class="transaction-list-header-code">
-						<p class="text-header small">Total Sell</p>
-					</div>
-					<div class="transaction-list-header-price">
-						<p class="text-header small">Price</p>
-					</div>
-					<div class="transaction-list-header-earnings">
-						<p class="text-header small">Earnings</p>
-					</div>
-					<div class="transaction-list-header-earnings">
-						<p class="text-header small">Status</p>
-					</div>
-					<div class="transaction-list-header-earnings">
-						<p class="text-header small">Action </p>
-					</div>
-					<div class="transaction-list-header-icon"></div>
-				</div>
-				<!-- /TRANSACTION LIST HEADER -->
-				@if(count($get_theme_info)>0)
-					<?php $i=1; ?>
-					@foreach($get_theme_info as $view_theme)
-					<div class="transaction-list-item" id="item{{$view_theme->theme_id}}">
-						<div class="transaction-list-item-price">
-							<p>{{$i++}}</p>
-						</div>
-						
-						<div class="transaction-list-item-earnings">
-							<span>
-                                <img width="40px" height="40px" src="{{asset('theme/images/'.$view_theme->main_image)}}" alt="image" ></span>
-						</div>
-						<div class="transaction-list-item-item">
-							<p class="category primary"><a href="{{route('theme_detail', $view_theme->theme_url)}}" target="_blank">{{$view_theme->theme_name}}</a></p>
-						</div>
-						<div class="transaction-list-item-detail">
-							<p>{{$view_theme->total_sell}}</p>
-						</div>
-						<div class="transaction-list-item-code">
-							<p><span class="light">${{$view_theme->price_regular}}</span></p>
-						</div>
-						<div class="transaction-list-item-price">
-							<p>${{($view_theme->total_earn)? $view_theme->total_earn : 0}}</p>
-						</div>
-						
-						<div class="transaction-list-item-price">
-							<p>{{($view_theme->status == 1)? "Active" : "Deactive"}}</p>
-						</div>
 
-						<div class="transaction-list-item-earnings">
-							<p class="text-header">
-							<select onchange="action_type(this.value,'{{$view_theme->theme_url}}', '{{$view_theme->theme_id}}')">
-								<option value="0">select</option>
-								<option value="edit">Edit</option>
-								<option value="delete">Delete</option>
-							</select></p>
-						</div>
-						
-					</div>
-					@endforeach
-					<!-- /TRANSACTION LIST ITEM -->
-				@else
-				<h3 style="text-align: center;padding: 10px;">There are no transactions to show here.. <h3>
-				@endif
-				<div class="page primary paginations">
-                   {{$get_theme_info->links()}}
-                </div>
-			</div>
-			<!-- /TRANSACTION LIST -->
+			<div class="clearfix"></div>			
         </div>
-        <!-- DASHBOARD CONTENT -->
-    </div>
-    <!-- /DASHBOARD BODY -->
+
 @endsection
-
 @section('js')
-<!-- Bootstrap Datepicker -->
-<script src="{{asset('/allscript')}}/js/vendor/bootstrap-datepicker.min.js"></script>
+<!-- Tooltipster -->
+<script src="{{asset('/allscript')}}/js/vendor/jquery.tooltipster.min.js"></script>
+<!-- ImgLiquid -->
+<script src="{{asset('/allscript')}}/js/vendor/imgLiquid-min.js"></script>
+<!-- Tweet -->
+<script src="{{asset('/allscript')}}/js/vendor/twitter/jquery.tweet.min.js"></script>
 
-<!-- Dashboard Statement -->
-<script src="{{asset('/allscript')}}/js/dashboard-statement.js"></script>
+<script src="{{asset('/allscript')}}/js/vendor/jquery.xmtab.min.js"></script>
+
+<!-- Liquid -->
+<script src="{{asset('/allscript')}}/js/liquid.js"></script>
+<!-- Checkbox Link -->
+<script src="{{asset('/allscript')}}/js/checkbox-link.js"></script>
+<!-- Image Slides -->
+<script src="{{asset('/allscript')}}/js/image-slides.js"></script>
+
+<!-- XM Accordion -->
+<script src="{{asset('/allscript')}}/js/vendor/jquery.xmaccordion.min.js"></script>
+<!-- XM Pie Chart -->
+<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
+<!-- Item V1 -->
+<!-- Tooltip -->
+<script src="{{asset('/allscript')}}/js/tooltip.js"></script>
+<!-- User Quickview Dropdown -->
+<script src="{{asset('/allscript')}}/js/user-board.js"></script>
+<!-- Footer -->
+<script src="{{asset('/allscript')}}/js/footer.js"></script>
+
+
+<!-- XM Pie Chart -->
+<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
+
+
+
+<script type="text/javascript">
+
+    function get_themebyStatus(status){
+    	document.getElementById('open').style.display = 'block';
+    	history.pushState({}, null, status);
+        var  link = '<?php echo URL::to("dashboard/themeplace/manage");?>/'+status+'?type=status'; //type send for direct link & ajax link itentify
+       	
+        $.ajax({
+            url:link,
+            method:"get",
+            data:{
+                status:status,bystatus:3
+            },
+            success:function(data){
+                if(data){
+                   
+                    $('.show_order').html(data);
+                   
+              	}
+           	}
+        });
+    }
+    
+</script>
+
 
 <script type="text/javascript">
 	function action_type(type, theme_url=null, theme_id=null) {
@@ -274,5 +255,18 @@
    
         
 } 
+
+
+
+$('.tab-item').on('click', function(){
+    $('.tab-item').removeClass('selected');
+    $(this).addClass('selected');
+});
 </script>
+
+
+
+
+
+
 @endsection
