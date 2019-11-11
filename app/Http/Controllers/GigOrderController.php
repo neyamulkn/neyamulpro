@@ -183,7 +183,7 @@ class GigOrderController extends Controller
         $token = $request->stripeToken;
 
         $charge = \Stripe\Charge::create([
-            'amount' => 999,
+            'amount' => $total,
             'currency' => 'usd',
             'description' => 'Example charge',
             'source' => $token,
@@ -716,7 +716,7 @@ class GigOrderController extends Controller
                 exit();
             }
         }
-        Toastr::error('Sorry your order not completed.')
+        Toastr::error('Sorry your order not completed.');
         return back();
             
     }

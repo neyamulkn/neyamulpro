@@ -505,8 +505,7 @@ function stripeTokenHandler(token) {
 
 <!-- Tweet -->
 <script src="{{ asset('allscript')}}/js/post-tab.js"></script>
-<!-- Side Menu -->
-<script src="{{ asset('allscript')}}/js/side-menu.js"></script>
+
 
 <script type="text/javascript">	
 

@@ -11,6 +11,8 @@ use Exception;
 use App\ref_count;
 use App\themeOrder;
 use App\theme_review;
+use App\ThemeComment;
+use App\comment_reply;
 use Toastr;
 use Illuminate\Support\Facades\Input;
 class themefrontController extends Controller
@@ -40,13 +42,13 @@ class themefrontController extends Controller
     public function theme_view(Request $request){
 
         $get_category_id = DB::table('theme_category')->where('category_url', $request->category)->first();
-        
-            // get filter tags by search for leftsite bar 
+
+            // get filter tags by search for leftsite bar
             $theme_subchild_category = DB::table('theme_subchild_category')
                                     ->join('theme_subcategory', 'theme_subchild_category.subcategory_id', 'theme_subcategory.id')
                                     ->select('theme_subchild_category.*')
                                     ->where('subcategory_url', $request->subcategory)->get();
-            // get filter by search for leftsite bar 
+            // get filter by search for leftsite bar
             $theme_filters = DB::table('themes')
                 ->LeftJoin('theme_features', 'themes.theme_id', 'theme_features.theme_id')
                 ->LeftJoin('theme_filters', 'theme_features.feature_id', 'theme_filters.filter_id')
@@ -54,14 +56,15 @@ class themefrontController extends Controller
                 ->groupBy('theme_filters.filter_id')->get();
 
 
-          
+
             $get_theme_info = DB::table('themes')
                 ->leftJoin('users', 'themes.user_id', 'users.id')
+                ->leftJoin('userinfos', 'themes.user_id', '=', 'userinfos.user_id')
                 ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
                 ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
                 ->leftJoin('theme_filters', 'themes.category_id', 'theme_filters.category_id')
                 ->LeftJoin('theme_features', 'themes.theme_id', 'theme_features.theme_id')
-                ->select('themes.*', 'theme_category.category_name', 'users.name', 'users.id', 'users.username', 'theme_subcategory.subcategory_name')
+                ->select('themes.*', 'theme_category.category_name', 'users.name', 'userinfos.user_image', 'users.id', 'users.username', 'theme_subcategory.subcategory_name')
                 ->where('theme_category.category_url', $request->category)
                 ->where('theme_subcategory.subcategory_url',  $request->subcategory)
                 ->groupBy('themes.theme_id');
@@ -70,27 +73,33 @@ class themefrontController extends Controller
                     $src = Input::get('item');
                   $get_theme_info =  $get_theme_info->where('themes.theme_name', 'LIKE', '%'. $src .'%');
                 }
+                if(isset($request->price) && !empty($request->price)){
+                    $price = explode(',',  $request->price);
+
+                    $get_theme_info = $get_theme_info->whereBetween('themes.price_regular', [$price[0],$price[1]]);
+                   
+                }
 
             if(isset($request->filer_type)){
                  if(!is_array($request->filer_type)){ // direct url tags
                     $filer_type =  explode(',', $request->filer_type);
-               
+
                  }else{ // filter by ajax
                     $filer_type = implode(',', $request->filer_type);
-                    
+
                  }
-              
+
                 $get_theme_info = $get_theme_info->whereIn('theme_features.feature_id', [$filer_type]);
             }
-             
-            $get_theme_info = $get_theme_info->paginate(10);
+
+            $get_theme_info = $get_theme_info->paginate(1);
 
             if(!isset($_GET['filter'])){
                 return view('frontend.theme.theme-categories')->with(compact('theme_subchild_category', 'get_theme_info', 'get_category_id', 'theme_filters'));
             }else{
-               echo view('frontend.theme.get_filterdata')->with(compact('get_theme_info', 'total_sale'));           
+               echo view('frontend.theme.get_filterdata')->with(compact('get_theme_info', 'total_sale'));
              }
-        
+
     }
     public function theme_search(){
         try{
@@ -106,7 +115,7 @@ class themefrontController extends Controller
 
             $data = array();
             $data['theme_category'] = DB::table('theme_category')->get();
-            // get filter tags id by search key for leftsite bar 
+            // get filter tags id by search key for leftsite bar
             $theme_subchild_category = DB::table('theme_subchild_category');
             if($search_keyword){
                $theme_subchild_category = $theme_subchild_category->where('subcategory_id', $search_keyword->sub_category);
@@ -119,7 +128,7 @@ class themefrontController extends Controller
                $theme_filters = $theme_filters->where('category_id', $search_keyword->category_id)->where('type', 'select');
             }
             $data['theme_filters'] = $theme_filters->get();
-            
+
             $get_theme_info = DB::table('themes')
                 ->leftJoin('users', 'themes.user_id', 'users.id')
                 ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
@@ -149,18 +158,25 @@ class themefrontController extends Controller
        }
     }
 
-    public function theme_details($theme_url){
+    public function theme_details($theme_url, $comments=null){
 
         $get_theme_detail = DB::table('themes')
                 ->join('users', 'themes.user_id', 'users.id')
+                ->leftJoin('userinfos', 'users.id', 'userinfos.user_id')
                 ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
                 ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
-                ->leftJoin('userinfos', 'users.id', 'userinfos.user_id')
                 ->where('themes.theme_url', $theme_url)
-               
-                ->select('themes.*', 'users.username',  'theme_category.category_name','theme_subcategory.subcategory_name', 'userinfos.user_image', 'userinfos.user_title')
-                ->first();
+                ->select('themes.*', 'users.username',  'theme_category.category_name','theme_subcategory.subcategory_name', 'userinfos.user_image', 'userinfos.user_title')->first();
 
+        $get_theme_comment = DB::table('theme_comments')
+                ->join('users', 'theme_comments.user_id', 'users.id')
+                ->leftJoin('userinfos', 'theme_comments.user_id', 'userinfos.user_id')
+                ->where('theme_comments.theme_id', $get_theme_detail->theme_id)
+                ->select('theme_comments.*', 'users.username','userinfos.user_image')
+                ->orderBy('theme_comments.com_id', 'DESC');
+                $all_comments = $get_theme_comment->get();
+                $get_theme_comment = $get_theme_comment->paginate(5);
+        
         if($get_theme_detail){
            // refferel_user_name
             if(isset($_GET['ref'])){
@@ -178,12 +194,18 @@ class themefrontController extends Controller
                 $get_theme_features = DB::table('theme_features')
                 ->where('theme_id',  $get_theme_detail->theme_id)->get()->toArray();
 
-                $theme_additiona_images = DB::table('theme_additiona_img')
-                ->where('theme_id',  $get_theme_detail->theme_id)->get()->toArray();
-
-                $total_sale = themeOrder::where('theme_id',  $get_theme_detail->theme_id)
+                 $total_sale = themeOrder::where('theme_id',  $get_theme_detail->theme_id)
                 ->select(DB::raw('count(*) as total_sale'))
                 ->first();
+
+                // view only comment page redirect
+                if(isset($comments)){
+                    return view('frontend.theme.comments')->with(compact('get_theme_detail', 'all_comments','total_sale', 'get_theme_features'));
+                }
+
+
+                $theme_additiona_images = DB::table('theme_additiona_img')
+                ->where('theme_id',  $get_theme_detail->theme_id)->get()->toArray();
 
                 $get_theme_reviews = DB::table('theme_reviews')
                 ->join('users', 'theme_reviews.buyer_id', 'users.id')
@@ -191,11 +213,35 @@ class themefrontController extends Controller
                 ->where('theme_id',  $get_theme_detail->theme_id)
                 //->select(DB::raw('count(*) as total_review'), DB::raw('sum(ratting_star) as total_ratting'))
                 ->get();
-            
-                return view('frontend.theme.theme-details')->with(compact('get_theme_features', 'get_theme_detail', 'theme_additiona_images', 'get_theme_reviews','total_sale'));
+
+                return view('frontend.theme.theme-details')->with(compact('get_theme_features', 'get_theme_detail', 'theme_additiona_images', 'get_theme_reviews','total_sale', 'get_theme_comment'));
         }else{
             return redirect('/');
         }
+    }
+
+    public function comment_insert(Request $request){
+       $data = array_merge($request->all(), ['user_id' => Auth::user()->id]);
+       $insert = ThemeComment::create($data);
+       $get_comment = DB::table('theme_comments')
+                ->join('users', 'theme_comments.user_id', 'users.id')
+                ->leftJoin('userinfos', 'theme_comments.user_id', 'userinfos.user_id')
+                ->where('theme_comments.com_id', $insert->id)
+                ->select('theme_comments.*', 'users.username','userinfos.user_image')->first();
+
+       echo view('frontend.theme.show_insert_comment')->with(compact('get_comment'));
+    }
+
+    public function comment_reply(Request $request, $id){
+
+        $data = [
+            'com_id' => $id,
+            'reply_msg' => $request->reply_msg,
+            'user_id' => Auth::user()->id
+        ];
+        comment_reply::create($data);
+        Toastr::success('Comment reply successfull.');
+        return back();
     }
 
     // show data home page category section
@@ -209,7 +255,7 @@ class themefrontController extends Controller
                 if($request->category_id != 'all'){
                    $get_theme_info = $get_theme_info->where('themes.category_id', $request->category_id);
                 }
-                
+
                 $get_theme_info = $get_theme_info->groupBy('themes.theme_id')->limit(20)->get();
 
         $output = '';
@@ -229,10 +275,10 @@ class themefrontController extends Controller
                       </span>
                     </a>';
             }
-            echo $output; 
+            echo $output;
         }else{
-            echo "Sorry no data available."; 
-        } 
+            echo "Sorry no data available.";
+        }
     }
 
 
@@ -276,7 +322,7 @@ class themefrontController extends Controller
                 'ratting_comment' => $request->ratting_comment,
             ];
             $updateOrCreate = theme_review::where(['order_id' => $check_order->order_id, 'theme_id' => $check_order->theme_id, 'buyer_id' => $check_order->buyer_id])->first();
-            
+
             // check update or insert review
             if(!$updateOrCreate){
                 theme_review::insert($data);

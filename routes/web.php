@@ -147,9 +147,11 @@ Route::group(['prefix'=> 'themeplace'],  function(){
 	Route::get('/', 'themefrontController@themeplace');
 	Route::post('/theme_show_category', 'themefrontController@theme_show_category'); // show category home page
 	
-	Route::get('/{category}/{subcategory}', 'themefrontController@theme_view')->name('theme_category');
-	Route::get('/{theme_url}/', 'themefrontController@theme_details')->name('theme_detail');
+	Route::get('category/{category}/{subcategory}', 'themefrontController@theme_view')->name('theme_category');
+	Route::get('item/{theme_url}/{comments?}', 'themefrontController@theme_details')->name('theme_detail');
 	
+	Route::get('comment/insert', 'themefrontController@comment_insert')->name('comment_insert');
+	Route::post('comment/reply/{id}', 'themefrontController@comment_reply')->name('comment_reply');
 
 	Route::post('/suggest/keyword', 'themefrontController@suggest_keyword')->name('suggest_keyword');
 
@@ -233,7 +235,7 @@ Route::group(['prefix'=> 'dashboard/workplace'],  function(){
 
 Route::group(['prefix' => 'workplace'], function(){
 	Route::get('/', 'WorkplaceHomeController@index');
-	Route::get('{category}/{subcategory}', 'WorkplaceHomeController@workplace_category');
+	Route::get('category/{category}/{subcategory}', 'WorkplaceHomeController@workplace_category')->name('workplace.cat');
 	Route::get('/search', 'WorkplaceHomeController@job_search')->name('job_search');
 	Route::post('/{category}/{subcategory}', 'WorkplaceHomeController@get_filter_data');
 	Route::get('{job_url}', 'WorkplaceHomeController@job_details')->name('job-details');
@@ -286,13 +288,14 @@ Route::get('/hotlancer/error', function(){
 	return view('backend.error');
 });
 
-//frontend
+//frontend 
 
 Route::get('marketplace/', 'gighomeController@marketplace');
 
-Route::get('{id}', 'profileController@profile_view');
+Route::get('user/{username}', 'profileController@profile_view')->name('profile_view');
+Route::get('user/{username}/{platform}', 'profileController@userProtfolio')->name('userProtfolio');
 
-Route::get('marketplace/{category}/{subcategory}', 'gighomeController@gig_view');
+Route::get('marketplace/category/{category}/{subcategory}', 'gighomeController@gig_view')->name('marketplace_cat');
 Route::get('marketplace/{gig_url}', 'gighomeController@gig_details');
 
 // order 

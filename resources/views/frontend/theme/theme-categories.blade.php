@@ -139,18 +139,18 @@
 							<!-- THEME ITEM -->
 							<div class="theme1">
 								<div class="theme2">
-									<a href="#" class="Template">
+									<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}" class="Template">
 										<img class="themeimg" src="{{asset('theme/images').'/'.$show_theme_info->main_image }}" >
 									</a>
 									<div class="author-data v2">
 										<!-- USER RATING -->
 										<div class="user-rating v2">
-											<a class="user-rating v1" href="#">
+											<a class="user-rating v1" href="{{ route('profile_view', [$show_theme_info->username]) }}">
 												<figure class="user-avatar small">
-													<img src="{{ asset('allscript')}}/images/avatars/avatar_01.jpg" alt="user-avatar">
+													<img src="<?php echo asset('/image/'.$show_theme_info->user_image); ?>" alt="user-avatar">
 												</figure>
 											</a>
-											<a class="user-rating v4" href="{{url('themeplace/'.$show_theme_info->theme_url)}}">
+											<a class="user-rating v4" href="{{ route('profile_view', [$show_theme_info->username]) }}">
 												<p class="text-header tiny">{{$show_theme_info->name}}</p>
 											</a>
 										</div>
@@ -184,7 +184,7 @@
 								</div>
 								<div class="theme3">
 									<div class="themett">
-										<a href="{{url('themeplace/'.$show_theme_info->theme_url)}}">{{$show_theme_info->theme_name}}</a>
+										<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}">{{$show_theme_info->theme_name}}</a>
 									</div>
 									<a href="shop-gridview-v1.html">
 										<p class="category tertiary v2">{{$show_theme_info->category_name}} / {{$show_theme_info->subcategory_name}}</p>
@@ -194,7 +194,7 @@
 									</p>
 									<div class="bottomtheme">
 										<p class="price small v2"><span>$</span>{{$show_theme_info->price_regular}}</p>
-										<a href="{{url('themeplace/'.$show_theme_info->theme_url)}}" target="_blank" class="button mid tertiary half v2">Preview</a>
+										<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}" target="_blank" class="button mid tertiary half v2">Preview</a>
 										<input type="hidden" name="price" value="{{$show_theme_info->price_regular}}" id="price">
 										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')" class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i>
 										</a>
@@ -299,8 +299,8 @@
 				<div class="sidebar-item range-feature">
 					<h4>Price Range</h4>
 					<hr class="line-separator spaced">
-					<input type="hidden" class="price-range-slider tertiary" value="500" form="shop_search_form">
-					<button form="shop_search_form" class="button mid tertiary">Update your Search</button>
+					<input type="hidden" id="price-range"  class="price-range-slider tertiary" value="1000" form="shop_search_form">
+					<a form="shop_search_form" id="price_btn" class="button mid tertiary common_selector">Update your Search</a>
 				</div>
 				<!-- /SIDEBAR ITEM -->
 			</div>
@@ -318,8 +318,6 @@
 <script src="{{ asset('allscript/js/vendor/jquery.range.min.js') }}"></script>
 <!-- Tweet -->
 <script src="{{ asset('allscript/js/vendor/twitter/jquery.tweet.min.js') }}"></script>
-<!-- Side Menu -->
-<script src="{{ asset('allscript/js/side-menu.js') }}"></script>
 
 
 <script src="{{ asset('allscript/js/shop3.js') }}"></script>
@@ -327,6 +325,7 @@
 <script src="{{ asset('allscript/js/tooltip.js') }}"></script>
 <script type="text/javascript">
 
+ 
 $(document).ready(function(){
 
 
@@ -338,19 +337,20 @@ $(document).ready(function(){
 		filter_data(page);
 	});
 
-  
+
 	function filter_data(page)
     {
     	$('.filter_data').html('<div id="loading" style="" ></div>');
         var tags = get_filter('platform');
         var filter_type = get_filter('filter_type');
+        var price = document.getElementById('price-range').value;
         if(page == null){var page = 1;}
         //var delivery = get_filter('delivery');
 		// var gig_sort = ($( "#gig_asc option:selected" ).val());
 		var category = "{{ Request::route('category') }}" ;
 		var subcategory = "{{ Request::route('subcategory') }}";
 		var src_item = "{{Request::input('item')}}";
-       	var  link = '<?php echo URL::to("themeplace/");?>/'+category+'/'+subcategory+'?item='+src_item+'&tags='+tags+'&filter_type='+filter_type+'&page='+page;
+       	var  link = '<?php echo URL::to("themeplace/category");?>/'+category+'/'+subcategory+'?item='+src_item+'&tags='+tags+'&filter_type='+filter_type+'&page='+page+'&price='+price;
 		    history.pushState({id: 'Marketplace'}, category +' '+subcategory, link);
 
  		$.ajax({
@@ -361,6 +361,7 @@ $(document).ready(function(){
 				category:category,
 				subcategory:subcategory,
 				filter:'filter',
+				price:price,
 				//delivery:delivery,
 				
 			},
@@ -390,8 +391,14 @@ $(document).ready(function(){
 		filter_data();
  	});
 
+ 	$('.common_selector').click(function(){
+		filter_data();
+    });
+
 
 });
+
+
 
 function search_bar(src_key){
 		if(src_key != ''){

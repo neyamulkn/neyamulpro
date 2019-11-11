@@ -14,7 +14,7 @@
 	background: url('{{ asset("image/loading.gif")}}') no-repeat center; 
 	height: 350px;
 }
-
+ 
 .user_image img{
 	width: 26px;
 	height: 26px;
@@ -386,12 +386,13 @@ $(document).on('click', '.pagination a', function(e){
         var tags = get_filter('metadata');
         var payment = get_filter('payment');
         if(page == null){var page = 1;}
+        var gig_sort = null;
         //var delivery = get_filter('delivery');
-		var gig_sort = ($( "#gig_asc option:selected" ).val());
+		var gig_sort = $("#gig_asc :selected").val();
 		var category = "{{ Request::route('category') }}" ;
 		var subcategory = "{{ Request::route('subcategory') }}";
 		var src_item = "{{Request::input('item')}}";
-       	var  link = '<?php echo URL::to("marketplace/");?>/'+category+'/'+subcategory+'?item='+src_item+'&tags='+tags+'&page='+page+'&payment='+payment;
+       	var  link = '<?php echo URL::to("marketplace/category");?>/'+category+'/'+subcategory+'?item='+src_item+'&tags='+tags+'&page='+page+'&payment='+payment;
 		    history.pushState({id: 'Marketplace'}, category +' '+subcategory, link);
 
  		$.ajax({
@@ -430,7 +431,9 @@ $(document).on('click', '.pagination a', function(e){
     });
 
     $('#gig_asc').on('change', function(){
+
 		filter_data();
+
  	});
 
 
@@ -474,10 +477,6 @@ $(document).on('click', '.pagination a', function(e){
 <script src="{{ asset('allscript/js/vendor/jquery.tooltipster.min.js') }}"></script>
 <!-- Owl Carousel -->
 <script src="{{ asset('allscript/js/vendor/jquery.range.min.js') }}"></script>
-
-<!-- Side Menu -->
-<script src="{{ asset('allscript/js/side-menu.js') }}"></script>
-
 
 <script src="{{ asset('allscript/js/shop.js') }}"></script>
 <!-- Tooltip -->

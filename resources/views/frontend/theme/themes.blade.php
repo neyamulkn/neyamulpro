@@ -435,7 +435,7 @@ h1 {
 <!-- xmAlerts -->
 <script src="{{ asset('allscript')}}/js/vendor/jquery.xmalert.min.js"></script>
 <!-- Side Menu -->
-<script src="{{ asset('allscript')}}/js/side-menu.js"></script>
+
 <!-- Home -->
 <script src="{{ asset('allscript')}}/js/home.js"></script>
 <!-- Tooltip -->

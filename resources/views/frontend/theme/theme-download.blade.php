@@ -385,8 +385,7 @@ li.financial-institutes__logo {
 
 <!-- Tweet -->
 <script src="{{ asset('allscript')}}/js/post-tab.js"></script>
-<!-- Side Menu -->
-<script src="{{ asset('allscript')}}/js/side-menu.js"></script>
+
 <script src="{{ asset('allscript')}}/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     function download(file_name){

@@ -274,6 +274,8 @@ class GigController extends Controller
         }
     }
 
+
+
     public function insert_gig_step_third(Request $request)
     {
         $get_user_id = Auth::user()->id;
@@ -355,11 +357,10 @@ class GigController extends Controller
             foreach ($images as $image) {
 
 				$extension = $image->getClientOriginalExtension();
-				$check = in_array($extension,$allowedfileExtension);
+				$check = in_array($extension, $allowedfileExtension);
 				if($check)
 				{
 	                $image_name = rand('123456', '999999').$image->getClientOriginalName();
-
 	                $image_path = public_path('gigimages/'.$image_name );
 	                Image::make($image)->save($image_path);
 

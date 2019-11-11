@@ -866,8 +866,7 @@ height: 76px;
 <script src=" {{asset('/allscript') }}/js/vendor/jquery.xmtab.min.js"></script>
 <!-- Tweet -->
 <script src=" {{asset('/allscript') }}/js/vendor/twitter/jquery.tweet.min.js"></script>
-<!-- Side Menu -->
-<script src=" {{asset('/allscript') }}/js/side-menu.js"></script>
+
 <!-- Liquid -->
 <script src=" {{asset('/allscript') }}/js/liquid.js"></script>
 <!-- Checkbox Link -->

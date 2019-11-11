@@ -87,7 +87,7 @@
                 <div id="pl-{{$i++}}" class="product-list grid column4-wrap owl-carousel">
 
 
-                @foreach($get_gigs as $show_gig)
+                @foreach($get_gigs as $show_gig) 
                     <!-- PRODUCT ITEM -->
                     <div class="product-item column">
                                 <!-- PRODUCT PREVIEW ACTIONS -->
@@ -154,12 +154,12 @@
 
                                 <!-- USER RATING -->
                                 <div class="user-rating">
-                                    <a href="<?php echo url('/'.$show_gig->username); ?>" target="_blank">
+                                    <a href="{{ route('profile_view', [$show_gig->username]) }}" target="_blank">
                                         <figure class="user-avatar small user_image">
-                                            <img src="<?php echo asset('/image/'.$show_gig->user_image); ?>">
+                                            <img src="<?php echo asset('/image/'.$show_gig->user_image); ?>"> 
                                         </figure>
                                     </a>
-                                    <a href="{{ url('/'.$show_gig->username) }}" target="_blank">
+                                    <a href="{{ route('profile_view', [$show_gig->username]) }}" target="_blank">
                                         <p class="text-header tiny"><?php echo $show_gig->name; ?></p>
                                     </a>
                                     <ul class="rating tooltip" title="Author's Reputation">
@@ -229,8 +229,7 @@
 <script src="{{ asset('allscript')}}/js/vendor/twitter/jquery.tweet.min.js"></script>
 <!-- xmAlerts -->
 <script src="{{ asset('allscript')}}/js/vendor/jquery.xmalert.min.js"></script>
-<!-- Side Menu -->
-<script src="{{ asset('allscript')}}/js/side-menu.js"></script>
+
 <!-- Home -->
 <script src="{{ asset('allscript')}}/js/home.js"></script>
 <!-- Tooltip -->

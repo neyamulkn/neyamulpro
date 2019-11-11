@@ -365,7 +365,7 @@
 
 			<?php
 
-					foreach ($get_category as $show_category) {
+				foreach ($get_category as $show_category) {
 						$category_id = $show_category->id;
 					
 				?>
@@ -397,7 +397,7 @@
 						@if($sub_category)
 						@foreach ($sub_category as $show_subcategory)
 							<li class="inner-dropdown-item">
-								<a href="{{url($placename_url.'/'.$show_category->category_url.'/'.$show_subcategory->subcategory_url)}}"><?php echo $show_subcategory->subcategory_name; ?></a>
+								<a href="{{url($placename_url.'/category/'.$show_category->category_url.'/'.$show_subcategory->subcategory_url)}}"><?php echo $show_subcategory->subcategory_name; ?></a>
 							</li>
 						@endforeach
 						@endif

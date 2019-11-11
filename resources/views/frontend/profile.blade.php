@@ -22,108 +22,6 @@
 	}
 	</style>
 @endsection
-<!-- MAIN MENU -->
-@section('menubar')
-	
-	<!-- MAIN MENU -->
-	<div class="main-menu-wrap">
-		<div class="menu-bar">
-			<nav>
-				<ul class="main-menu">
-					<!-- MENU ITEM -->
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/graphics-design">Graphics &amp; Design	
-						</a>	
-						<div class="content-dropdown home_manu">
-						<!-- FEATURE LIST BLOCK -->
-							<div class="feature-list-block">
-								<!-- FEATURE LIST -->
-								<ul class="feature-list">
-									<li class="feature-list-item">
-										<a href="">Logo Design</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Business Cards &amp; Stationery</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Illustration</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Cartoons &amp; Caricatures</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Flyers &amp; Brochures</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Book Covers &amp; Packaging</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Web &amp; Mobile Design</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Social Media Design</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Banner Ads</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Photoshop Editing</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">3D &amp; 2D Models</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">T-Shirts &amp; Merchandise</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Presentation Design</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">infographics</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Vector Tracing</a>
-									</li>
-									<li class="feature-list-item">
-										<a href="">Invitations</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</li>
-					<!-- /MENU ITEM -->
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/digital-marketing">Digital Marketing</a>
-					</li>
-					<!-- /MENU ITEM -->
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/writing-translation">Writing &amp; Translation</a>	
-					</li>
-					<!-- /MENU ITEM -->
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/video-animation">Video &amp; Animation</a>	
-					</li>
-					<!-- /MENU ITEM -->
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/music-audio">Music &amp; Audio</a>	
-					</li>
-					<!-- /MENU ITEM -->
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/programming-tech">Programming &amp; Tech</a>	
-					</li>
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/music-audio">Music &amp; Audio</a>	
-					</li>
-					<!-- /MENU ITEM -->
-					<li class="menu-item category-sitebar">
-						<a href="item-filter/programming-tech">Programming &amp; Tech</a>	
-					</li>
-				</ul>
-			</nav>
-		</div>
-	</div>
-@endsection
-	<!-- /MAIN MENU -->
 
 @section('content')
 
@@ -190,30 +88,26 @@
 						<li><a href="#" class="twt"></a></li>
 						<li><a href="#" class="db"></a></li>
 					</ul>
-					<!-- /SHARE LINKS -->
-					<a href="#" class="button mid dark spaced">Add to <span class="primary">Followers</span></a>
+				
 					<a href="#" class="button mid dark-light">Send a Private Message</a>
 				</div>
 				<!-- /SIDEBAR ITEM -->
 
 				<!-- DROPDOWN -->
 				<ul class="dropdown hover-effect">
-					<li class="dropdown-item">
-						<a href="{{url('user_url')}}">About us</a>
+					<li class="dropdown-item active">
+						<a href="{{route('profile_view', Request::route('username'))}}">About {{Request::route('username')}}</a>
 					</li>
 					<li class="dropdown-item">
-						<a href="{{url('user_url/Workplace')}}">Workplace</a>
+						<a href="{{route('userProtfolio', [Request::route('username'), 'workplace'])}}">Workplace</a>
 					</li>
 					<li class="dropdown-item">
-						<a href="{{url('user_url/Marketplace')}}">Marketplace</a>
+						<a href="{{route('userProtfolio', [Request::route('username'), 'marketplace'])}}">Marketplace</a>
 					</li>
 					<li class="dropdown-item">
-						<a href="{{url('user_url/Themeplace')}}">Themeplace</a>
+						<a href="{{route('userProtfolio', [Request::route('username'), 'themeplace'])}}">Themeplace</a>
 					</li>
 					
-					<li class="dropdown-item active">
-						<a href="{{url('user_url/Themeplace')}}">Author Badges</a>
-					</li>
 				</ul>
 				<!-- /DROPDOWN -->
 
@@ -484,8 +378,7 @@
 <script src="{{asset('/allscript')}}/js/vendor/jquery.chart.min.js"></script>
 <!-- bxSlider -->
 <script src="{{asset('/allscript')}}/js/vendor/jquery.bxslider.min.js"></script>
-<!-- Side Menu -->
-<script src="{{asset('/allscript')}}/js/side-menu.js"></script>
+
 <!-- Dashboard Header -->
 <script src="{{asset('/allscript')}}/js/dashboard-header.js"></script>
 <!-- Dashboard Statistics -->

@@ -79,15 +79,15 @@ class gighomeController extends Controller
         }
 
         if(isset($request->gig_sort)){
-             $get_gigs = $get_gigs->orderBy('basic_p', $request->gig_sort);
+            $get_gigs = $get_gigs->orderBy('basic_p', $request->gig_sort);
         }
         
-        $get_gigs = $get_gigs->paginate(2);
+        $get_gigs = $get_gigs->paginate(3);
 
         if(!isset($_GET['filter'])){
             return view('frontend.gigs-categories')->with(compact('get_gigs', 'get_filters'));
         }else{
-             return view('frontend.gig-filter-data')->with(compact('get_gigs'));
+            echo view('frontend.gig-filter-data')->with(compact('get_gigs'));
         }
        
 

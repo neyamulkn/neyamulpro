@@ -12,7 +12,7 @@
     <meta itemprop="name" content="HOTLancer - the largest freelancer Marketplace">
     <meta itemprop="description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
     <meta itemprop="image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
-    
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="HOTLancer - the largest freelancer Marketplace">
@@ -22,7 +22,7 @@
     <meta name="twitter:image:src" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
     <meta name="twitter:player" content="#">
     <!-- Twitter - Product (e-commerce) -->
-    
+
     <!-- Open Graph general (Facebook, Pinterest & Google+) -->
     <meta name="og:title" content="HOTLancer - the largest freelancer Marketplace">
     <meta name="og:description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
@@ -183,8 +183,11 @@ span.icon-arrow-right.small {
 .share-links.v3 button{
   color: #000;
   padding: 10px !important;
-    padding-bottom: 7px !important; 
+    padding-bottom: 7px !important;
     margin-left: 0px !important;
+}
+.comment-list .line-separator{
+	margin-top: 3px !important;
 }
 
 </style>
@@ -203,16 +206,16 @@ span.icon-arrow-right.small {
 				<div class="sidebar-item">
 					<p class="price large"><span>$</span><b id="cng_price">{!! $get_theme_detail->price_regular !!} </b></p>
 					<hr class="line-separator">
-					
+
 				<form action="{!! route('theme_checkout') !!}" method="post" id="aux_form">
 					{!! csrf_field() !!}
-					
+
 					<input type="hidden" name="theme_id" value="{!! $get_theme_detail->theme_id !!}">
 					<!-- CHECKBOX -->
 					<input type="radio" id="regular-license" value="price_regular" name="regular_license" form="aux_form" checked="">
 					<label class="b-label linked-check" for="regular-license">
 						<span class="checkbox tertiary"><span></span></span>
-						Regular License 
+						Regular License
 					</label>
 					<!-- /CHECKBOX -->
 					<p class="license-text" data-license="regular-license" style="display: block;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
@@ -229,7 +232,7 @@ span.icon-arrow-right.small {
 					<p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
 					<button type="submit" name="purchase" value="purchase" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
 				</form>
-					
+
 					<button onclick="add_to_cart('{!! $get_theme_detail->theme_id !!}')" class="button mid tertiary half">Add to Cart </button>
 					<button class="button mid secondary wicon half"><span class="icon-heart"></span>652</button>
 					<div class="clearfix"></div>
@@ -244,7 +247,7 @@ span.icon-arrow-right.small {
 					</a>
 					<!-- /USER AVATAR -->
 					<p class="text-header">{!! $get_theme_detail->username !!}</p>
-					
+
 					<p class="text-oneline">{!! $get_theme_detail->user_title !!}</p>
 
 					<!-- BADGE LIST -->
@@ -320,7 +323,7 @@ span.icon-arrow-right.small {
 							</figure>
 						</div>
 						<!-- /BADGE LIST ITEM -->
-					</div>	
+					</div>
 					<!-- /BADGE LIST -->
 					<div class="clearfix"></div>
 					<a href="{!! url($get_theme_detail->username) !!}" class="button mid dark spaced">Go to <span class="tertiary">Profile Page</span></a>
@@ -498,7 +501,7 @@ span.icon-arrow-right.small {
 					<hr class="line-separator">
 					<!-- INFORMATION LAYOUT -->
 					<div class="information-layout">
-						
+
 						<!-- INFORMATION LAYOUT ITEM -->
 						<div class="information-layout-item">
 							<p class="text-header">Create Date:</p>
@@ -520,7 +523,7 @@ span.icon-arrow-right.small {
 									<p>{!! $get_theme_feature->feature_name !!}</p>
 								</div>
 							@endif
-					
+
 							@if($get_theme_feature->feature_type=='select')
 								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
 								<div class="information-layout-item">
@@ -528,7 +531,7 @@ span.icon-arrow-right.small {
 									<p>{!! $get_theme_feature->feature_name !!}</p>
 								</div>
 							@endif
-						
+
 							@if($get_theme_feature->feature_type=='dropdown')
 								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
 								<div class="information-layout-item">
@@ -571,14 +574,14 @@ span.icon-arrow-right.small {
 							<img src="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}" alt="">
 						</figure>
 						<!-- SLIDE CONTROLS -->
-						
-						
+
+
 					</div>
-					
+
 					<hr class="line-separator">
-					
+
 					<div class="item-preview__actions">
-						
+
 						<div class="item-preview__preview-buttons--social" data-view="socialButtons">
 							<div class="btn-group">
 								<div id="fullscreen" class="item-preview__preview-buttons">
@@ -586,7 +589,7 @@ span.icon-arrow-right.small {
 
 									<a data-view="crossDomainGoogleAnalyticsLink" href="#" role="button" class="btn-icon live-preview" target="_blank" rel="noopener nofollow">Screenshort <span class="icon-link"></span></a>
 								</div>
-								
+
 							</div>
 					  </div>
 
@@ -603,7 +606,7 @@ span.icon-arrow-right.small {
 							<p class="text-header">Item Details</p>
 						</div>
 						<!-- /TAB ITEM -->
-						<?php 
+						<?php
 							$total_ratting= $total_review = 0;
 							foreach($get_theme_reviews as $get_theme_review){
 								$total_ratting += $get_theme_review->ratting_star;
@@ -613,7 +616,7 @@ span.icon-arrow-right.small {
 						?>
 						<!-- TAB ITEM -->
 						<div class="tab-item">
-							<p class="text-header">Reviews 
+							<p class="text-header">Reviews
 
 								<span class="feedback">&#9733; @if($total_review>0) {{ round($total_ratting / $total_review, 1) }} @endif </span> ({!! $total_review !!})
 
@@ -625,8 +628,8 @@ span.icon-arrow-right.small {
 						<div class="tab-item">
 							<p class="text-header">Comments</p>
 						</div>
-						
-						
+
+
 						<!-- /TAB ITEM -->
 					</div>
 					<!-- /TAB HEADER -->
@@ -644,7 +647,7 @@ span.icon-arrow-right.small {
 								</p>
 								</div>
 								<!-- /POST PARAGRAPH -->
-							
+
 								<hr class="line-separator">
 								<!-- /POST PARAGRAPH -->
 								<!-- SHARE -->
@@ -654,7 +657,7 @@ span.icon-arrow-right.small {
 									<ul class="share-links hoverable">
 										<li><a href="http://www.facebook.com/sharer.php?u={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-facebook"></i></a></li>
 										<li><a href="https://twitter.com/share?url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;text={!! $get_theme_detail->theme_name !!}&amp;hashtags=HOTLancer" target="_blank"><i class="fa fa-twitter"></i></a></li>
-								
+
 										<li><a href="http://reddit.com/submit?url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;title={!! $get_theme_detail->theme_name !!}" target="_blank"><i class="fa fa-reddit"></i></a></li>
 										<li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-linkedin"></i></a></li>
 									</ul>
@@ -673,7 +676,7 @@ span.icon-arrow-right.small {
 								</div>
 								<!-- /Affiliate SHARE -->
 							</div>
-					
+
 							<!-- /COMMENT REPLY -->
 						</div>
 						<!-- /COMMENTS -->
@@ -683,11 +686,11 @@ span.icon-arrow-right.small {
 					<!-- TAB CONTENT -->
 					<div class="tab-content void">
 						<!-- COMMENTS -->
-						<div class="comment-list">
+						<div class="comment-list" >
 							@foreach($get_theme_reviews as $get_theme_review)
 							<!-- COMMENT -->
 							<div class="comment-wrap" style="padding: 10px 0px 10px !important;">
-								
+
 								<div class="comment" style="margin-bottom: 0px;">
 									<p class="text-header">{!! $get_theme_review->username !!}</p>
 									<!-- PIN -->
@@ -701,133 +704,114 @@ span.icon-arrow-right.small {
 							<!-- /COMMENT -->
 							<hr class="line-separator" style="margin-top: 0px;">
 						@endforeach
-							
+
 						</div>
 						<!-- /COMMENTS -->
 					</div>
 					<!-- /TAB CONTENT -->
 
-					
+
 					<div class="tab-content void">
 						<!-- COMMENTS -->
-						<div class="comment-list">
-							<!-- COMMENT -->
-							<div class="comment-list">
-							<!-- COMMENT -->
-							<div class="comment-wrap">
-								<!-- USER AVATAR -->
-								<a href="user-profile.html">
-									<figure class="user-avatar medium">
-										<img src="{!!  asset('allscript') !!}/images/avatars/avatar_06.jpg" alt="">
-									</figure>
-								</a>
-								<!-- /USER AVATAR -->
-								<div class="comment">
-									<p class="text-header">View as Customer</p>
-									<!-- PIN -->
-									<span class="pin greyed">Purchased</span>
-									<!-- /PIN -->
-									<p class="timestamp">5 Hours Ago</p>
-									<a href="#" class="report">Report</a>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magnada. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in henderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+						<div class="comment-list" >
+
+							@foreach($get_theme_comment as $show_comment)
+								<div class="comment-wrap">
+									<!-- USER AVATAR -->
+									<a href="user-profile.html">
+										<figure class="user-avatar medium user">
+											<img src="{!! asset('image').'/'.$show_comment->user_image  !!}" alt="">
+										</figure>
+									</a>
+									<!-- /USER AVATAR -->
+									<div class="comment">
+										<p class="text-header">{{$show_comment->username}}</p>
+										<!-- PIN -->
+										<span class="pin greyed">Purchased</span>
+										<!-- /PIN -->
+										<p class="timestamp">{!! \Carbon\Carbon::parse($show_comment->created_at)->format('M d, Y') !!}</p>
+										<a style="cursor: pointer;" onclick="reply_field('{{$show_comment->com_id}}')" class="report">Reply</a>
+										<p>{{$show_comment->comment}}</p>
+									</div>
+
+									<div class="comment-wrap comment-reply">
+									
+									<?php
+										$get_reply_comment = DB::table('comment_replies')
+							                ->join('users', 'comment_replies.user_id', 'users.id')
+							                ->leftJoin('userinfos', 'comment_replies.user_id', 'userinfos.user_id')
+							                ->where('comment_replies.com_id', $show_comment->com_id)
+							                ->select('comment_replies.*', 'users.username','userinfos.user_image')->get();
+									?>
+									@if($get_reply_comment)
+										@foreach($get_reply_comment as $show_reply)
+											<div class="comment">
+												<!-- USER AVATAR -->
+												<a href="user-profile.html">
+													<figure class="user-avatar medium user">
+														<img src="{!! asset('image').'/'.$show_reply->user_image  !!}" alt="">
+													</figure>
+												</a>
+												<div style="margin-left: 60px;">
+													<!-- /USER AVATAR -->
+													<p class="text-header">{{($show_reply->user_id == $get_theme_detail->user_id) ? 'AUTHOR' : 'PURCHASED'}}</p>
+													<!-- PIN -->
+													<span class="pin greyed">Purchased</span>
+													
+													<a class="report">{{ \Carbon\Carbon::parse($show_reply->created_at)->format('M d, Y') }}</a>
+													<p>{{$show_reply->reply_msg}}</p>
+												</div>
+											</div>
+										@endforeach
+									@endif
+										<!-- COMMENT REPLY FORM -->
+										<form method="post" action="{{route('comment_reply',$show_comment->com_id)}}" id="reply_form{{$show_comment->com_id}}" class="comment-reply-form">
+											
+										</form>
+										<!-- /COMMENT REPLY FORM -->
+									</div>
+									<!-- /COMMENT REPLY -->
+
 								</div>
-							</div>
-							<!-- /COMMENT -->
-
-							<!-- LINE SEPARATOR -->
-							<hr class="line-separator">
-							<!-- /LINE SEPARATOR -->
-
-							<!-- COMMENT -->
-							<div class="comment-wrap">
-								<!-- USER AVATAR -->
-								<a href="user-profile.html">
-									<figure class="user-avatar medium">
-										<img src="{!!  asset('allscript') !!}/images/avatars/avatar_11.jpg" alt="">
-									</figure>
-								</a>
-								<!-- /USER AVATAR -->
-								<div class="comment">
-									<p class="text-header">View as Author (Reply Option)</p>
-									<p class="timestamp">8 Hours Ago</p>
-									<a href="#" class="report">Report</a>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magnada. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+								<hr class="line-separator">
+							@endforeach
+								<div id="show_comment"></div>
+								
+								@if(count($get_theme_comment)>4)
+								<hr class="line-separator">
+								<!-- PAGER -->
+								<div class="pager tertiary" style="text-align: center;">
+                                    <a href="{{url()->current()}}/comments" style="background: #559de7;display: block;padding: 10px;color:#fff;" class="secondary wfav">See all comments</a>
 								</div>
-							</div>
-							<!-- /COMMENT -->
+								<!-- /PAGER -->
+								@endif
+								<div class="clearfix"></div>
 
-							<!-- COMMENT REPLY -->
-							<div class="comment-wrap comment-reply">
-								<!-- USER AVATAR -->
-								<a href="user-profile.html">
-									<figure class="user-avatar medium">
-										<img src="{!!  asset('allscript') !!}/images/avatars/avatar_09.jpg" alt="">
-									</figure>
-								</a>
-								<!-- /USER AVATAR -->
+								<h3>Leave a Comment</h3>
 
-								<!-- COMMENT REPLY FORM -->
-								<form class="comment-reply-form">
-									<textarea name="treply1" placeholder="Write your comment here..."></textarea>
-									<!-- CHECKBOX -->
-									<input type="checkbox" id="notif1" name="notif1" checked="">
-									<label for="notif1">
-										<span class="checkbox tertiary"><span></span></span>
-										Receive email notifications
-									</label>
-									<!-- /CHECKBOX -->
-									<button class="button tertiary">Post Comment</button>
-								</form>
-								<!-- /COMMENT REPLY FORM -->
-							</div>
-							<!-- /COMMENT REPLY -->
+								<!-- COMMENT REPLY -->
+								<div class="comment-wrap comment-reply">
+									<!-- USER AVATAR -->
+									<a href="user-profile.html">
+										<figure class="user-avatar medium user">
+											<img src="{!!  asset('allscript') !!}/images/avatars/avatar_09.jpg" alt="">
+										</figure>
+									</a>
+									<!-- /USER AVATAR -->
 
-							<!-- LINE SEPARATOR -->
-							<hr class="line-separator">
-							<!-- /LINE SEPARATOR -->
-
-							<!-- PAGER -->
-							<div class="pager tertiary">
-								<div class="pager-item"><p>1</p></div>
-								<div class="pager-item active"><p>2</p></div>
-								<div class="pager-item"><p>3</p></div>
-								<div class="pager-item"><p>...</p></div>
-								<div class="pager-item"><p>17</p></div>
-							</div>
-							<!-- /PAGER -->
-
-							<div class="clearfix"></div>
-
-							<!-- LINE SEPARATOR -->
-							<hr class="line-separator">
-							<!-- /LINE SEPARATOR -->
-
-							<h3>Leave a Comment</h3>
-
-							<!-- COMMENT REPLY -->
-							<div class="comment-wrap comment-reply">
-								<!-- USER AVATAR -->
-								<a href="user-profile.html">
-									<figure class="user-avatar medium">
-										<img src="{!!  asset('allscript') !!}/images/avatars/avatar_09.jpg" alt="">
-									</figure>
-								</a>
-								<!-- /USER AVATAR -->
-
-								<!-- COMMENT REPLY FORM -->
-								<form class="comment-reply-form">
-									<textarea name="treply1" placeholder="Write your comment here..."></textarea>
-									<button class="button tertiary">Post Comment</button>
-								</form>
-								<!-- /COMMENT REPLY FORM -->
-							</div>
-							<!-- /COMMENT REPLY -->
-						</div>
-							<!-- /COMMENT REPLY -->
+									<!-- COMMENT REPLY FORM -->
+									<form action="{{route('comment_insert')}}" id="comment" class="comment-reply-form" method="get">
+										<input type="hidden" value="{{$get_theme_detail->theme_id}}" name="theme_id">
+										<textarea id="comment" style="height: 100px" name="comment" placeholder="Write your comment here..."></textarea>
+										<button type="submit"  class="button tertiary">Post Comment</button>
+									</form>
+									<!-- /COMMENT REPLY FORM -->
+								</div>
+								<!-- /COMMENT REPLY -->
 						</div>
 						<!-- /COMMENTS -->
 					</div>
-					
+
 				</div>
 				<!-- /POST TAB -->
 				<br/>
@@ -891,7 +875,7 @@ span.icon-arrow-right.small {
 									<a href="item-v1.html">
 										<p class="wrap-text">{!! $another_theme->theme_name !!}</p>
 									</a>
-								
+
 									<p class="price"><span>$</span>{!! $another_theme->price_regular !!}</p>
 								</div>
 								<!-- /PRODUCT INFO -->
@@ -918,28 +902,28 @@ span.icon-arrow-right.small {
 										<ul class="rating tooltip tooltipstered">
 											 @for($i=1; $i<=5; $i++)
 											<li class="rating-item {!!  ($i<=$theme_reviews->sum_star / $theme_reviews->count_reviews) ? ' ' : 'empty'  !!}">
-												
+
 												<svg class="svg-star">
 													<use xlink:href="#svg-star"></use>
 												</svg>
-												
+
 											</li>
 											@endfor
 										</ul>
 									@endif
-									
+
 								</div>
-								
+
 								<!-- /USER RATING -->
 							</div>
 							@endforeach
-						
+
 					</div>
 				@endif
 			</div>
 			<!-- CONTENT -->
-		
-			
+
+
 		</div>
 	</div>
 	<!-- /SECTION -->
@@ -947,7 +931,7 @@ span.icon-arrow-right.small {
 @endsection
 
 @section('js')
-	
+
 
 <!-- Tooltipster -->
 <script src="{!!  asset('allscript') !!}/js/vendor/jquery.tooltipster.min.js"></script>
@@ -957,8 +941,7 @@ span.icon-arrow-right.small {
 <script src="{!!  asset('allscript') !!}/js/vendor/jquery.xmtab.min.js"></script>
 <!-- Tweet -->
 <script src="{!!  asset('allscript') !!}/js/vendor/twitter/jquery.tweet.min.js"></script>
-<!-- Side Menu -->
-<script src="{!!  asset('allscript') !!}/js/side-menu.js"></script>
+
 <!-- Liquid -->
 <script src="{!!  asset('allscript') !!}/js/liquid.js"></script>
 <!-- Checkbox Link -->
@@ -978,8 +961,8 @@ span.icon-arrow-right.small {
 <script src="{!!  asset('allscript') !!}/js/tooltip.js"></script>
 
 <script>
-	
-	
+
+
 	function add_to_cart(theme_id){
 		var price = $('#price').val();
 
@@ -995,7 +978,7 @@ span.icon-arrow-right.small {
 				alert(data);
 			}
 		});
-		
+
 	}
 
 
@@ -1044,7 +1027,7 @@ span.icon-arrow-right.small {
 	}
 })(jQuery);
 
-	
+
 </script>
 
 <script>
@@ -1055,6 +1038,44 @@ function myFunction() {
   var tooltip = document.getElementById("myTooltip");
   tooltip.innerHTML = "Copied: " + copyText.value;
 }
+
+/// comment
+ $(function(){
+        $("#comment").submit(function(event){
+            event.preventDefault();
+           
+            $.ajax({
+                    url:'{{route("comment_insert")}}',
+                    type:'GET',
+                    data:$(this).serialize(),
+                    success:function(result){
+                        $("#show_comment").prepend(result);
+
+                    }
+
+            });
+        });
+    });
+
+
+ function reply_field(id){
+ 	document.getElementById('reply_form'+id).innerHTML = '@csrf <textarea name="reply_msg" required placeholder="Write your comment here..."></textarea><button style="float: right;">Reply</button>';
+ }
+
+
+
+
+
+
 </script>
+
+
+
+
+
+
+
+
+
 @endsection
 

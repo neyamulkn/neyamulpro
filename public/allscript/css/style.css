@@ -2071,7 +2071,7 @@ header {
       pointer-events: auto; }
     .main-menu .menu-item > .content-dropdown, .main-menu .menu-item > .dropdown {
       top: 0;
-      left: 0; }
+      }
 
 .content-dropdown {
   padding: 25px 40px 40px;
@@ -3175,7 +3175,6 @@ header {
       float: right;
       margin-top: 34px; }
   .section .page {
-    width: 174px;
     margin: 34px auto 0; }
   .section > .product-showcase {
     margin-bottom: 34px; }
@@ -3956,7 +3955,7 @@ header {
   background-color: #fff;
   overflow: hidden; }
   .comment-list .comment-wrap {
-    padding: 36px 16px 0 104px;
+    padding: 36px 16px 0 75px;
     position: relative; }
     .comment-list .comment-wrap .comment-wrap {
       padding: 0 0 0 88px; }

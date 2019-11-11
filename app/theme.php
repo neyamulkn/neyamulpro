@@ -22,4 +22,8 @@ class theme extends Model
     'main_image',
   	'status'
 	];
+
+    public function comments(){
+        return $this->hasMany(ThemeComment::class, 'theme_id');
+    }
 }

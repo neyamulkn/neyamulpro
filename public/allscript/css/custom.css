@@ -134,7 +134,7 @@ button {
 }
 
 .dropdown-item{
-	padding: 0px;
+	white-space:initial !important;
 }
 
 a:hover {
@@ -254,5 +254,20 @@ color: #fff;
 }.pagination.active {
     background-color: #00d7b3 !important;
 }
+
+.comment-list .comment-wrap .comment-wrap.comment-reply {
+    padding: 0 0 0 20px !important;
+}
+
+.comment-reply-form textarea{
+	border:1px solid #ccc;
+	height: 35px;
+	width: 87%;
+}
+
+.comment-reply-form button{
+	float: right;
+}
+
 
 

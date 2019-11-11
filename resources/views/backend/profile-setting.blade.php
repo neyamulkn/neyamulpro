@@ -86,7 +86,7 @@ height: 145px;
 					</div>
 
 					<div class="input-container">
-						<label class="rl-label ">Hourly Rate </label>
+						<label class="rl-label ">Monthly Rate </label>
 						<input disabled="false" value="{{$user->hourly_rate }}" type="text" id="hourly_rate" style="font-weight: bolder;font-size: 20px;" name="hourly_rate" placeholder="Enter hourly rate here...">
 						<span  style="font-weight: bolder;font-size: 20px;margin: -37px 2px;position: absolute;">$</span>
 					</div>

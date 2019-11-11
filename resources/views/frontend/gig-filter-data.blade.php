@@ -1,10 +1,11 @@
 
+@if(count($get_gigs)>0)
 <!-- HEADLINE -->
 <div class="headline primary">
     <h4>{{$get_gigs->total()}} Products Found</h4>
     <form id="shop_filter_form" name="shop_filter_form">
         <span style="display: inline-block; float: left; padding: 8px">
-            Sort by:
+            Sort by: 
         </span>
         <label for="gig_asc" class="select-block">
             <select name="gig_sort" id="gig_asc">
@@ -16,8 +17,7 @@
                 <use xlink:href="#svg-arrow"></use>
             </svg>
             <!-- /SVG ARROW -->
-        </label>
-        
+        </label> 
     </form>
     <div class="clearfix"></div>
 </div>
@@ -158,3 +158,7 @@
    {{$get_gigs->links()}}
 </div>
 <!-- /PAGER -->
+@else
+<h1 style="color:#000;">No record found.!</h1>
+
+@endif

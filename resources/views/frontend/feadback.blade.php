@@ -377,8 +377,7 @@ li.financial-institutes__logo {
 
 <!-- Tweet -->
 <script src="{{ asset('allscript')}}/js/post-tab.js"></script>
-<!-- Side Menu -->
-<script src="{{ asset('allscript')}}/js/side-menu.js"></script>
+
 <script type="text/javascript">
 	$("label").click(function(){
   $(this).parent().find("label").css({"background-color": "#D8D8D8"});

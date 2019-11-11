@@ -19,11 +19,12 @@
 						$subcategory = 'theme_subcategory';
 						$type = 'themeplace';
 					}
-
+					$menu_left_right = 1;
 					$get_category = DB::table($category)->get();
 					if($get_category){
 					foreach ($get_category as $show_category) {
 						$category_id = $show_category->id;
+						$menu_left_right++;
 					
 				?>
 					<li class="menu-item category-sitebar">
@@ -34,7 +35,7 @@
 						$sub_category = DB::table($subcategory)->where('category_id', $category_id)->get();
 						if($sub_category){
 						?>
-						<div class="content-dropdown home_manu">
+						<div class="content-dropdown home_manu" style="{{ ($menu_left_right<7) ? 'left: 0' : 'right:0' }} ">
 						<!-- FEATURE LIST BLOCK -->
 							<div class="feature-list-block">
 								<!-- FEATURE LIST -->
@@ -42,7 +43,7 @@
 									
 								@foreach ($sub_category as $show_subcategory)
 									<li class="feature-list-item">
-										<a href="{{url($type.'/'.$show_category->category_url.'/'.$show_subcategory->subcategory_url)}}"><?php echo $show_subcategory->subcategory_name; ?></a>
+										<a href="{{url($type.'/category/'.$show_category->category_url.'/'.$show_subcategory->subcategory_url)}}"><?php echo $show_subcategory->subcategory_name; ?></a>
 									</li>
 								@endforeach
 								</ul>

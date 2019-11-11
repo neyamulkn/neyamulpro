@@ -104,13 +104,7 @@
 			<?php } ?>
 	@endforeach
 		<!-- /DROPDOWN ITEM -->
-	
 
-		<!-- DROPDOWN ITEM -->
-		<li class="dropdown-item">
-			
-		</li>
-		<!-- /DROPDOWN ITEM -->
 	</ul>
 <?php } ?>
 
