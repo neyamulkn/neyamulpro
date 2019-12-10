@@ -20,7 +20,7 @@ class themeController extends Controller
     	$get_categories = DB::table('theme_category')->get();
     	return view('backend.theme.index')->with(compact('get_categories'));
     }
-
+ 
     public function search_tags(){
        $keyword_name = DB::table('key_keyword')->select('keyword_name')->get();
        $tags = array(); 

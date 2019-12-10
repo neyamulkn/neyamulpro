@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\message;
-use App\conversation;
+use App\User;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
+use Image;
 class MessageController extends Controller
 {
     public function __construct()
@@ -14,19 +15,15 @@ class MessageController extends Controller
         $this->middleware('auth');
     }
     
-    public function inbox($username="")
+    public function inbox($username = null)
     {
         $user_id = Auth::user()->id;
         $conversation_list= DB::table('conversation')
-        ->join('users', 'conversation.to_user', '=', 'users.id')
-        ->leftJoin('userinfos', 'conversation.to_user', '=', 'userinfos.user_id')
-        ->leftJoin('messages', 'conversation.to_user', '=', 'messages.conversion_id')
         ->where('conversation.from_user', $user_id)
-        ->select('conversation.*', 'userinfos.user_image', 'users.*', 'messages.*')
+        ->orWhere('conversation.to_user', $user_id)
+        ->orderBy('con_id', 'DESC')
         ->get();
-
-
-
+//dd($conversation_list);
         // $get_message = DB::table('users')
         //     ->join('users', 'conversation.to_user', 'users.id')
         //     ->where('username', $username)
@@ -37,7 +34,7 @@ class MessageController extends Controller
             [
                 'conversation_list' => $conversation_list
             ];
-        return view('backend.inbox')->with($conversations_data);
+       return view('backend.inbox')->with($conversations_data);
     }
 
     /**
@@ -45,56 +42,133 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getmessages($id)
+    public function getuser($id)
     {
         $user_id = Auth::user()->id;
         $get_conversation = DB::table('conversation')
-            ->where('from_user', $user_id)
-            ->where('to_user', $id)
+            ->join('users', 'conversation.to_user', '=', 'users.id')
+            ->where('conversation.from_user', $user_id)
+            ->where('users.username', $id)
             ->first();
        
        $get_messages = DB::table('messages')
             ->join('users', 'messages.to_user', '=', 'users.id')
-            ->join('userinfos', 'messages.to_user', '=', 'userinfos.user_id')
+            ->leftJoin('userinfos', 'messages.to_user', '=', 'userinfos.user_id')
             ->where('conversion_id', $get_conversation->con_id)
+            ->orderBy('msg_id', 'ASC')
             ->get();
 
             foreach ($get_messages  as $get_message) {
-                $image_path =  asset('/image/'.$get_message->user_image);
 
                 if( $get_message->from_user == $user_id){
                 echo '
-                      <!-- MESSAGE PREVIEW -->
-                        <div class="getmessages" style="margin:4px;">
-
-                        <div class="row">
-                            <figure class="user-avatar col-md-1 col-sm-1" >
-                                <img src="'.$image_path.'" alt="user-avatar">
-                            </figure>
-                            <p class="text-header col-md-6 col-sm-6">' .$get_message->name.' <br>
-                            <span class="timestamp"> May 19th, 2014 - 3:47PM </span></p>
-                            
+                    <div class="d-flex justify-content-start mb-4">
+                        <div class="msg_cotainer">
+                           '.$get_message->msg.count($get_messages).'
+                            <span class="msg_time">8:40 AM, Today</span>
                         </div>
-                            <p style="margin-top:-20px; padding-left: 47px; line-height: 20px;">'.$get_message->msg.'
-                            </p>
-                        </div><hr class="line-separator">
-                ';
+                    </div>';
                 }else{
-                    echo '<div class="getmessages" style=" margin:4px;">
-
-                        <div class="row">
-                            <figure class="user-avatar col-md-1 col-sm-1" >
-                                <img src="'.$image_path.'" alt="user-avatar">
-                            </figure>
-                            <p class="text-header col-md-6 col-sm-6">' .$get_message->name.' <br>
-                            <span class="timestamp"> May 19th, 2014 - 3:47PM </span></p>
-                            
-                        </div>
-                            <p style="margin-top:-20px; padding-left: 47px; line-height: 20px;">'.$get_message->msg.'
-                            </p>
-                        </div><hr class="line-separator">';
+                    echo '<div class="d-flex justify-content-end mb-4">
+                                <div class="msg_cotainer_send">
+                                   '.$get_message->msg.'
+                                    <span class="msg_time_send">8:55 AM, Today</span>
+                                </div>
+                            </div>';
                 }
             }
+    }
+
+    public function message_send(Request $request){
+        $user_id = Auth::user()->id;
+        $to_user = $request->to_user;
+
+        $request_data = $request->except(['image', 'file', '_token']);
+
+        $image_name = null;
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $image_name = time().$user_id.rand('123456', '999999').".".$image->getClientOriginalExtension();
+            $image_path = public_path('images/message/thumb_img/'.$image_name );
+            $image_resize = Image::make($image);
+            $image_resize->resize(300, 300);
+            $image_resize->save($image_path);
+
+            $image_path = public_path('images/message/'.$image_name );
+            Image::make($image)->save($image_path);
+        }
+
+        $file_name = null;
+        if($request->hasFile('file')){
+            $file = $request->file('file');
+            $file_name = time().$user_id.rand('123456', '999999').".".$image->getClientOriginalExtension();
+            $file_path = public_path('images/message/'.$file_name );
+            Image::make($file)->save($file_path);
+        }
+
+        // check wheather allready conversation 
+        $get_conversation = DB::table('conversation')
+             ->where(function ($query) use ($user_id, $to_user) {
+                    $query->where('from_user', $user_id)
+                            ->where('to_user', $to_user);
+                })
+                ->orWhere(function ($query) use ($user_id, $to_user) {
+                    $query->where('from_user', $to_user)
+                            ->where('to_user', $user_id);
+                })->first();
+
+        if($get_conversation){
+            $conversation_id = $get_conversation->con_id; 
+        }else{
+            $conversation_id = DB::table('conversation')->insertGetId(['to_user' => $user_id, 'from_user' => $to_user]);
+           
+        }
+
+        $data = [
+            'from_user' => $user_id,
+            'to_user' => $to_user,
+            'conversion_id' =>  $conversation_id, //not mandotary
+            'msg' => $request->message,
+            'image' => $image_name,
+            'file' => $file_name
+        ];
+
+        message::create($data);
+
+        return back();
+
+    }
+
+    public function getmessages($username=null)
+    {
+        $user_id = Auth::user()->id;
+        $userinfo = DB::table('users')
+            ->leftJoin('userinfos', 'users.id', '=', 'userinfos.user_id')
+            ->where('users.username', $username)
+            ->select('users.username', 'users.id', 'userinfos.user_image')
+            ->first();
+       
+
+        if($userinfo){
+            $to_user = $userinfo->id;
+            $get_messages = DB::table('messages')
+                
+                ->where(function ($query) use ($user_id, $to_user) {
+                    $query->where('from_user', $user_id)
+                            ->where('to_user', $to_user);
+                })
+                ->orWhere(function ($query) use ($user_id, $to_user) {
+                    $query->where('from_user', $to_user)
+                            ->where('to_user', $user_id);
+                })->orderBy('msg_id', 'ASC')->get();
+
+//                 echo $to_user;
+// //dd($get_messages);
+            echo view('backend.message')->with(compact('get_messages','userinfo'));
+        }
+
+
+
     }
 
     /**

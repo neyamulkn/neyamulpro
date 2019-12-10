@@ -106,7 +106,7 @@
                         <h3><a href="#">Accounting</a></h3>
                         <p>(2250 jobs)</p>
                     </div>
-                </div>
+                </div> 
                 <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border_res">
                     <div class="jp_top_jobs_category">
                         <i class="fa fa-medkit"></i>
@@ -257,7 +257,7 @@
 									</div>
 									<div class="jp_job_post_right_cont">
 										<h4><a  style="color: #00d7b3" href="{{ route('job-details' , $show_job->job_title_slug) }}">{!!$show_job->job_title!!}</a></h4>
-										<p><a href="{{url($show_job->username)}}"> {!!$show_job->username!!} </a>&nbsp; <small style="color: #ccc;"> by {!! \Carbon\Carbon::parse($show_job->created_at)->diffForHumans()!!}</small></p>
+										<p><a href="{{route('profile_view', $show_job->username)}}"> {!!$show_job->username!!} </a>&nbsp; <small style="color: #ccc;"> by {{ \Carbon\Carbon::parse($show_job->created_at)->diffForHumans()}}</small></p>
 										<ul>
 											<li><i class="fa fa-cc-paypal"></i>&nbsp;  ${!!$show_job->budget!!}</li>
 											<li><i class="fa fa-map-marker"></i>&nbsp;{!!$show_job->country!!}</li>

@@ -259,7 +259,7 @@ h1 {
 			</div>
 			<div class="hometheme" style="overflow: visible;">
 				@foreach($top_seller as $show_seller)
-				<a class="hideDisplay" href="{{url('themeplace/'.$show_seller->theme_url)}}">
+				<a class="hideDisplay" href="{{route('theme_detail', [$show_seller->theme_url])}}">
 						<img class="user-avatar medium" src="{{ asset('theme/images/'.$show_seller->main_image)}}" alt="">
 					  <span class="showDisplayOnHover">
 					    <div class="magnifier" style="width: 477px;overflow: hidden; position: absolute;z-index: 99999">
@@ -289,7 +289,7 @@ h1 {
 			<div class="hometheme theme_show_category "  style="overflow: visible;">
 				
 				@foreach($get_theme_info as $show_theme_info)
-					<a class="hideDisplay" href="{{url('themeplace/'.$show_theme_info->theme_url)}}">
+					<a class="hideDisplay" href="{{route('theme_detail', [$show_theme_info->theme_url])}}">
 						<img class="user-avatar medium" src="{{ asset('theme/images/'.$show_theme_info->main_image)}}" alt="">
 					  <span class="showDisplayOnHover">
 					    <div class="magnifier" style="width: 477px;overflow: hidden; position: absolute;z-index: 99999">
@@ -298,7 +298,7 @@ h1 {
 								<div class="author-category">by <span class="author">{{$show_theme_info->username}}</span></div>
 								<div class="price"><span class="cost"><sup>$</sup>{{$show_theme_info->price_regular}}</span></div>
 							</div>
-							<div class="footer"><span class="category">{{$show_theme_info->category_name}} / {{$show_theme_info->subcategory_name}}</span><span class="gst-notice">All prices are in USD</span></div>
+							<div class="footer"><span class="category">{{ $show_theme_info->category_name }} / {{ $show_theme_info->subcategory_name }}</span><span class="gst-notice">All prices are in USD</span></div>
 						</div>
 					  </span>
 					</a>
@@ -327,7 +327,7 @@ h1 {
 
 
 				@foreach($new_arrival_author as $show_arrival_author)
-					<a href="{{url($show_arrival_author->username)}}" class="user-avatar-wrap v4">
+					<a href="{{route('profile_view', $show_arrival_author->username)}}" class="user-avatar-wrap v4">
 						<figure class="user-avatar medium">
 							<img src="{{ asset('image/').'/'.$show_arrival_author->user_image}}" alt="">
 						</figure>

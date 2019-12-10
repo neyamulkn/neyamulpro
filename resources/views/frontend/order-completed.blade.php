@@ -375,8 +375,8 @@ li.financial-institutes__logo {
 								</a>
 								<p class="text-header small"><a href="{{url($get_order->username.'/'.$get_order->gig_url)}}">I will {{$get_order->gig_title}}</a> | <span style="color:#108a14"> {{$get_order->gig_payment_type}} price </span></p>
 								<p>
-									Seller: <a href="{{url('/'.$get_order->username)}}"> {{$get_order->username}}</a> | 
-									Order: <a href="{{url('/dashbord/'. Auth::user()->username .'/manage/orders/'.$get_order->order_id)}}">#{{$get_order->order_id}} </a> | 
+									Seller: <a href="{{route('profile_view', $get_order->username)}}"> {{$get_order->username}}</a> | 
+									Order: <a href="{{route('gig_order_details', $get_order->order_id)}}">#{{$get_order->order_id}} </a> | 
 									{{ \Carbon\Carbon::parse($get_order->created_at)->format('M d, Y')}}
 								</p>
 							</div>

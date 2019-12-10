@@ -1002,7 +1002,7 @@ float: right;
                                       <div  id="images-to-upload" ></div>
                                        <form style="width: 100%;" name="submit_form" action="{{ Route('upload_images') }}" method="POST" id="submit_form">
                                         {{csrf_field()}}
-                                           
+                                            
                                           <input type="file" name="file[]" id="input-file-now" class="dropify" />
                                           <input type="file" name="file[]" id="input-file-now" class="dropify" />
                                           <input type="file" name="file[]" id="input-file-now" class="dropify" />

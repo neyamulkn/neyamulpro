@@ -38,18 +38,18 @@
 							<!-- THEME ITEM -->
 							<div class="theme1">
 								<div class="theme2">
-									<a href="#" class="Template">
+									<a href="{{ route('theme_detail', $show_theme_info->theme_url) }}" class="Template">
 										<img class="themeimg" src="{{asset('theme/images').'/'.$show_theme_info->main_image }}" >
 									</a>
 									<div class="author-data v2">
 										<!-- USER RATING -->
 										<div class="user-rating v2">
-											<a class="user-rating v1" href="#">
+											<a class="user-rating v1" href="{{ route('profile_view', [$show_theme_info->username]) }}">
 												<figure class="user-avatar small">
 													<img src="{{ asset('allscript')}}/images/avatars/avatar_01.jpg" alt="user-avatar">
 												</figure>
 											</a>
-											<a class="user-rating v4" href="{{url('themeplace/'.$show_theme_info->theme_url)}}">
+											<a class="user-rating v4" href="{{ route('profile_view', [$show_theme_info->username]) }}">
 												<p class="text-header tiny">{{$show_theme_info->name}}</p>
 											</a>
 										</div>
@@ -83,9 +83,9 @@
 								</div>
 								<div class="theme3">
 									<div class="themett">
-										<a href="{{url('themeplace/'.$show_theme_info->theme_url)}}">{{$show_theme_info->theme_name}}</a>
+										<a href="{{ route('theme_detail', $show_theme_info->theme_url) }}">{{$show_theme_info->theme_name}}</a>
 									</div>
-									<a href="shop-gridview-v1.html">
+									<a >
 										<p class="category tertiary v2">{{$show_theme_info->category_name}} / {{$show_theme_info->subcategory_name}}</p>
 									</a>
 									<p class="prodlist-i-txt">
@@ -93,7 +93,7 @@
 									</p>
 									<div class="bottomtheme">
 										<p class="price small v2"><span>$</span>{{$show_theme_info->price_regular}}</p>
-										<a href="{{url('themeplace/'.$show_theme_info->theme_url)}}" target="_blank" class="button mid tertiary half v2">Preview</a>
+										<a href="{{ route('theme_detail', $show_theme_info->theme_url) }}" target="_blank" class="button mid tertiary half v2">Preview</a>
 										<input type="hidden" name="price" value="{{$show_theme_info->price_regular}}" id="price">
 										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')" class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i>
 										</a>
@@ -102,7 +102,7 @@
 								<div class="theme4">
 									<ul >
 										<li class="prodlist-i-props"><b>Update</b> {!! Carbon\Carbon::parse($show_theme_info->updated_at)->format('d M, Y') !!}</li>
-										<li class="prodlist-i-props"><b>Sale </b> count</li>
+										<li class="prodlist-i-props"><b>Sale </b> <?php echo DB::table('theme_orders')->where('theme_id',  $show_theme_info->theme_id)->count(); ?></li>
 										<li class="prodlist-i-props"><b>Review</b> count</li>
 										<li class="prodlist-i-props"><b>Comment</b> count</li>
 										<li class="prodlist-i-props"><b>Favourite </b> count</li>

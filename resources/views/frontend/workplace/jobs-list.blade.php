@@ -4,10 +4,10 @@
 @section('css')
 	<link rel="stylesheet" href="{!! asset('allscript/css/vendor/simple-line-icons.css') !!}">
 	<link rel="stylesheet" href="{{asset('allscript/css/vendor/font-awesome.min.css')}}">
-<link rel="stylesheet" href="{{ asset('allscript/css/vendor/jquery.range.css') }}">
-<link rel="stylesheet" href="{!! asset('allscript/css')!!}/hl-work.css">
+	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/jquery.range.css') }}">
+	<link rel="stylesheet" href="{!! asset('allscript/css')!!}/hl-work.css">
 @endsection
-<link rel="stylesheet" href="{{asset('allscript/workplace/jobs.css')}}">
+	<link rel="stylesheet" href="{{asset('allscript/workplace/jobs.css')}}">
 <style type="text/css">
     .section{
     overflow: hidden;
@@ -48,6 +48,20 @@
 	
 	background-color: #fff;
 }
+
+#loading
+{
+	text-align:center; 
+	background: url('{{ asset("image/loading.gif")}}') no-repeat center; 
+	height: 350px;
+}
+
+.sidebar-item b{
+	background: #37d09c;
+    color: #fff;
+    display: block;
+    padding: 10px;
+}
 </style>
 
 @section('content')
@@ -58,35 +72,31 @@
 	<!-- SECTION -->
 	<div class="section-wrap">
 		
-		<div  class="src-section">
-				<form action=""  class="search-widget-form"  style="width: 100%;" >
-					<input type="text" autocomplete="off" onkeyup="search_bar(this.value)" style="width: 85%;border-radius:0px !important;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" id="item" placeholder="Search goods or services here...">
-					
-					<button class="button medium tertiary">Search Now!</button>
-				</form>
-				<div class="search_bar" id="search_bar" >
-					<ul>
-						<span id="show_suggest_key"></span>
-					</ul>
-				</div>
-			</div>
+		<div class="src-section">
+			<form action=""  class="search-widget-form"  style="width: 100%;" >
+				<input type="text" autocomplete="off" onkeyup="search_bar(this.value)" style="width: 85%;border-radius:0px !important;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" id="item" placeholder="Search goods or services here...">
 				
-
-	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+				<button class="button medium tertiary">Search Now!</button>
+			</form>
+			<div class="search_bar" id="search_bar" >
+				<ul>
+					<span id="show_suggest_key"></span>
+				</ul>
+			</div>
+		</div>
+				
 		<div class="section">
-
-			
 			<!-- SIDEBAR -->
-			<div class="sidebar right">
+			<div class="sidebar left">
 				
 				<div class="sidebar-item">
-                    <b>Category</b><br><br>
+                    <b>Category</b>
                     
 					<ul class="dropdown hover-effect">
 						@if(isset($get_subcategory))
                             @foreach($get_subcategory as $show_subcategory)
                                 <li class="dropdown-item">
-                                    <a href="{{url('workplace/'.$show_subcategory->subcategory_url)}}">{{$show_subcategory->subcategory_name}}</a>
+                                    <a href="{{route('workplace.cat', [$show_subcategory->category_url, $show_subcategory->subcategory_url])}}">{{$show_subcategory->subcategory_name}}</a>
                                 </li>   
                             @endforeach 
                         @endif
@@ -95,46 +105,48 @@
 				</div>
 
                 <div class="sidebar-item">
-                    <b>Payment Type</b><br>
-                    <hr style="margin-top: 10px;" class="line-separator">
-                    
-                            <input type="radio" id="all" class="common_selector" checked="" value="All" name="Payment">
-                            <label for="all">
-                                <span class="checkbox primary primary"><span></span></span>
-                                Payment Type All
-                                <span class="quantity">2</span>
-                            </label>
+                    <b>Payment Type</b>
+                   <br/>
+                    <input type="radio"   id="all" class="common_selector" checked="" value="All" name="Payment">
+                    <label for="all">
+                        <span class="checkbox primary primary"><span></span></span>
+                        Payment Type All
+                       
+                    </label>
 
-                            <input type="radio" id="fixed" class="common_selector payment" value="fixed" name="Payment">
-                            <label for="fixed">
-                                <span class="checkbox primary primary"><span></span></span>
-                                Fixed Price
-                                <span class="quantity">2</span>
-                            </label>
-                            <input type="radio" id="monthly" class="common_selector payment" value="monthly" name="Payment">
-                            <label for="monthly">
-                                <span class="checkbox primary primary"><span></span></span>
-                                Monthly 
-                                <span class="quantity">2</span>
-                            </label>
-                            
+                    <input type="radio" id="fixed" {{(isset($_GET['payment'])  && $_GET['payment'] == 'fixed'  ? 'checked' : '') }} class="common_selector payment" value="fixed" name="Payment">
+                    <label for="fixed">
+                        <span class="checkbox primary primary"><span></span></span>
+                        Fixed Price
+                       
+                    </label>
+                    <input type="radio"  {{(isset($_GET['payment'])  && $_GET['payment'] == 'monthly'  ? 'checked' : '') }} id="monthly" class="common_selector payment" value="monthly" name="Payment">
+                    <label for="monthly">
+                        <span class="checkbox primary primary"><span></span></span>
+                        Monthly 
+                        
+                    </label>
+                    
                         <!-- /CHECKBOX -->
                 </div>
                 <div class="sidebar-item range-feature">
                     <h4>Price Range</h4>
                     <hr class="line-separator spaced">
-                    <input type="hidden" class="price-range-slider secondary" value="500" form="shop_search_form">
-                    <button form="shop_search_form" class="button mid secondary-dark">Update your Search</button>
+                    <input type="hidden" id="price-range"  class="price-range-slider tertiary" value="{{(isset($_GET['price'])? $_GET['price'] : '700') }}" form="shop_search_form">
+					<a form="shop_search_form" id="price_btn" class="button mid tertiary common_selector">Update your Search</a>
                 </div>
 			
 			</div>
 			<!-- /SIDEBAR -->
 
 			<!-- CONTENT -->
-			<div class="content left">
+			<div class="content right filter_data">
 				
 				<div class="col-lgh">
-					<h2>Recent Jobs</h2>
+					<div class="headline primary">
+					    <h4>Recent Jobs</h4>
+					    <div class="clearfix"></div>
+					</div>
                     @foreach($get_jobs as $show_job)
 					   <div class="jp_job_post_main_wrapper_cont">
 						<div class="jp_job_post_main_wrapper">
@@ -145,7 +157,7 @@
 									</div>
 									<div class="jp_job_post_right_cont">
 										<h4><a  style="color: #00d7b3" href="{{ route('job-details' , $show_job->job_title_slug) }}">{!!$show_job->job_title!!}</a></h4>
-										<p><a href="{{url($show_job->username)}}"> {!!$show_job->username!!} </a>&nbsp; <small style="color: #ccc;"> by {!! \Carbon\Carbon::parse($show_job->created_at)->diffForHumans()!!}</small></p>
+										<p><a href="{{route('profile_view', $show_job->username)}}"> {!!$show_job->username!!} </a>&nbsp; <small style="color: #ccc;"> by {!! \Carbon\Carbon::parse($show_job->created_at)->diffForHumans()!!}</small></p>
 										<ul>
 											<li><i class="fa fa-cc-paypal"></i>&nbsp;  ${!!$show_job->budget!!}</li>
 											<li><i class="fa fa-map-marker"></i>&nbsp;{!!$show_job->country!!}</li>
@@ -202,7 +214,7 @@
 		
 		$.ajax({
 			method:'post',
-			url:'{{ route('suggest_keyword') }}',
+			url:'{{ route("suggest_keyword") }}',
 			data:{src_key:src_key, _token: '{{csrf_token()}}'},
 			datatype: "text",
 			success:function(data){
@@ -223,5 +235,78 @@
 	 	document.getElementById('item').value = src;
 	 	document.getElementById('search_bar').style.display = 'none';
 	}
+	$(document).ready(function(){
+
+
+	$(document).on('click', '.pagination a', function(e){
+	e.preventDefault();
+
+		var page = $(this).attr('href').split('page=')[1];
+
+		filter_data(page);
+	});
+
+
+	function filter_data(page)
+    {
+    	$('.filter_data').html('<div id="loading" style="" ></div>');
+        var tags = get_filter('platform');
+        var filter_type = get_filter('filter_type');
+        var payment = get_filter('payment');
+        var price = document.getElementById('price-range').value;
+        if(page == null){var page = 1;}
+        //var delivery = get_filter('delivery');
+		// var gig_sort = ($( "#gig_asc option:selected" ).val());
+		var category = "{{ Request::route('category') }}" ;
+		var subcategory = "{{ Request::route('subcategory') }}";
+		var src_item = "{{Request::input('item')}}";
+       	var  link = '<?php echo URL::to("workplace/category");?>/'+category+'/'+subcategory+'?item='+src_item+'&tags='+tags+'&filter_type='+filter_type+'&payment='+payment+'&page='+page+'&price='+price;
+		    history.pushState({id: 'workplace'}, category +' '+subcategory, link);
+
+ 		$.ajax({
+            url:link,
+            method:"get",
+            data:{
+				tags:tags,
+				category:category,
+				subcategory:subcategory,
+				filter:'filter',
+				price:price,
+				//delivery:delivery,
+				
+			},
+            success:function(data){
+            	if(data){
+                	$('.filter_data').html(data);
+               }else{
+               		$('.filter_data').html('Not Found');
+               }
+            }
+        });
+    }
+
+    function get_filter(class_name)
+    {
+        var filter = [];
+        $('.'+class_name+':checked').each(function(){
+            filter.push($(this).val());
+        });
+        return filter;
+    }
+    $('.common_selector').click(function(){
+		filter_data();
+    });
+
+    $('#gig_asc').on('change', function(){
+		filter_data();
+ 	});
+
+ 	$('.common_selector').click(function(){
+		filter_data();
+    });
+
+
+});
+
 </script>
 @endsection

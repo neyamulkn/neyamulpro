@@ -18,8 +18,10 @@ class CreateMessagesTable extends Migration
             $table->integer('from_user');
             $table->integer('to_user');
             $table->integer('conversion_id');
-            $table->text('msg');
-            $table->tinyInteger('status');
+            $table->text('msg')->nullable();
+            $table->char('image', 25)->nullable();
+            $table->char('file', 25)->nullable();
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

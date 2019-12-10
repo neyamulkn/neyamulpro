@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use App\job;
 use DB;
 use App\job_proposal;
 use Auth;
 class WorkplaceHomeController extends Controller
 {
-
 
     public function index(){
         $data = array();
@@ -22,25 +22,48 @@ class WorkplaceHomeController extends Controller
             ->groupBy('job_orders.freelancer_id')
             ->orderBy('top_users', 'ASC')->limit(5)->get();
 
-        $data['get_jobs'] = DB::table('jobs')->join('users', 'jobs.user_id', '=', 'users.id')->orderBy('job_id', 'DESC')->limit(3)->get();
+        $data['get_jobs'] = DB::table('jobs')->join('users', 'jobs.user_id', '=', 'users.id')->orderBy('job_id', 'DESC')->limit(4)->select('jobs.*', 'users.username', 'users.country')->get();
 
     	return view('frontend.workplace.index')->with($data);
     }
 
-    public function workplace_category($category, $subcategory_url){
-      
-        $category = DB::table('workplace_category')->where('category_url', $category)->first();
+    public function workplace_category(Request $request){
+        $category = $request->category;
+        $subcategory = $request->subcategory;
 
-        $subcategory = DB::table('workplace_subcategory')->where('subcategory_url', $subcategory_url)->first();
-
-        $get_subcategory = DB::table('workplace_subcategory')->leftJoin('workplace_category', 'workplace_category.id', '=', 'workplace_subcategory.category_id')->where('category_id', $category->id)->get();
+        $get_subcategory = DB::table('workplace_subcategory')
+                        ->join('workplace_category', 'workplace_subcategory.category_id', '=', 'workplace_category.id')
+                        ->where('workplace_category.category_url', $category)->get();
         
-        $get_jobs = DB::table('jobs')
+        $get_job = DB::table('jobs')
             ->join('users', 'jobs.user_id', '=', 'users.id')
-            ->where('jobs.category_id', $category->id )
-            ->where('jobs.subcategory_id', $subcategory->id )
-            ->orderBy('jobs.job_id', 'DESC')->paginate(3);
-        return view('frontend.workplace.jobs-list')->with(compact('get_jobs',  'get_subcategory'));
+            ->leftJoin('workplace_category', 'jobs.category_id', '=', 'workplace_category.id')
+            ->leftJoin('workplace_subcategory', 'jobs.subcategory_id', '=', 'workplace_subcategory.id')
+            ->where('workplace_category.category_url', $category );
+           
+            
+            if(Input::has('item') && !empty(Input::get('item'))){
+                $src = Input::get('item');
+                $get_job =  $get_job->where('jobs.job_title', 'LIKE', '%'. $src .'%');
+            }
+            if(isset($request->price) && !empty($request->price)){
+                $price = explode(',',  $request->price);
+                $get_job = $get_job->whereBetween('jobs.budget', [$price[0],$price[1]]);
+            }
+
+            if(isset($request->payment)){
+                $get_job = $get_job->where('jobs.price_type', $request->payment);  
+            }
+
+            
+            $get_jobs = $get_job->where('workplace_subcategory.subcategory_url', $subcategory)->selectRaw('jobs.*, users.username, users.country')->orderBy('jobs.job_id', 'DESC')->paginate(3);
+  
+            if(!isset($_GET['filter'])){
+               return view('frontend.workplace.jobs-list')->with(compact('get_jobs',  'get_subcategory'));
+            }else{
+                echo view('frontend.workplace.filter_data')->with(compact('get_jobs'));
+            }
+        
     }
 
     public function job_search(){
@@ -87,3 +110,5 @@ class WorkplaceHomeController extends Controller
 
 
 }
+
+

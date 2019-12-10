@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Input;
 class themefrontController extends Controller
 {
     public function themeplace(){
-        $data = array();
+        $data = array(); 
         $data['theme_category'] = DB::table('theme_category')->get();
         $data['new_arrival_author'] = DB::table('users')->leftJoin('userinfos', 'users.id', 'userinfos.user_id')->limit(20)->get();
         $data['top_seller'] = DB::table('theme_orders')
@@ -31,8 +31,8 @@ class themefrontController extends Controller
 
         $data['get_theme_info'] = DB::table('themes')
                 ->leftJoin('users', 'themes.user_id', 'users.id')
-                ->leftJoin('theme_category', 'themes.category_id', 'theme_category.category_url')
-                ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.subcategory_url')
+                ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
+                ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
                 ->select('themes.*', 'theme_category.category_name', 'users.name', 'users.id', 'users.username', 'theme_subcategory.subcategory_name')
                 ->groupBy('themes.theme_id')->limit(20)->get();
 
@@ -54,7 +54,6 @@ class themefrontController extends Controller
                 ->LeftJoin('theme_filters', 'theme_features.feature_id', 'theme_filters.filter_id')
                 ->where('themes.sub_category', $request->subcategory)->where('type', 'select')
                 ->groupBy('theme_filters.filter_id')->get();
-
 
 
             $get_theme_info = DB::table('themes')
@@ -249,8 +248,8 @@ class themefrontController extends Controller
 
         $get_theme_info = DB::table('themes')
                 ->leftJoin('users', 'themes.user_id', 'users.id')
-                ->leftJoin('theme_category', 'themes.category_id', 'theme_category.category_url')
-                ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.subcategory_url')
+                ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
+                ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
                 ->select('themes.*', 'theme_category.category_name', 'users.name', 'users.id', 'users.username', 'theme_subcategory.subcategory_name');
                 if($request->category_id != 'all'){
                    $get_theme_info = $get_theme_info->where('themes.category_id', $request->category_id);
@@ -265,7 +264,7 @@ class themefrontController extends Controller
                         <img class="user-avatar medium" src="'.asset('theme/images/'.$show_theme_info->main_image).'" alt="">
                       <span class="showDisplayOnHover">
                         <div class="magnifier" style="width: 477px;overflow: hidden; position: absolute;z-index: 99999">
-                            <div class="size-limiter"><img alt="" src="'.asset('theme/images/'.$show_theme_info->main_image).'"></div><strong>  {{$show_theme_info->theme_name}}</strong>
+                            <div class="size-limiter"><img alt="" src="'.asset('theme/images/'.$show_theme_info->main_image).'"></div><strong>'.$show_theme_info->theme_name.'</strong>
                             <div class="info">
                                 <div class="author-category">by <span class="author">'.$show_theme_info->username.'</span></div>
                                 <div class="price"><span class="cost"><sup>$</sup>'.$show_theme_info->price_regular.'</span></div>

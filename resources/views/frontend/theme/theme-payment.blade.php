@@ -250,18 +250,16 @@ display: inline-block;
 				</div>
 			</div>
 			<!-- /SIDEBAR -->
-			<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-			  <input type="hidden" name="cmd" value="_xclick">
-			  <input type="hidden" name="business" value="neyamul@buyer.com">
-			  <input type="hidden" name="item_name" value="Purchase Theme From HOTlancer">
+			<form action="{{route('paypalPayment')}}" method="post">
+			{{csrf_field()}}
+			 
 			  <input type="hidden" name="amount" value="{{$total}}">
-			  <input type="hidden" name="tax" value="2">
 			  <input type="hidden" name="currency_code" value="USD">
 			  <input type="hidden" name="return" value="{{route('theme_payment_paypal')}}">
 			  <input type="hidden" name="cancel_return" value="{{route('theme_payment_cancel')}}">
 			  <input type="image" style="display: none" id="submit_btn" name="submit"
 			    value="Place Order">
-			</form>	
+			</form>	 
 			<!-- CONTENT -->
 			<div class="content left">
 				

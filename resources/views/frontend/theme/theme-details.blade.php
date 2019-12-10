@@ -240,7 +240,7 @@ span.icon-arrow-right.small {
 
 				<!-- SIDEBAR ITEM -->
 				<div class="sidebar-item author-bio short author-badges-v1 column">
-					<a href="user-profile.html" class="user-avatar-wrap medium">
+					<a href="{{route('profile_view', [$get_theme_detail->username])}}" class="user-avatar-wrap medium">
 						<figure class="user-avatar medium user">
 							<img src="{!! asset('image').'/'.$get_theme_detail->user_image  !!}" alt="">
 						</figure>
@@ -327,7 +327,7 @@ span.icon-arrow-right.small {
 					<!-- /BADGE LIST -->
 					<div class="clearfix"></div>
 					<a href="{!! url($get_theme_detail->username) !!}" class="button mid dark spaced">Go to <span class="tertiary">Profile Page</span></a>
-					<a href="#" class="button mid dark-light">Send a Private Message</a>
+					
 				</div>
 				<!-- /SIDEBAR ITEM -->
 				<div class="sidebar-item void buttons">
@@ -335,9 +335,9 @@ span.icon-arrow-right.small {
 						<span >{!! $total_sale->total_sale !!} </span>
 						<span class="tertiary"> Sales</span>
 					</a>
-					<a href="#" class="button big tertiary wcart">
+					<a href="{{url()->current()}}/comments" class="button big tertiary wcart">
 						<span class="icon-present"></span>
-						100 Comments
+						{{$get_theme_comment->total()}} Comments
 					</a>
 					<a href="#" class="button big secondary wfav">
 						<span class="icon-heart"></span>
@@ -574,8 +574,6 @@ span.icon-arrow-right.small {
 							<img src="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}" alt="">
 						</figure>
 						<!-- SLIDE CONTROLS -->
-
-
 					</div>
 
 					<hr class="line-separator">
@@ -718,7 +716,7 @@ span.icon-arrow-right.small {
 							@foreach($get_theme_comment as $show_comment)
 								<div class="comment-wrap">
 									<!-- USER AVATAR -->
-									<a href="user-profile.html">
+									<a href="{{route('profile_view', [$show_comment->username])}}">
 										<figure class="user-avatar medium user">
 											<img src="{!! asset('image').'/'.$show_comment->user_image  !!}" alt="">
 										</figure>
@@ -747,7 +745,7 @@ span.icon-arrow-right.small {
 										@foreach($get_reply_comment as $show_reply)
 											<div class="comment">
 												<!-- USER AVATAR -->
-												<a href="user-profile.html">
+												<a href="{{route('profile_view', [$show_reply->username])}}">
 													<figure class="user-avatar medium user">
 														<img src="{!! asset('image').'/'.$show_reply->user_image  !!}" alt="">
 													</figure>
@@ -778,36 +776,37 @@ span.icon-arrow-right.small {
 								<div id="show_comment"></div>
 								
 								@if(count($get_theme_comment)>4)
-								<hr class="line-separator">
-								<!-- PAGER -->
-								<div class="pager tertiary" style="text-align: center;">
-                                    <a href="{{url()->current()}}/comments" style="background: #559de7;display: block;padding: 10px;color:#fff;" class="secondary wfav">See all comments</a>
-								</div>
-								<!-- /PAGER -->
+									<hr class="line-separator">
+									<!-- PAGER -->
+									<div class="pager tertiary" style="text-align: center;">
+	                                    <a href="{{url()->current()}}/comments" style="background: #559de7;display: block;padding: 10px;color:#fff;" class="secondary wfav">See all comments</a>
+									</div>
+									<!-- /PAGER -->
 								@endif
 								<div class="clearfix"></div>
+								@if(Auth::check())
+									<h3>Leave a Comment</h3>
+								
+									<!-- COMMENT REPLY -->
+									<div class="comment-wrap comment-reply">
+										<!-- USER AVATAR -->
+										<a href="user-profile.html">
+											<figure class="user-avatar medium user">
+												<img src="{!!  asset('image/'. App\User::find(Auth::user()->id)->userinfo->user_image) !!}" alt="">
+											</figure>
+										</a>
+										<!-- /USER AVATAR -->
 
-								<h3>Leave a Comment</h3>
-
-								<!-- COMMENT REPLY -->
-								<div class="comment-wrap comment-reply">
-									<!-- USER AVATAR -->
-									<a href="user-profile.html">
-										<figure class="user-avatar medium user">
-											<img src="{!!  asset('allscript') !!}/images/avatars/avatar_09.jpg" alt="">
-										</figure>
-									</a>
-									<!-- /USER AVATAR -->
-
-									<!-- COMMENT REPLY FORM -->
-									<form action="{{route('comment_insert')}}" id="comment" class="comment-reply-form" method="get">
-										<input type="hidden" value="{{$get_theme_detail->theme_id}}" name="theme_id">
-										<textarea id="comment" style="height: 100px" name="comment" placeholder="Write your comment here..."></textarea>
-										<button type="submit"  class="button tertiary">Post Comment</button>
-									</form>
-									<!-- /COMMENT REPLY FORM -->
-								</div>
-								<!-- /COMMENT REPLY -->
+										<!-- COMMENT REPLY FORM -->
+										<form action="{{route('comment_insert')}}" id="comment" class="comment-reply-form" method="get">
+											<input type="hidden" value="{{$get_theme_detail->theme_id}}" name="theme_id">
+											<textarea id="comment" style="height: 100px" name="comment" placeholder="Write your comment here..."></textarea>
+											<button type="submit"  class="button tertiary">Post Comment</button>
+										</form>
+										<!-- /COMMENT REPLY FORM -->
+									</div>
+									<!-- /COMMENT REPLY -->
+								@endif
 						</div>
 						<!-- /COMMENTS -->
 					</div>
@@ -975,7 +974,7 @@ span.icon-arrow-right.small {
 				_token:"{!!  csrf_token()  !!}"
 			},
 			success:function(data){
-				alert(data);
+				toastr.success(data);
 			}
 		});
 

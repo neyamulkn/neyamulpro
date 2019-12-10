@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'email', 'password', 'role_id', 'expert_level', 'hourly_rate', 'country', 'status'
+        'name', 'username', 'email', 'password', 'role_id', 'expert_level', 'hourly_rate', 'country', 'wallet', 'status'
     ];
 
     /**
@@ -35,5 +35,9 @@ class User extends Authenticatable
 
     public function role(){
         return $this->belongsTo(role::class);
+    }
+
+    public function follow(){
+        return $this->hasOne(Following::class);
     }
 }

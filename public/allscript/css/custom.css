@@ -13,10 +13,13 @@
 		left: 27%;
 		display: block;
 	}
+	.search-widget-form button.medium{
+		width: 15% !important;
+	}
 
 	.product-list.list.full {
     width: 100% !important;
-}
+	}
 	.account-actions > a.post-a-job-button {
 		box-shadow: 0 1px 5px 0 rgba(57,73,76,.35);
 		padding: 7px 18px 6px;
@@ -73,6 +76,12 @@
 		min-width: 400px;
 		display: inline-block;
 	}
+
+	.side-menu .dropdown-item{
+		padding: 0px !important;
+	}
+
+
 	.feature-list {
 		float: left;
 		width: 170px;
@@ -135,6 +144,7 @@ button {
 
 .dropdown-item{
 	white-space:initial !important;
+
 }
 
 a:hover {
@@ -192,7 +202,6 @@ p, ul{
 
 
 .price input[type="text"], input[type="password"], input[type="number"] {
-    width: 75%;
     height: 40px;
     padding: 0 15px;
     border: 1px solid #ebebeb;

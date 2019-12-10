@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\PaymentMethod;
+use App\Withdraw;
+use App\User;
 use Auth;
 use DB;
+use Toastr;
 class earningController extends Controller
 {
     public function earnings_view(){
@@ -15,5 +19,7 @@ class earningController extends Controller
     	->where('seller_id', $user_id)->get();
     	return view('backend.statement')->with('get_earnings', $get_earnings );
     }
+
+   
 
 }

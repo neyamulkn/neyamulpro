@@ -167,28 +167,28 @@ li.financial-institutes__logo {
 				
 				{{csrf_field()}}
 				
-			<div class="sidebar right">
-				<div class="form-box-item not-padded">
-					<h4>Your Cart Total</h4>
-					<hr class="line-separator">
-					<!-- CART OVERVIEW ITEM -->
-					
-					<div class="cart-overview-item">
-						<p class="text-header small"><span class="primary">Total: </span></p>
-						<p id="total_price" class="price"><span>$</span>
-						<?php $count = 0;
-							foreach($get_themecart_info as $show_cart)
-							$count += $show_cart->price;
-						?>
-						{{$count}}
-					</p>
-					</div>
+				<div class="sidebar right">
+					<div class="form-box-item not-padded">
+						<h4>Your Cart Total</h4>
+						<hr class="line-separator">
+						<!-- CART OVERVIEW ITEM -->
+						
+						<div class="cart-overview-item">
+							<p class="text-header small"><span class="primary">Total: </span></p>
+							<p id="total_price" class="price"><span>$</span>
+							<?php $count = 0;
+								foreach($get_themecart_info as $show_cart)
+								$count += $show_cart->price;
+							?>
+							{{$count}}
+						</p>
+						</div>
 
+					</div>
+					
+					<button class="button big primary v3"> Secure checkout </button> 
+					
 				</div>
-				
-				<button class="button big primary v3"> Secure checkout </button> 
-				
-			</div>
 			</form>
 			<!-- /SIDEBAR -->
 				
@@ -227,12 +227,12 @@ li.financial-institutes__logo {
 						<div class="cart-item-product">
 							<!-- ITEM PREVIEW -->
 							<div class="item-preview">
-								<a href="{{url('themeplace/item/'.$get_theme->theme_url.'/'.$get_theme->theme_id)}}">
+								<a href="{{route('theme_detail', [$get_theme->theme_url])}}">
 									<figure class="product-preview-image small liquid">
 										<img src="{{ asset('theme/images/'.$get_theme->main_image)}}" alt="">
 									</figure>
 								</a>
-								<a href="{{url('themeplace/item/'.$get_theme->theme_url.'/'.$get_theme->theme_id)}}"><p class="text-header small">{{$get_theme->theme_name}}</p></a>
+								<a href="{{route('theme_detail', [$get_theme->theme_url])}}"><p class="text-header small">{{$get_theme->theme_name}}</p></a>
 								<a href=""><p class="text-header small" style="color: #888;font-weight:400">Item by {{$get_theme->username}}</p></a>
 								
 							</div>
@@ -247,7 +247,7 @@ li.financial-institutes__logo {
 						<!-- /CART ITEM PRICE -->
 						<!-- CART ITEM ACTIONS -->
 						<div class="cart-item-actions">
-							<a href="{{url('themeplace/cart/delete/'.$show_cart->cart_id)}}" onclick ="return confirm('Are you sure delete it.')" class="button dark-light rmv">
+							<a href="{{route('themeCartDelete', $show_cart->cart_id)}}" onclick ="return confirm('Are you sure delete it.')" class="button dark-light rmv">
 								<!-- SVG PLUS -->
 								<svg class="svg-plus">
 									<use xlink:href="#svg-plus"></use>	

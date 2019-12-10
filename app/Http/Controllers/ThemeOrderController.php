@@ -15,7 +15,7 @@ class ThemeOrderController extends Controller
         if(!Auth::check()){
             return Redirect::route('login');
         }
-         $user_id = null;
+        $user_id = null;
         if(Auth::check()){  $user_id = Auth::user()->id; }
 
         //if direct purchase buy now button
@@ -49,7 +49,7 @@ class ThemeOrderController extends Controller
 
     public function payment_success()
     {
-        if(isset($_GET['tx'])){
+       
             $buyer_id = Auth::user()->id;
             $username = Auth::user()->username;
             
@@ -70,6 +70,9 @@ class ThemeOrderController extends Controller
             ->orWhere('session_id', $session_id)
             ->get();
 
+                $trnx_id = Session::get('paypal_payment_id');
+                Session::forget('paypal_payment_id');
+
             // all cart item buyer purchas 
             foreach ($get_themecart_info  as $show_themecart_info) {
                 $order_id =strtoupper(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), -8)); 
@@ -82,7 +85,7 @@ class ThemeOrderController extends Controller
                     'ref_user' => $ref_user,
                     'total_price' => $show_themecart_info->price,
                     'payment_method' => 'paypal',
-                    'transection_id' => $_GET['tx'],
+                    'transection_id' => $trnx_id,
                    
                 ];
 
@@ -99,13 +102,11 @@ class ThemeOrderController extends Controller
             }
 
             if($insert){
-                    return redirect('/themeplace/downloads/theme/'.Auth::user()->username);
+                    return Redirect::route('theme_downloads');
                 }else{
-                    return redirect('/themeplace/cart/view'.Auth::user()->username);
+                    return Redirect::route('view_cart');
                 }
-        }else{
-            return redirect('/themeplace/cart/view'.Auth::user()->username);
-        }
+       
       
     }
 

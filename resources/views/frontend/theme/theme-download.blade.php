@@ -263,12 +263,12 @@ li.financial-institutes__logo {
                         <div class="cart-item-product">
                             <!-- ITEM PREVIEW -->
                             <div class="item-preview">
-                                <a href="{{url('themeplace/'.$show_theme->theme_url)}}">
+                                <a href="{{route('theme_detail',$show_theme->theme_url)}}">
                                     <figure class="product-preview-image small liquid">
                                         <img src="{{ asset('theme/images/'.$show_theme->main_image)}}" alt="">
                                     </figure>
                                 </a>
-                                <a href="{{url('themeplace/'.$show_theme->theme_url)}}"><p class="text-header small">{{$show_theme->theme_name}}</p></a>
+                                <a href="{{route('theme_detail',$show_theme->theme_url)}}"><p class="text-header small">{{$show_theme->theme_name}}</p></a>
                                 <a href=""><p class="text-header small" style="color: #888;font-weight:400">Item by {{$show_theme->username}}</p></a>
                                 
                                 <p class="text-header small"><span class="primary">Regular Lichance: </span></p>
@@ -308,7 +308,8 @@ li.financial-institutes__logo {
             </div>
             <!-- CONTENT -->
         </div>
-    </div> <span id="file" style="display: none;"></span>
+    </div> 
+    <span id="file" style="display: none;"></span>
 
 
     <!-- Modal -->
@@ -323,7 +324,7 @@ li.financial-institutes__logo {
            <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
-         <form action="{{url('themeplace/review')}}" method="post">
+         <form action="{{route('theme.review')}}" method="post">
             {{csrf_field()}}
                 <!-- INPUT CONTAINER -->
                 <div class="input-container">

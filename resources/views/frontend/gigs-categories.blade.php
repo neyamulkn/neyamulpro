@@ -117,12 +117,12 @@
 			                    <div class="preview-actions">
 			                        <!-- PREVIEW ACTION -->
 			                        <div class="preview-action">
-			                            <a href="<?php echo url($show_gig->username.'/'.$show_gig->gig_url); ?>" target="_blank">
+			                            <a href="{{ route('gig_details', $show_gig->gig_url) }}" target="_blank">
 			                                <div class="circle tiny primary">
 			                                    <span class="icon-tag"></span>
 			                                </div>
 			                            </a>
-			                            <a href="<?php echo url('marketplace/'.$show_gig->gig_url); ?>" target="_blank">
+			                            <a href="{{ route('gig_details', $show_gig->gig_url) }}" target="_blank">
 			                                <p>Go to Item</p>
 			                            </a>
 			                        </div>
@@ -147,7 +147,7 @@
 
 			                <!-- PRODUCT INFO -->
 			                <div class="product-info">
-			                    <a href="<?php echo url('marketplace/'.$show_gig->gig_url); ?>">
+			                    <a href="{{ route('gig_details', $show_gig->gig_url) }}">
 			                        <p class="text-header">I will <?php echo $show_gig->gig_title; ?></p>
 			                    </a>
 			                   
@@ -169,12 +169,12 @@
 
 			                <!-- USER RATING -->
 			                <div class="user-rating">
-			                    <a href="<?php echo url($show_gig->username); ?>" target="_blank">
+			                    <a href="{{route('profile_view', $show_gig->username)}}" target="_blank">
 			                        <figure class="user-avatar small user_image">
 			                            <img src="<?php echo asset('/image/'.$show_gig->user_image); ?>">
 			                        </figure>
 			                    </a>
-			                    <a href="<?php echo url($show_gig->username); ?>" target="_blank">
+			                    <a href="{{route('profile_view', $show_gig->username)}}" target="_blank">
 			                        <p class="text-header tiny"><?php echo $show_gig->name; ?></p>
 			                    </a>
 			                    <ul class="rating tooltip" title="Author's Reputation">

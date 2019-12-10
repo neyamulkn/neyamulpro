@@ -98,7 +98,6 @@ h2{
 					</form>
 				@foreach($conversation_list as $conversations_show)
 
-                
                 <a href="{{url('dashboard/inbox/'.$conversations_show->username)}}" onclick="message('{{$conversations_show->id}}')" class="message" >
                     <div class="inbox-message v2">
 

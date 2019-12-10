@@ -57,7 +57,7 @@
 
 				<!-- AUTHOR PROFILE INFO ITEM -->
 				<div class="author-profile-info-item">
-					<a href="#" class="button mid dark spaced">Add to <span class="primary">Followers</span></a>
+					<button onclick="following('{!! $userinfo->id !!}')"  class="button mid dark spaced">Add to <span class="primary">Followers</span></button>
 				</div>
 				<!-- /AUTHOR PROFILE INFO ITEM -->
 			</div>
@@ -88,8 +88,7 @@
 						<li><a href="#" class="twt"></a></li>
 						<li><a href="#" class="db"></a></li>
 					</ul>
-				
-					<a href="#" class="button mid dark-light">Send a Private Message</a>
+					<a href="{{route('inbox', $userinfo->username )}}" class="button mid dark-light">Send a Private Message</a>
 				</div>
 				<!-- /SIDEBAR ITEM -->
 
@@ -383,4 +382,22 @@
 <script src="{{asset('/allscript')}}/js/dashboard-header.js"></script>
 <!-- Dashboard Statistics -->
 <script src="{{asset('/allscript')}}/js/dashboard-statistics.js"></script>
+
+<script>
+	function following(user_id){
+		alert(user_id);
+		$.ajax({
+			method:'post',
+			url:'{{route("following.store")}}',
+			data:{
+				user_id:user_id,
+				_token:"{!!  csrf_token()  !!}"
+			},
+			success:function(data){
+				toastr.success(data);
+			}
+		});
+
+	}
+</script>
 @endsection

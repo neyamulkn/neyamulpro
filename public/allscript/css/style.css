@@ -5620,9 +5620,8 @@ header {
       display: inline-block; }
 
 .profile-notification {
-  height: 76px;
+
   padding: 0 36px 0 16px;
-  background-color: #fff;
   border: 1px solid #ebebeb;
   overflow: hidden;
   position: relative; }
@@ -5652,10 +5651,9 @@ header {
     position: relative; }
     .profile-notification .profile-notification-body .user-avatar {
       position: absolute;
-      top: 17px;
+      top: 3px;
       left: 0; }
-    .profile-notification .profile-notification-body p {
-      line-height: 74px; }
+
       .profile-notification .profile-notification-body p span {
         color: #2b373a;
         font-weight: 700; }
@@ -5687,8 +5685,7 @@ header {
 
   .profile-notification {
     float: left;
-    width: 270px;
-    height: 170px;
+
     margin-right: 30px; }
     .profile-notification .profile-notification-date {
       margin-right: 80px; }
@@ -8076,9 +8073,7 @@ color:#e3342f;
 .sidebar-2 {
     text-align: left;
 }
-.sidebar-item {
-    padding: 10px 13px 52px;
-}
+
 .icon-arrow-right.small {
     font-size: 10px !important;
     font-weight: bold;

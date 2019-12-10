@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use DB;
 use Redirect;
 use App\job;
@@ -11,7 +12,7 @@ use App\job_order;
 use Auth;
 use Session;
 use Toastr;
-
+use Image;
 class WorkplaceController extends Controller
 {
     public function __construct()
@@ -58,7 +59,7 @@ class WorkplaceController extends Controller
         ];
 
            $check_job = job::where('job_id', $request->post_id)->where('user_id', $user_id)->first();
-
+           Toastr::success('First Step Completed.');
            if($check_job){
                 job::where('job_id', $request->post_id)->where('user_id', $user_id)->update($data);
                 return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/2');
@@ -78,8 +79,16 @@ class WorkplaceController extends Controller
 
     public function insert_job_step_second(Request $request){
         $user_id = Auth::user()->id;
+        $image_name = null;
+        if($request->hasFile('file')){
+            $image = $request->file('file');
+            $image_name = time().rand('123456', '999999').".".$image->getClientOriginalExtension();
+            $image_path = public_path('images/workplace/'.$image_name );
+            Image::make($image)->save($image_path);
+        }
         $data = [
             'job_dsc' => $request->job_dsc,
+            'file' => $image_name,
             
         ];
 
@@ -227,7 +236,7 @@ class WorkplaceController extends Controller
         $check_job = DB::table('jobs')->where('job_id', $request->post_id)->where('user_id', $user_id)->first();
 
        if($check_job){
-            DB::table('jobs')->where('job_id', $request->post_id)->where('user_id', $user_id)->update($data);
+             job::where('job_id', $request->post_id)->where('user_id', $user_id)->update($data);
             return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/7');
        }else{
             return back();
@@ -257,10 +266,10 @@ class WorkplaceController extends Controller
       $user_id = Auth::user()->id;
        if($user_id){
          
-            Session::flash('success', 'Your job successfully inserted!');
+            Toastr::success('Your job successfully inserted!');
             return redirect('dashboard/workplace/job-list');
        }else{
-             Session::flash('success', 'Your job successfully inserted!');
+            Toastr::error('Your job con\'t  inserte!');
             return back();
        }
     }

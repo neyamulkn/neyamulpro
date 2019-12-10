@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\gig_home_category;
 use App\gig_subcategory;
 use App\gig_metadata;
+use App\PaymentMethod;
+use App\User;
 use DB;
 use Redirect;
 use Toastr;
@@ -18,7 +20,7 @@ class superAdminController extends Controller
 
     public function index(){
       return view('admin.index');
-    }
+    } 
 
     public function gig_category(){
       $get_category = DB::table('gig_home_category')->get();
@@ -536,6 +538,49 @@ class superAdminController extends Controller
         ';
        
       echo $output;
+    }
+
+    public function paymentMethod(){
+      $get_method = PaymentMethod::all();
+      $country = User::select('country')->groupBy('country')->get();
+      return view('admin.paymentMethod')->with(compact('get_method','country'));
+    }
+
+    public function paymentMethodStore(Request $request){
+
+      $insert = PaymentMethod::create($request->all());
+      if($insert){
+        Toastr::success('Payment method added successfully');
+       }else{
+        Toastr::error('Payment method can\'t added');
+       }
+     
+      return back();
+    }
+
+    public function paymentMethodEdit($id){
+      $get_method = PaymentMethod::find($id);
+      $country = User::select('country')->groupBy('country')->get();
+      echo view('admin.paymentMethodEdit')->with(compact('get_method','country'));
+    }
+
+    public function paymentMethodUpdate(Request $request){
+        $get_method = PaymentMethod::find($request->id);
+        $data = $request->except(['_token']);
+        if($get_method){
+            $update = PaymentMethod::where('id', $request->id)->update($data);
+            Toastr::success('Update successfull.');
+        }else{
+          Toastr::error('Sorry update faild.');
+        }
+        return back();
+        
+    }
+
+    
+    public function paymentMethodDelete($id){
+        PaymentMethod::where('id', $id)->delete();
+        echo "delete successfully";
     }
 
 

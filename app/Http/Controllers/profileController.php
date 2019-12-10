@@ -11,14 +11,11 @@ class profileController extends Controller
 {
     public function profile_view($username){
     	
-        $user = user::where('username', $username)->first();
+        $userinfo = User::with('userinfo')->where('username', $username)->first();
  
-    	if($user){
-    		$alldata = [
-    			'userinfo' => $user
-    		];
+    	if($userinfo){
     		
-    		return view('frontend.profile')->with($alldata);
+    		return view('frontend.profile')->with(compact('userinfo'));
     	}else{
     		return Redirect('/');
     	}

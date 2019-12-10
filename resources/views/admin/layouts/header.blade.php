@@ -346,7 +346,14 @@
 		<ul class="dropdown dark hover-effect">
             <!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="dashboard-withdrawals.html">
+				<a href="{{route('paymentMethod')}}">
+                    <span class="sl-icon icon-wallet"></span>
+                    Payment Methods
+                </a>
+			</li>
+
+			<li class="dropdown-item">
+				<a href="{{route('admin.withdrawal')}}">
                     <span class="sl-icon icon-wallet"></span>
                     Withdrawals
                 </a>

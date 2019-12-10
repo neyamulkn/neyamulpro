@@ -7,6 +7,7 @@ use App\add_to_cart;
 use App\order_requirement_ans;
 use Illuminate\Http\Request;
 use App\earning;
+use App\Notification;
 use App\ref_count;
 use DB;
 use Auth;
@@ -216,8 +217,10 @@ class GigOrderController extends Controller
         $insert = gig_order::create($data);
 
             if($insert){
-                DB::table('notifications')->insert([
+                Notification::create([
+                    'platform' => 'marketplace',
                     'type' => 'order',
+                    'item_id' => $order_id,
                     'forUser' => session::get('seller_id'),
                     'entityID' => $user_id,
                     'read' => 0

@@ -125,6 +125,7 @@ h2{
         .msg_class:hover{
             color: red;
         }
+
         label{
             margin-bottom: 3px !important;
         }
@@ -148,17 +149,35 @@ h2{
                             <ui class="contacts" id="myUL">
 
                             @foreach($conversation_list as $conversations_show)
-                            <li class="active message" onclick="message('{{$conversations_show->id}}')">
+
+                            <?php
+
+                                if($conversations_show->from_user != Auth::user()->id){
+                                   
+                                    $user_id = $conversations_show->from_user;
+                                }else{
+                                   
+                                    $user_id = $conversations_show->to_user;
+                                }
+
+                                $userinfo = DB::table('users')
+                                ->leftJoin('userinfos', 'users.id', '=', 'userinfos.user_id')
+                                ->where('users.id', $user_id)
+                                ->select('users.username', 'users.id', 'userinfos.user_image')
+                                ->first();
+
+                            ?>
+                            <li class="active message" id="{{$userinfo->username}}"   onclick="message('{{$userinfo->username}}')">
                                 <div class="d-flex bd-highlight">
                                     <div class="img_cont">
-                                        <img  src="{{ asset('image/'.$conversations_show->user_image)}}" class="rounded-circle user_img">
+                                        <img  src="{{ asset('image/'.$userinfo->user_image)}}" class="rounded-circle user_img">
                                         <span class="online_icon"></span>
                                     </div>
                                     <div class="user_info">
-                                        <a href="#" id="sender_name{{$conversations_show->id}}">
-                                            {{$conversations_show->username}}
-                                        </a>
-                                        <p>{{$conversations_show->msg}}</p>
+                                       
+                                        {{$userinfo->username}}
+                                        
+                                        
                                     </div>
                                 </div>
                             </li> 
@@ -169,92 +188,9 @@ h2{
                         <div class="card-footer"></div>
                     </div>
                 </div>
-
-                <div class="col-md-6  chat" style="position: relative;">
-                    <div class="card">
-                        <div class="card-header msg_head">
-                            
-                            <div class="d-flex bd-highlight">
-                                <span class="d-xl-none .d-lg-none d-md-none"  onclick="cahtlist('block')" >
-                                    <i class="fa fa-angle-left" style="padding-top: 20px;"></i>
-                                </span>
-                                <div class="img_cont">
-                                    <img  src="{{asset('chatbox')}}/images/1.jpg" class="rounded-circle user_img">
-                                    <span class="online_icon"></span>
-                                </div>
-                                <div class="user_info">
-                                    <span>Chat with joy</span>
-                                    <p>Last seen 1d ago</p>
-                                </div>
-                                <!-- <div class="video_cam">
-                                    <span><i class="fas fa-video"></i></span>
-                                    <span><i class="fas fa-phone"></i></span>
-                                </div> -->
-                            </div>
-                            <span id="action_menu_btn" style="color: #000;"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></span>
-                            <div class="action_menu">
-                                <ul>
-                                    <li><i class="fas fa-user-circle"></i> View profile</li>
-                                    <li><i class="fas fa-users"></i> Add to close friends</li>
-                                    
-                                    <li><i class="fas fa-ban"></i> Block</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body msg_card_body show_conversation">
-
-                            <div class="d-flex justify-content-start mb-4">
-                                <div class="msg_cotainer">
-                                    Hi, how are you samim?
-                                    <span class="msg_time">8:40 AM, Today</span>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end mb-4">
-                                <div class="msg_cotainer_send">
-                                    Hi joyi am good tnx how about you?
-                                    <span class="msg_time_send">8:55 AM, Today</span>
-                                </div>
-                            </div>
-                           
-                        </div>
-                        <div class="card-footer">
-                            <div class="input-group">
-                                
-                                <input  name="" class="form-control type_msg" placeholder="Type your message...">
-                                <div class="input-group-append">
-                                    <span class="input-group-text send_btn"><i class="material-icons">send</i></span>
-                                </div>
-                            </div>
-                            <div class="message_tools" style="margin-top: 3px;">
-                                <label class="msg_class" title="send emoji"><i class="fa fa-smile-o" aria-hidden="true"></i></label> 
-                                <label  for="attach_file" title="attach file" class="msg_class"><i class="fa fa-paperclip" aria-hidden="true"></i>
-                                    <input type="file" style="display: none;" name="attach_file" id="attach_file"> 
-                                </label>
-                                
-                                <label for="image" title="attach image" class="msg_class"><i class="fa fa-camera" aria-hidden="true"></i>
-                                    <input type="file" id="image" name="image" style="display: none;">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-9">
+                    <div class="row conversation-history" style="position: relative;"></div>
                 </div>
-
-                <div class="col-md-3 chat">
-                    <div class="card mb-sm-3 mb-md-0 contacts_card">
-                        <div class="card-header">
-                            <div class="about" style="padding: 10px;">
-                                
-                                About
-                            </div>
-                        </div>
-                        <div class="card-body contacts_body">
-                            
-                        </div>
-                        <div class="card-footer"></div>
-                    </div>
-                </div>
-
             </div>
         </div>
     
@@ -290,49 +226,40 @@ h2{
      </script>
 
 <script type="text/javascript">
-$(document).ready(function(){
+    $(document).ready(function(){
 
-    $(document).on('click', '.message a', function(e){
-    e.preventDefault();
+        $(document).on('click', '.message a', function(e){
+        e.preventDefault();
+        });
     });
-});
-    
-   <?php 
-        $con_username =  Request::route('username'); 
-        $get_userid = DB::table('users')->where('username', $con_username)->first();
-        if($get_userid){
-            $con_userid = $get_userid->id;
         
-        }else{ 
-            $con_userid = '';
-        }
-    ?>
 
-    message(<?php echo $con_userid ; ?>);
+    // var username = '{{ (Request::route("username")) ?  Request::route("username") : "users"}}';
+    message('{{ Request::route("username")}}');
 
-    function message(id){
-        var  link = '<?php echo URL::to("/dashboard/getmessages/");?>/'+id;
+    function message(username){
+        var  link = '<?php echo URL::to("/dashboard/getmessages/");?>/'+username;
+        $('.conversation-history').html('<div id="overlay" style="" ></div>');
         $.ajax({
             url:link,
             method:"get",
             data:{
-                conversaion:id
+                conversaion:username
             },
             success:function(data){
                 if(data){
+                    $('.conversation-history').html(data);
                    
-                    $('.show_conversation').html(data);
-
                }else{
-                    $('.show_conversation').html('<p>No Conversation </p>');
+                    $('.conversation-history').html('<p>No Conversation </p>');
+                  
                     //document.getElementById("message-body").style.display = "none"; 
                }
             }
         });
-
-        var sender_name = document.getElementById("sender_name"+id).innerHTML;
-        var show_name = document.getElementById("show_name").innerHTML = sender_name;
-        history.pushState('state', sender_name+' | inbox', sender_name);
+        
+        //document.getElementById(username).style.backgroundColor = 'white';
+        history.pushState(null, null, username);
 
     }
 

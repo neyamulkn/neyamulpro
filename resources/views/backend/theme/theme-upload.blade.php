@@ -277,15 +277,15 @@ code {
 					<!-- UPLOAD FILE -->
 					<div class="upload-file">
 						<div class="upload-file-actions">
-						<form id="fileUploadForm" method="post" action="{{ route('file_upload') }}" enctype="multipart/form-data">
-                      		@csrf
-							<input type="file" onchange="uploadselectFile()" required="required" style="display: none;" name="uploadFile" id="uploadFile">
-							<label for="uploadFile" class="button dark-light">Upload File...</label>
-							<p><span id="success">Max file size 2gb</span>  <span class="loader" style="display: none;">
-								<img src="{{asset('image/loading.gif')}}" width="20" /></span></p>
-							<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
-							<input type="submit" style="display: none;" id="main_fileSubmit" />
-						</form>
+							<form id="fileUploadForm" method="post" action="{{ route('file_upload') }}" enctype="multipart/form-data">
+	                      		@csrf
+								<input type="file" onchange="uploadselectFile()" required="required" style="display: none;" name="uploadFile" id="uploadFile">
+								<label for="uploadFile" class="button dark-light">Upload File...</label>
+								<p><span id="success">Max file size 2gb</span>  <span class="loader" style="display: none;">
+									<img src="{{asset('image/loading.gif')}}" width="20" /></span></p>
+								<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
+								<input type="submit" style="display: none;" id="main_fileSubmit" />
+							</form>
 						</div>
 						<div class="upload-file-progress">
 							<!-- BADGE PROGRESS -->

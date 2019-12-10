@@ -139,9 +139,9 @@ h4.gigsfuq-item {
 
 .images{
 	border: 1px solid #ccc;
-padding: 2px;
-width: 75px;
-height: 76px;
+	padding: 2px;
+	width: 55px;
+	height: 55px;
 }
 
 .price_tab{
@@ -332,7 +332,7 @@ height: 76px;
 
 				<div class="sidebar-item author-bio author-badges-v2 column">
 					<!-- USER AVATAR -->
-					<a href=" {{ url($get_user_info->username) }}" class="user-avatar-wrap medium">
+					<a href=" {{ route('profile_view', $get_user_info->username) }}" class="user-avatar-wrap medium">
 						<figure class="user-avatar medium">
 							<img src="{{ asset('image/').'/'.$get_user_info->userinfo->user_image}}" class="images" alt="">
 						</figure>
@@ -370,7 +370,7 @@ height: 76px;
 					<!-- /BADGE LIST -->
 
 					<div class="clearfix"></div>
-					<a href="{{ url('/dashbord/inbox/'.$get_user_info->username) }}" class="button mid dark-light spaced">Contace me</a>
+					<a href="{{ route('inbox', $get_user_info->username) }}" class="button mid dark-light spaced">Contace me</a>
 					<div class="information-layout">
 						<!-- INFORMATION LAYOUT ITEM -->
 						<div class="information-layout-item">
@@ -690,9 +690,9 @@ height: 76px;
 					?>
 				<h4 class="gigsfuq-item">Reviews <i class="fa fa-star feedback" aria-hidden="true">  {{ round((($com_seller)/$total+($service_describe/$total)+($buy_again_recommend/$total))/3, 1) }} </i> ( {{ $total }})</h4>
 				<div style="margin: 20px;">
-					<sapn class="rating_type">Seller communication level <br/><i class="fa fa-star feedback" aria-hidden="true">  {{ ($com_seller)/$total }} </i></sapn>
-					<sapn class="rating_type">Recommend to a friend <br/><i class="fa fa-star feedback" aria-hidden="true">  {{ $service_describe/$total }} </i></sapn>
-					<sapn class="rating_type">Service as described <br/><i class="fa fa-star feedback" aria-hidden="true">  {{ $buy_again_recommend/$total }} </i></sapn> <br/>
+					<sapn class="rating_type">Seller communication level <br/><i class="fa fa-star feedback" aria-hidden="true">  {{ round(($com_seller)/$total) }} </i></sapn>
+					<sapn class="rating_type">Recommend to a friend <br/><i class="fa fa-star feedback" aria-hidden="true">  {{ round($service_describe/$total) }} </i></sapn>
+					<sapn class="rating_type">Service as described <br/><i class="fa fa-star feedback" aria-hidden="true">  {{ round($buy_again_recommend/$total) }} </i></sapn> <br/>
 				</div>
 				<hr class="line-separator">
 					<!-- feedback -->
@@ -702,7 +702,7 @@ height: 76px;
 							$buy_again_recommend = $show_feedback->buy_again_recommend; ?>
 					<div class="comment-wrap">
 						<!-- USER AVATAR -->
-						<a href="user-profile.html" >
+						<a href="{{ route('gig_details', $show_feedback->username)}} " >
 							<figure class="user-avatar medium">
 								<img src=" {{asset('image/'.$show_feedback->user_image) }}" class="images" alt="images">
 							</figure>
@@ -747,12 +747,12 @@ height: 76px;
 							<div class="preview-actions">
 								<!-- PREVIEW ACTION -->
 								<div class="preview-action">
-									<a href=" {{ url($get_user_info->username.'/'.$another_gig->gig_url) }}" target="_blank">
+									<a href=" {{ route('gig_details', $another_gig->gig_url) }}" target="_blank">
 										<div class="circle tiny primary">
 											<span class="icon-tag"></span>
 										</div>
 									</a>
-									<a href=" {{ url($get_user_info->username.'/'.$another_gig->gig_url) }}" target="_blank">
+									<a href="{{ route('gig_details', $another_gig->gig_url) }}" target="_blank">
 										<p>Go to Item </p>
 									</a>
 								</div>
@@ -777,7 +777,7 @@ height: 76px;
 
 						<!-- PRODUCT INFO -->
 						<div class="product-info">
-							<a href=" {{ url($get_user_info->username.'/'.$another_gig->gig_url) }}" target="_blank">
+							<a href=" {{ route('gig_details', $another_gig->gig_url) }}" target="_blank">
 								<p class="text-header">I will  {!! $another_gig->gig_title   !!}</p>
 							</a>
 							<a href="shop-gridview-v1.html">
@@ -799,7 +799,7 @@ height: 76px;
 									<img src=" {{asset('allscript') }}/images/avatars/avatar_01.jpg }}" alt="user-avatar">
 								</figure>
 							</a>
-							<a href=" {{ url($get_user_info->username) }}">
+							<a href=" {{ route('profile_view', $get_user_info->username) }}">
 								<p class="text-header tiny"> {{ $get_user_info->name }}</p>
 							</a>
 							<ul class="rating tooltip tooltipstered">

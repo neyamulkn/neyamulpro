@@ -4,7 +4,25 @@
 @section('css')
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/hl-work.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/c.css">
-	
+	<link href="{{ asset('allscript')}}/gig/css/dropify.min.css" rel="stylesheet">
+	<style type="text/css">
+		.dropify-wrapper .dropify-message p {
+		    margin: 5px 0 0;
+		    text-align: center !important;
+		}
+		.dropify-wrapper .dropify-message {
+		  
+		    top: 40px !important;
+		   
+		}
+		.dropify-wrapper {
+ 
+		    width: 100% !important;
+		    height: 85px;
+		    border: 2px dashed #37a000 !important;
+		    
+		}
+	</style>
 @endsection
 @section('content')
         <!-- DASHBOARD CONTENT -->
@@ -63,12 +81,12 @@
 							<li class="hhbottom"> Anything unique about the project or team </li>
 						</ul>
 						<div class="clearfix"></div>
-						 <form  action="{{url('dashboard/workplace/job-post/insert/step_second')}}" method="post">
+						 <form  action="{{url('dashboard/workplace/job-post/insert/step_second')}}" method="post" enctype="multipart/form-data">
         					{{csrf_field()}}
 						<div class="dddddddtexy">
 							<input type="hidden" name="post_id" value="{{Request::segment(4)}}">
 					
-							<textarea id="textarea" name="job_dsc" placeholder="{{asset('/allscript')}}/enter text ...">@if($get_job) {{$get_job->job_dsc}} @endif</textarea>
+							<textarea id="textarea" name="job_dsc" placeholder="Enter job description...">@if($get_job) {{$get_job->job_dsc}} @endif</textarea>
 							  <div id="toolbar" style="display: none;">
 								<a class="bottomtt" data-wysihtml5-command="bold" title="CTRL+B"><img src="{{asset('/allscript')}}/e/1.png"></a>
 								<a class="bottomtt" data-wysihtml5-command="italic" title="CTRL+I"><img src="{{asset('/allscript')}}/e/2.png"></a></a>
@@ -80,11 +98,14 @@
 						<p class="testhhhh">0/5000 characters (minimum 50)</p>
 						</div>
 						<div class="clearfix"></div>
+						<div  id="images-to-upload" ></div>
+                          
 						<b> Additional project files </b>
-						<div class="hhjjj" >
-							<div class="messagefffffff"> drag or  upload project images </div>
-						</div>
+						
+						<input type="file" name="file" id="input-file-now" class="dropify" />
+						
 						<p> You may attach up to 5 files under <b>100 MB</b> each</p>
+         
 					</div>
 				</div>				
 				<div class="downloadtheme5">
@@ -147,4 +168,84 @@
     });
 </script>
 
- @endsection
+<!-- image upload  prograss bar -->
+<script>
+
+            $(document).ready(function(){
+                // Basic
+                $('.dropify').dropify();
+
+                // Translated
+                $('.dropify-fr').dropify({
+                    messages: {
+                        default: 'Glissez-déposez un fichier ici ou cliquez',
+                        replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                        remove:  'Supprimer',
+                        error:   'Désolé, le fichier trop volumineux'
+                    }
+                });
+
+                // Used events
+                var drEvent = $('#input-file-events').dropify();
+
+                drEvent.on('dropify.beforeClear', function(event, element){
+                    return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+                });
+
+                drEvent.on('dropify.afterClear', function(event, element){
+                    alert('File deleted');
+                });
+
+                drEvent.on('dropify.errors', function(event, element){
+                    console.log('Has Errors');
+                });
+
+                var drDestroy = $('#input-file-to-destroy').dropify();
+                drDestroy = drDestroy.data('dropify')
+                $('#toggleDropify').on('click', function(e){
+                    e.preventDefault();
+                    if (drDestroy.isDropified()) {
+                        drDestroy.destroy();
+                    } else {
+                        drDestroy.init();
+                    }
+                })
+            });
+
+
+
+    $('#submit_form').on('submit', function(e){  
+           e.preventDefault();  
+        var  link = '<?php echo Route('upload_images');?>';
+        document.getElementById("images-to-upload").setAttribute("class", "uploading"); 
+        document.getElementById("submit_btn").setAttribute("disabled", "disabled"); 
+        $.ajax({
+            url:link,
+            method:"POST",
+            data:new FormData(this),
+            contentType:false,  
+                //cache:false,  
+                processData:false, 
+                dataType :'json',
+            success:function(data){
+
+             
+              if(data.type == 'success'){
+                document.getElementById("images-to-upload").removeAttribute("class"); 
+                document.getElementById("submit_btn").removeAttribute("disabled");
+                toastr.success(data.message);
+                window.location.href= data.url;
+              }else{
+                 toastr.error(data.message);
+                document.getElementById("images-to-upload").removeAttribute("class"); 
+                document.getElementById("submit_btn").removeAttribute("disabled");
+              }
+            }
+        });
+        });
+</script>
+
+<script src="{{asset('/allscript')}}/gig/js/dropify.min.js"></script>
+
+
+@endsection

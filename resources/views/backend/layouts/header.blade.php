@@ -36,7 +36,7 @@
 			width: 100%;
 			height: 100%;
 			z-index: 9999;
-			background-color: rgba(0,0,0, .3);
+			/*background-color: rgba(0,0,0, .3);*/
 			background-image: url("{{asset('image/loading.gif')}}");
 			background-position: center;
 		    background-repeat: no-repeat;
@@ -81,7 +81,7 @@
 						$user_image = DB::table('userinfos')->where('user_id', $id)->first();
 					?>
 					<figure class="user-avatar">
-						<img  src="{{asset('/image/'.$user_image->user_image)}}" alt="avatar">
+						<img  src="{{asset('image/'.$user_image->user_image)}}" alt="avatar">
 					</figure>
 					<input type="file" id="user_image" name="user_image" style="display: none;">
 				</div>
@@ -102,7 +102,7 @@
 				         	{{csrf_field()}}
 				         		<label for="user_imagess" class="user_imagess"  style="position: relative; margin: 0px auto; width: 200px;height: 200px; background: #ccc;border-radius: 50%;">
 						        <input type='file' name="user_image" style="display: none;" id="user_imagess" onchange="readURL(this);" />
-						        <img id="blah" src="{{asset('/image/'.$user_image->user_image)}}" alt="" style=" width: 200px; height: 200px;border-radius: 50%;" />
+						        <img id="blah" src="{{asset('image/'.$user_image->user_image)}}" alt="" style=" width: 200px; height: 200px;border-radius: 50%;" />
 
 						        <span class="image_upload"><span style="font-size: 35px" class="sl-icon icon-camera"></span></span>
 						        </label>
@@ -120,8 +120,8 @@
 				<!-- /USER AVATAR -->
 
 				<!-- USER INFORMATION -->
-				<p class="user-name">neyamul</p>
-				<p class="user-money">$745.00</p>
+				<p class="user-name">{{Auth::user()->username}}</p>
+				<p class="user-money">${{Auth::user()->wallet}}</p>
 				<!-- /USER INFORMATION -->
 			</div>
 			<!-- /USER QUICKVIEW -->
@@ -328,7 +328,7 @@
 		<ul class="dropdown dark hover-effect">
             <!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="dashboard-withdrawals.html">
+				<a href="{{route('withdrawal')}}">
                     <span class="sl-icon icon-wallet"></span>
                     Withdrawals
                 </a>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use DB;
 use Session;
+use Toastr;
 class AddToCartController extends Controller
 {
     
@@ -83,10 +84,11 @@ class AddToCartController extends Controller
         ->delete();
         
         if($delete_cart){
-            return back();
+           Toastr::success('Cart item deteled.');
         }else{
-            return back();
+           Toastr::success('Cart item can\'t deteled.');
         }
+        return back();
     }
 
     

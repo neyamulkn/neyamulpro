@@ -31,7 +31,6 @@ class gighomeController extends Controller
 
     public function gig_view(Request $request){
 
-
         $get_filters = DB::table('gig_subcategories')
         ->join('filter_subcategories', 'gig_subcategories.id', 'filter_subcategories.subcategory_id')
         ->join('filters', 'filter_subcategories.filter_id', 'filters.filter_id')
@@ -51,7 +50,7 @@ class gighomeController extends Controller
             ->groupby('gig_basics.gig_id');
 
         if(isset($request->payment)){
-            $get_gigs->where('gig_basics.gig_payment_type',  $request->payment);  
+             $get_gigs = $get_gigs->where('gig_basics.gig_payment_type',  $request->payment);  
         }
         $src = Input::get('item');
         if(Input::has('item') && !empty(Input::get('item'))){

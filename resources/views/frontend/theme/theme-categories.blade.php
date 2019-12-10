@@ -139,7 +139,7 @@
 							<!-- THEME ITEM -->
 							<div class="theme1">
 								<div class="theme2">
-									<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}" class="Template">
+									<a href="{{ route('theme_detail', $show_theme_info->theme_url) }}" class="Template">
 										<img class="themeimg" src="{{asset('theme/images').'/'.$show_theme_info->main_image }}" >
 									</a>
 									<div class="author-data v2">
@@ -186,7 +186,7 @@
 									<div class="themett">
 										<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}">{{$show_theme_info->theme_name}}</a>
 									</div>
-									<a href="shop-gridview-v1.html">
+									<a>
 										<p class="category tertiary v2">{{$show_theme_info->category_name}} / {{$show_theme_info->subcategory_name}}</p>
 									</a>
 									<p class="prodlist-i-txt">
@@ -442,7 +442,7 @@ function search_bar(src_key){
 				_token:"{{ csrf_token() }}"
 			},
 			success:function(data){
-				alert(data);
+				toastr.success(data);
 			}
 		});
 		

@@ -103,12 +103,12 @@
                                     <div class="preview-actions">
                                         <!-- PREVIEW ACTION -->
                                         <div class="preview-action">
-                                            <a href="<?php echo url($show_gig->username.'/'.$show_gig->gig_url); ?>" target="_blank">
+                                            <a href="{{ route('gig_details', $show_gig->gig_url) }}" target="_blank">
                                                 <div class="circle tiny primary">
                                                     <span class="icon-tag"></span>
                                                 </div>
                                             </a>
-                                            <a href="<?php echo url('marketplace/'.$show_gig->gig_url); ?>" target="_blank">
+                                            <a href="{{ route('gig_details', $show_gig->gig_url) }}" target="_blank">
                                                 <p>Go to Item</p>
                                             </a>
                                         </div>

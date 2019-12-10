@@ -47,29 +47,29 @@
         </div>
         <!-- DASHBOARD CONTENT -->
     <!-- update Modal -->
-  <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-    	<form action="{{url('admin/workplace/category')}}" data-parsley-validate method="post" id="profile_info">
-				 {{ csrf_field() }}
-	      <!-- Modal content-->
-		    <div class="modal-content">
-		        <div class="modal-header">
-		          
-		          <h4 class="modal-title">Update sub category</h4>
-		          <button type="button" class="close" data-dismiss="modal">&times;</button>
-		        </div>
-		        <div class="modal-body form-box-item">
-		     		
-					<div id="edit_form"></div>
-		        </div>
-		        <div class="modal-footer">
-		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		           <button type="submit" class="btn btn-sm btn-success">Update</button>
-		        </div>
-      		</div>
-       </form>
-    </div>
-  </div>  
+	<div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
+	    <div class="modal-dialog">
+	    	<form action="{{url('admin/workplace/category')}}" data-parsley-validate method="post" id="profile_info">
+					 {{ csrf_field() }}
+		      <!-- Modal content-->
+			    <div class="modal-content">
+			        <div class="modal-header">
+			          
+			          <h4 class="modal-title">Update category</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+			        <div class="modal-body form-box-item">
+			     		
+						<div id="edit_form"></div>
+			        </div>
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			           <button type="submit" class="btn btn-sm btn-success">Update</button>
+			        </div>
+	      		</div>
+	       </form>
+	    </div>
+	</div>  
 
  <!-- location modal --->  
 	<div id="add" class="modal fade" role="dialog">
@@ -77,44 +77,45 @@
 			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Add workplace category</h4>
+					<h4 class="modal-title">Add category</h4>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>	
 				</div>
 
-			<form action="{{url('admin/workplace/category')}}" data-parsley-validate method="post" id="profile_info">
-				 {{ csrf_field() }}
-	        <div class="modal-body form-box-item">
+			
+		        <div class="modal-body form-box-item">
+					<form action="{{url('admin/workplace/category')}}" data-parsley-validate method="post" id="profile_info">
+						 {{ csrf_field() }}
+						
+						<div class="input-container">
+							<div class="input-container">
+								<label class="rl-label">Category Name</label>
+								<input name="category_name" value="" type="text" id="" placeholder="Enter category here...">
+							</div>
+			        	</div>
+			        	<div class="input-container">
+							<label for="country2" class="rl-label required">Status</label>
+							<label for="country2" class="select-block">
+								<select name="status">
+									<option value="1">Active</option>
+									<option value="2">Unactive</option>
+									
+								</select>
+								<!-- SVG ARROW -->
+								<svg class="svg-arrow">
+									<use xlink:href="#svg-arrow"></use>
+								</svg>
+								<!-- /SVG ARROW -->
+							</label>
+						</div>
 
-				
-				<div class="input-container">
-					<div class="input-container">
-						<label class="rl-label">Category Name</label>
-						<input name="category_name" value="" type="text" id="" placeholder="Enter category here...">
-					</div>
-	        	</div>
-	        	<div class="input-container">
-					<label for="country2" class="rl-label required">Status</label>
-					<label for="country2" class="select-block">
-						<select name="status">
-							<option value="1">Active</option>
-							<option value="2">Unactive</option>
-							
-						</select>
-						<!-- SVG ARROW -->
-						<svg class="svg-arrow">
-							<use xlink:href="#svg-arrow"></use>
-						</svg>
-						<!-- /SVG ARROW -->
-					</label>
-				</div>
-
-		        <div class="modal-footer">
-		          <button type="reset" class="btn btn-sm btn-danger" data-dismiss="modal">Cancal</button>
-		          <button type="submit" class="btn btn-sm btn-success">Insert</button>
-		        </div>
-	        </form>
-	      </div>
-	    </div>
+				        <div class="modal-footer">
+				          <button type="reset" class="btn btn-sm btn-danger" data-dismiss="modal">Cancal</button>
+				          <button type="submit" class="btn btn-sm btn-success">Insert</button>
+				        </div>
+		        	</form>
+		      	</div>
+		    </div>
+		</div>
 	</div>
 	<!-- End location model---->
 @endsection

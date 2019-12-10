@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->integer('role_id');
             $table->integer('expert_level')->nullable();
             $table->integer('hourly_rate')->nullable();
+            $table->double('wallet', 8,2)->default(0);
             $table->string('country', 15);
             $table->enum('status', ['Active', 'DeActive', 'Pending', 'Close','warning']);
             $table->rememberToken();
