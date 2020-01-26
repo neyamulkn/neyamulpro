@@ -5,6 +5,8 @@
 @section('css')
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/login.css">
+	<link rel="stylesheet" type="text/css" href="{{asset('/allscript')}}/datatables/css/dataTables.bootstrap4.css">
+
 @endsection
 
 @section('content')
@@ -17,7 +19,7 @@
 				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Category</button>
             </div>
             <!-- /HEADLINE -->
-            <table class="table table-bordered">
+            <table id="myTable" class="table table-bordered table-striped">
 			    <thead>
 			      <tr>
 			        <th>Serial</th>
@@ -122,45 +124,54 @@
 
 @section('js')
 
-<script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
+	<script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
 
-<script type="text/javascript">
-	
-	  function edit(id){
-            var  link = '<?php echo URL::to("admin/workplace/category/edit/");?>/'+id;
-            $.ajax({
-            url:link,
-            method:"get",
-            
-            success:function(data){
-                if(data){
-                     $("#edit_form").html(data);
-                }
-            }
-        
+	<script type="text/javascript">
+		
+		 function edit(id){
+	            var  link = '<?php echo URL::to("admin/workplace/category/edit/");?>/'+id;
+	            $.ajax({
+	            url:link,
+	            method:"get",
+	            
+	            success:function(data){
+	                if(data){
+	                     $("#edit_form").html(data);
+	                }
+	            }
+	        
+	        });
+	        
+	    }
+	    function deleteItem(id) {
+	    if (confirm("Are you sure delete it.?")) {
+	       
+	            var  link = '<?php echo URL::to("admin/workplace/category/delete");?>/'+id;
+	            $.ajax({
+	            url:link,
+	            method:"get",
+	            
+	            success:function(data){
+	                if(data){
+	                    
+	                    $("#item"+id).hide();
+	                    toastr.info(data);
+	                }
+	            }
+	        
+	        });
+	    }
+	    return false;
+	        
+	  } 
+	</script>
+
+	<!-- This is data table -->
+    <script src="{{asset('/allscript')}}/datatables/js/jquery.dataTables.min.js"></script>
+    
+    <script>
+        $(function () {
+            $('#myTable').DataTable();
         });
-        
-    }
-    function deleteItem(id) {
-    if (confirm("Are you sure delete it.?")) {
-       
-            var  link = '<?php echo URL::to("admin/workplace/category/delete");?>/'+id;
-            $.ajax({
-            url:link,
-            method:"get",
-            
-            success:function(data){
-                if(data){
-                    
-                    $("#item"+id).hide();
-                    toastr.info(data);
-                }
-            }
-        
-        });
-    }
-    return false;
-        
-  } 
-</script>
+    </script>
 @endsection

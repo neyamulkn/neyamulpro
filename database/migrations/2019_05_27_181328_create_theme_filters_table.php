@@ -16,7 +16,7 @@ class CreateThemeFiltersTable extends Migration
         Schema::create('theme_filters', function (Blueprint $table) {
             $table->increments('filter_id');
             $table->string('filter_name');
-            $table->string('category_id');
+            $table->integer('category_id');
             $table->string('type');
             $table->string('filter_msg')->nullable();
     });

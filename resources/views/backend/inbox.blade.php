@@ -167,6 +167,7 @@ h2{
                                 ->first();
 
                             ?>
+                            @if($userinfo)
                             <li class="active message" id="{{$userinfo->username}}"   onclick="message('{{$userinfo->username}}')">
                                 <div class="d-flex bd-highlight">
                                     <div class="img_cont">
@@ -177,10 +178,10 @@ h2{
                                        
                                         {{$userinfo->username}}
                                         
-                                        
                                     </div>
                                 </div>
                             </li> 
+                            @endif
                             @endforeach
                             
                             </ui>
@@ -194,9 +195,6 @@ h2{
             </div>
         </div>
     
- 
- 
-
      <script src="{{asset('chatbox')}}/js/script.js"></script>
 
     <script src="{{asset('js/custom.js')}}"></script>

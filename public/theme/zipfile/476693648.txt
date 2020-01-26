@@ -1,0 +1,26 @@
+fname 
+lname
+email
+contact no
+gender
+
+city
+state
+country
+wechat id(optional)
+qq id(optional)
+skype id(optional)
+facebook profile link(optional)
+username
+pass
+rechapcha
+
+
+bd:bdtype24_bdnews
+
+user: bdtype24_newuser
+pass: yvXuunB%VDVe
+
+
+
+shedule calender current date ato

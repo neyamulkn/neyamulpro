@@ -8,34 +8,46 @@
         <div class="dashboard-content">
             <!-- HEADLINE -->
             <div class="headline buttons primary">
-                <h4>Gigs Sub Category</h4>
-				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Sub Category</button>
+                <h4>Theme Filter</h4>
+				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Filter</button>
             </div>
             <!-- /HEADLINE  -->
-            <table class="table table-bordered">
+          	<table class="table table-bordered">
 			    <thead>
 			      <tr>
 			        <th>Serial</th>
-			        <th>Sub Category Name</th>
-			        <th>Category Name</th>
-			        <th>Status</th>
+			        <th>Filter Name</th>
+			        <th>Category name</th>
+			        <th>Filter Type</th>
+			        <th>Filter message</th>
 			        <th>Action</th>
 			      </tr>
 			    </thead>
 			    <tbody>
-			      <tr>
-			        <td>John</td>
-			        <td>Doe</td>
-			        <td>Doe</td>
-			        <td>john@example.com</td>
-			        <td>
-			        	<button type="button" class="btn btn-info">Edit</button> |
-						<button type="button" class="btn btn-danger">Delete</button>
-					</td>
-			      </tr>
-			      
+			      <?php $serial = 1; ?>
+			    	@foreach($get_filter_data as $show_filter)
+				      <tr id="item{{$show_filter->filter_id}}">
+				      	<td>{{ $serial++ }}</td>
+				        <td>{{$show_filter->filter_name}}</td>
+				        <td>
+				        	<?php
+				        	$get_category = DB::table('theme_category')
+					        ->whereIn('id', explode(',', $show_filter->category_id))->get(); 
+				        	?>
+				        	@foreach($get_category as $category)
+				        		{{$category->category_name}}<br/>
+				        	@endforeach
+				        </td>
+				        <td>{{$show_filter->type }}</td>
+				        <td>{{$show_filter->filter_msg  }}</td>
+				        <td>
+				        	<button title="Edit" type="button" onclick="edit('{{$show_filter->filter_id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>
+							<button title="Delete" type="button" onclick="deleteItem('{{ $show_filter->filter_id }}' )" class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i> </button>
+						</td>
+				      </tr>
+			      	@endforeach
 			    </tbody>
-			  </table>
+			</table>
         </div>
         <!-- DASHBOARD CONTENT -->
       

@@ -5,35 +5,89 @@
 @endsection
 
 @section('metatag')
-    <meta name="description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
-    <meta name="image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    <meta name="description" content="{!! strip_tags(str_limit($get_theme_detail->description, 160)) !!}">
+    <meta name="image" content="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}">
     <meta name="rating" content="5">
+    <meta name="keywords" content="{{$get_theme_detail->search_tag}}">
+    
     <!-- Schema.org for Google -->
-    <meta itemprop="name" content="HOTLancer - the largest freelancer Marketplace">
-    <meta itemprop="description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
-    <meta itemprop="image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
-
+    <meta itemprop="name" content="{{$get_theme_detail->theme_name  .' – '. Request::segment(1) .' – '. 'HOTLancer'}}">
+    <meta itemprop="description" content="{{ strip_tags(str_limit($get_theme_detail->description, 160)) }}">
+    <meta itemprop="image" content="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}">
+    
+    <meta itemprop="keywords" content="{{$get_theme_detail->search_tag}}">
+    
     <!-- Twitter -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="HOTLancer - the largest freelancer Marketplace">
-    <meta name="twitter:description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
-    <meta name="twitter:site" content="https://hotlancer.com/">
-    <meta name="twitter:creator" content="@HeRaKhan">
-    <meta name="twitter:image:src" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    <meta name="twitter:title" content="{{$get_theme_detail->theme_name  .' – '. Request::segment(1) .' – '. 'HOTLancer'}}">
+    <meta name="twitter:description" content="{{ strip_tags(str_limit($get_theme_detail->description, 160)) }}">
+    <meta name="twitter:site" content="{{ url()->full() }}">
+    <meta name="twitter:creator" content="{{$get_theme_detail->username}}">
+    <meta name="twitter:image:src" content="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}">
     <meta name="twitter:player" content="#">
+    <meta name="twitter:keywords" content="{{$get_theme_detail->search_tag}}">
+    
     <!-- Twitter - Product (e-commerce) -->
-
+    
     <!-- Open Graph general (Facebook, Pinterest & Google+) -->
-    <meta name="og:title" content="HOTLancer - the largest freelancer Marketplace">
-    <meta name="og:description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
-    <meta name="og:image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
-    <meta name="og:url" content="https://hotlancer.com/">
+    <meta name="og:title" content="{{$get_theme_detail->theme_name  .' – '. Request::segment(1) .' – '. 'HOTLancer'}}">
+    <meta name="og:description" content="{{ strip_tags(str_limit($get_theme_detail->description, 160)) }}">
+    <meta name="og:image" content="{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}">
+    <meta name="og:url" content="{{ url()->full() }}">
     <meta name="og:site_name" content="HOTLancer">
     <meta name="og:locale" content="en">
+    <meta name="og:keywords" content="{{$get_theme_detail->search_tag}}">
     <meta name="og:video" content="#">
     <meta name="fb:admins" content="1323213265465">
     <meta name="fb:app_id" content="13212465454">
     <meta name="og:type" content="product">
+    <script type="application/ld+json">
+	{
+	  "@context": "https://schema.org/",
+	  "@type": "Product","category":"Corporate",
+	  "name": "{{$get_theme_detail->theme_name  .' – '. Request::segment(1) .' – '. 'HOTLancer'}}",
+	  "image": [
+	    "{!!  asset('theme/images/'.$get_theme_detail->main_image) !!}"
+	   ],
+	  "description": "{{ strip_tags(str_limit($get_theme_detail->description, 160)) }}",
+	  "sku": "HOTLancer",
+	  "mpn": "925872",
+	  "brand": {
+	    "@type": "Thing",
+	    "name": "HOTLancer"
+	  },
+	  "review": {
+	    "@type": "Review",
+	    "reviewRating": {
+	      "@type": "Rating",
+	      "ratingValue": "4",
+	      "bestRating": "5"
+	    },
+	    "author": {
+	      "@type": "Person",
+	      "name": "{{$get_theme_detail->username}}"
+	    }
+	  },
+	  "aggregateRating": {
+	    "@type": "AggregateRating",
+	    "ratingValue": "4.4",
+	    "reviewCount": "89"
+	  },
+	  "offers": {
+	    "@type": "Offer",
+	    "url": "{{ url()->full() }}",
+	    "priceCurrency": "USD",
+	    "price": "{{ $get_theme_detail->price_regular }}",
+	    "priceValidUntil": "{!!  \Carbon\Carbon::parse($get_theme_detail->created_at)->format('M d, Y') !!}",
+	    "itemCondition": "https://schema.org/UsedCondition",
+	    "availability": "https://schema.org/InStock",
+	    "seller": {
+	      "@type": "Organization",
+	      "name": "{{$get_theme_detail->username}}"
+	    }
+	  }
+	}
+	</script>
 @endsection
 @section('css')
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
@@ -512,31 +566,39 @@ span.icon-arrow-right.small {
 						<div class="information-layout-item">
 							<p class="text-header">Upload Date:</p>
 							<p>{!!  \Carbon\Carbon::parse($get_theme_detail->updated_at)->format('M d, Y') !!}</p>
-						</div>
+						</div> 
 						<!-- /INFORMATION LAYOUT ITEM -->
 						<!-- /Radio ITEM -->
 						@foreach($get_theme_features as $get_theme_feature)
+							
+
 							@if($get_theme_feature->feature_type=='radio')
-								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
+
 								<div class="information-layout-item">
-									<p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
+									<p class="text-header">{!! $get_theme_feature->filter_name !!}:</p>
 									<p>{!! $get_theme_feature->feature_name !!}</p>
 								</div>
 							@endif
 
 							@if($get_theme_feature->feature_type=='select')
-								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
+								<?php $get_features = DB::table('theme_features')->leftJoin('theme_subfilters', 'theme_features.feature_name', 'theme_subfilters.id')->where('theme_features.feature_id', $get_theme_feature->feature_id)->where('theme_features.theme_id', $get_theme_detail->theme_id)->get();  ?>
+
 								<div class="information-layout-item">
-									<p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
-									<p>{!! $get_theme_feature->feature_name !!}</p>
+									<p class="text-header">{!! $get_theme_feature->filter_name !!}:</p>
+									<p>
+										@foreach($get_features as $feature)
+											{!! $feature->sub_filtername !!}
+										@endforeach
+									</p>
 								</div>
 							@endif
 
 							@if($get_theme_feature->feature_type=='dropdown')
-								<?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
+								<?php $get_features = DB::table('theme_features')->leftJoin('theme_subfilters', 'theme_features.feature_name', 'theme_subfilters.id')->where('theme_features.feature_id', $get_theme_feature->feature_id)->where('theme_features.theme_id', $get_theme_detail->theme_id)->first();  ?>
+
 								<div class="information-layout-item">
-									<p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
-									<p>{!! $get_theme_feature->feature_name !!}</p>
+									<p class="text-header">{!! $get_theme_feature->filter_name !!}:</p>
+									<p>{!! $get_features->sub_filtername !!}</p>
 								</div>
 							@endif
 						@endforeach
@@ -546,7 +608,7 @@ span.icon-arrow-right.small {
 							<p class="tags tertiary" style="border:none;">
 								<?php $tag_array = explode(',', $get_theme_detail->search_tag); ?>
 								@foreach($tag_array as $tag)
-									<a href="{!! url('tags/'.$tag) !!}">{!! $tag !!}</a>,
+									<a href="{{ url('themeplaces/search?item='.$tag) }}">{!! $tag !!}</a>,
 								@endforeach
 							</p>
 						</div>
@@ -554,7 +616,6 @@ span.icon-arrow-right.small {
 					</div>
 					<!-- INFORMATION LAYOUT -->
 				</div>
-
 
 			</div>
 			<!-- /SIDEBAR -->
@@ -583,9 +644,9 @@ span.icon-arrow-right.small {
 						<div class="item-preview__preview-buttons--social" data-view="socialButtons">
 							<div class="btn-group">
 								<div id="fullscreen" class="item-preview__preview-buttons">
-									<a data-view="crossDomainGoogleAnalyticsLink" href="#" role="button" class="btn-icon live-preview" target="_blank" rel="noopener nofollow">Live Preview <span class="icon-link"></span></a>
+									<a data-view="crossDomainGoogleAnalyticsLink" href="{{$get_theme_detail->demo_url}}" role="button" class="btn-icon live-preview" target="_blank" rel="noopener nofollow">Live Preview <span class="icon-link"></span></a>
 
-									<a data-view="crossDomainGoogleAnalyticsLink" href="#" role="button" class="btn-icon live-preview" target="_blank" rel="noopener nofollow">Screenshort <span class="icon-link"></span></a>
+									<a data-view="crossDomainGoogleAnalyticsLink" href="{{$get_theme_detail->screenshort_url}}" role="button" class="btn-icon live-preview" target="_blank" rel="noopener nofollow">Screenshort <span class="icon-link"></span></a>
 								</div>
 
 							</div>
@@ -653,11 +714,11 @@ span.icon-arrow-right.small {
 									<p class="text-header small">Social Share:</p>
 									<!-- SHARE LINKS -->
 									<ul class="share-links hoverable">
-										<li><a href="http://www.facebook.com/sharer.php?u={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-facebook"></i></a></li>
-										<li><a href="https://twitter.com/share?url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;text={!! $get_theme_detail->theme_name !!}&amp;hashtags=HOTLancer" target="_blank"><i class="fa fa-twitter"></i></a></li>
+										<li><a href="http://www.facebook.com/sharer.php?u={!! route('theme_detail', $get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-facebook"></i></a></li>
+										<li><a href="https://twitter.com/share?url={!! route('theme_detail', $get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;text={!! $get_theme_detail->theme_name !!}&amp;hashtags=HOTLancer" target="_blank"><i class="fa fa-twitter"></i></a></li>
 
-										<li><a href="http://reddit.com/submit?url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;title={!! $get_theme_detail->theme_name !!}" target="_blank"><i class="fa fa-reddit"></i></a></li>
-										<li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={!! url('themeplace/'.$get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+										<li><a href="http://reddit.com/submit?url={!! route('theme_detail', $get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;title={!! $get_theme_detail->theme_name !!}" target="_blank"><i class="fa fa-reddit"></i></a></li>
+										<li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={!! route('theme_detail', $get_theme_detail->theme_url) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-linkedin"></i></a></li>
 									</ul>
 									<!-- /SHARE LINKS -->
 								</div>
@@ -667,7 +728,7 @@ span.icon-arrow-right.small {
 									<p class="text-header small">Affiliate Link:</p>
 									<!-- Affiliate SHARE LINKS -->
 									<ul class="share-links v3">
-										<input type="text" value="{{ url('themeplace/'.$get_theme_detail->theme_url) }}@if(Auth::check())?ref={{Auth::user()->username}}@endif" id="myInput">
+										<input type="text" value="{{ route('theme_detail', $get_theme_detail->theme_url) }}@if(Auth::check())?ref={{Auth::user()->username}}@endif" id="myInput">
 										<button onclick="myFunction()"><i class="fa fa-copy"></i></button>
 									</ul>
 									<!-- /Affiliate SHARE LINKS -->
@@ -814,13 +875,7 @@ span.icon-arrow-right.small {
 				</div>
 				<!-- /POST TAB -->
 				<br/>
-				<?php
-					$get_another_theme = DB::table('themes')
-					->join('users', 'themes.user_id', 'users.id')
-					->leftJoin('userinfos', 'themes.user_id', 'userinfos.user_id')
-					->select('themes.theme_name', 'themes.theme_id', 'themes.main_image', 'themes.theme_url', 'themes.theme_name', 'themes.search_tag','themes.price_regular', 'users.username', 'userinfos.user_image')
-					->where('themes.user_id', $get_theme_detail->user_id)->limit(6)->get();
-				?>
+				
 				@if(count($get_another_theme)>0)
 					<div class="headline tertiary">
 						<h4>Related Courses</h4>

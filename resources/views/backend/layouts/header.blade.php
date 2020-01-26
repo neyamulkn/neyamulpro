@@ -7,8 +7,8 @@
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/simple-line-icons.css">
     <link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/font-awesome.min.css">
-   <script src="{{asset('/allscript')}}/gig/js/jquery.2.2.0.min.js"></script>
-
+    <link rel="stylesheet" href="{{asset('/allscript')}}/css/select2.min.css">
+   
 	@yield('css')
 
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/style.css">
@@ -19,43 +19,43 @@
 	<title>@yield('title')</title>
 
 	<style type="text/css">
-		.image_upload{
-			position: absolute;left:0; border-radius: 50%; background:rgba(255,255,255,.7); text-align: center; padding-top:40%; width: 100%; height: 100%; display: none;transition: 2s;
-		}
+	.image_upload{
+		position: absolute;left:0; border-radius: 50%; background:rgba(255,255,255,.7); text-align: center; padding-top:40%; width: 100%; height: 100%; display: none;transition: 2s;
+	}
 
-		.user_imagess:hover .image_upload{
-				display: block;
-				position: absolute;left:0;
-				top: 0px;
-				transition: 2s;
-		}
-		#overlay {
-			position: fixed;
-			left: 0px;
-			top: 0px;
-			width: 100%;
-			height: 100%;
-			z-index: 9999;
-			/*background-color: rgba(0,0,0, .3);*/
-			background-image: url("{{asset('image/loading.gif')}}");
-			background-position: center;
-		    background-repeat: no-repeat;
-		}
+	.user_imagess:hover .image_upload{
+		display: block;
+		position: absolute;left:0;
+		top: 0px;
+		transition: 2s;
+	}
+	#overlay {
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 9999;
+		/*background-color: rgba(0,0,0, .3);*/
+		background-image: url("{{asset('image/loading.gif')}}");
+		background-position: center;
+	    background-repeat: no-repeat;
+	}
 
 	.uploading {
 		position: absolute;
-	left: 0px;
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-	text-align: center;
-	padding:10%;
-	background-color: rgba(154, 150, 150, 0.3);
-	background-image: url("{{asset('image/spinner.gif')}}");
-	background-position: center;
-    background-repeat: no-repeat;
-}
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		text-align: center;
+		padding:10%;
+		background-color: rgba(154, 150, 150, 0.3);
+		background-image: url("{{asset('image/spinner.gif')}}");
+		background-position: center;
+	    background-repeat: no-repeat;
+	}
 
 	</style>
 </head>
@@ -87,7 +87,7 @@
 				</div>
 
 				<!--user image Modal -->
-				  <div class="modal fade" id="user_imageModal" role="dialog">
+				<div class="modal fade" id="user_imageModal" role="dialog">
 				    <div class="modal-dialog">
 				    
 				      <!-- Modal content-->
@@ -101,7 +101,7 @@
 				         
 				         	{{csrf_field()}}
 				         		<label for="user_imagess" class="user_imagess"  style="position: relative; margin: 0px auto; width: 200px;height: 200px; background: #ccc;border-radius: 50%;">
-						        <input type='file' name="user_image" style="display: none;" id="user_imagess" onchange="readURL(this);" />
+						        <input type='file' required="" name="user_image" style="display: none;" id="user_imagess" onchange="readURL(this);" />
 						        <img id="blah" src="{{asset('image/'.$user_image->user_image)}}" alt="" style=" width: 200px; height: 200px;border-radius: 50%;" />
 
 						        <span class="image_upload"><span style="font-size: 35px" class="sl-icon icon-camera"></span></span>
@@ -142,7 +142,7 @@
 
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="dashboard-notifications.html">
+				<a href="{{route('notifications')}}">
                     <span class="sl-icon icon-star"></span>
                     Notifications
                 </a>
@@ -151,7 +151,7 @@
                 <!-- /PIN -->
 			</li>
 			<li class="dropdown-item">
-				<a href="{{url('dashboard/inbox/ ')}}">
+				<a href="{{route('inbox')}}">
                     <span class="sl-icon icon-envelope"></span>
                     Messenger
                 </a>
@@ -292,31 +292,13 @@
 		<ul class="dropdown dark hover-effect">
 			<!-- DROPDOWN ITEM -->
 			
-
 			<li class="dropdown-item">
 				<a href="{{url('dashboard/'.Auth::user()->username.'/manage/buyer_order/active')}}">
                     <span class="sl-icon icon-people"></span>
                     Buyer Orders
                 </a>
 			</li>
-			<li class="dropdown-item">
-				<a href="dashboard-affiliate-program.html">
-                    <span class="sl-icon icon-diamond"></span>
-                    Affiliate Program
-                </a>
-			</li>
-			<li class="dropdown-item">
-				<a href="dashboard-statement.html">
-                    <span class="sl-icon icon-energy"></span>
-                    Buying Statement
-                </a>
-			</li>
-			<li class="dropdown-item">
-				<a href="dashboard-statistics.html">
-                    <span class="sl-icon icon-chart"></span>
-                    Statistics
-                </a>
-			</li>
+		
 		</ul>
 		<!-- /DROPDOWN -->
 
@@ -335,10 +317,10 @@
 			</li>
 		</ul><br/>
 		<!-- /DROPDOWN -->
-		<a href="#" class="button primary">Become a Buyer</a>
+		<a href="{{route('switchUser')}}" class="button primary">Become a @if(Auth::user()->role_id == env('BUYER')) Seller @else Buyer @endif</a>
 
         <a  class="button medium secondary" href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <span class="sl-icon icon-logout"></span> {{ __('Logout') }}</a>
-	<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+			<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
 	</div>

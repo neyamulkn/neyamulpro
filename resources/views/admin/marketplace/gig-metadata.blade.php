@@ -2,6 +2,9 @@
 @section('title', 'Insert sub filter')
 
 @section('css')
+<link rel="stylesheet" type="text/css"
+        href="{{asset('/allscript')}}/datatables/css/dataTables.bootstrap4.css">
+    
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/login.css">
 @endsection
@@ -15,14 +18,14 @@
 				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Sub Category</button>
             </div>
             <!-- /HEADLINE -->
-            <table class="table table-bordered">
+            <table id="myTable" class="table table-bordered table-striped">
 			    <thead>
 			      <tr>
 			        <th>Serial</th>
 			        <th>Sub filter name</th>
 			        <th>Filter name</th>
 			        <th>Show price table</th>
-			        <th>Status</th>
+			        
 			        <th>Action</th>
 			      </tr>
 			    </thead>
@@ -34,6 +37,7 @@
 				        <td>{{$show_filter->sub_filter_name}}</td>
 				        <td>{{$show_filter->filter_name}}</td>
 				        <td>{{$show_filter->filter_type}}</td>
+
 				        <td>
 				        	<button type="button" onclick="edit('{{$show_filter->sub_filter_id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button> |
 							<button type="button" onclick="deleteItem('{{ $show_filter->sub_filter_id }}' )" class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
@@ -49,7 +53,7 @@
   <!-- edit modal --->  
 <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
-    	<form action="{{url('admin/gig-metadata')}}" data-parsley-validate method="post" id="profile_info">
+    	<form action="{{url('admin/marketplace/metadata')}}" data-parsley-validate method="post" id="profile_info">
 	      <!-- Modal content-->
 	      <div class="modal-content">
 	        <div class="modal-header">
@@ -79,7 +83,7 @@
 					<h4 class="modal-title">Gig Meta Data Name</h4>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>	
 				</div>
-				<form action="{{url('admin/gig-metadata')}}" data-parsley-validate method="post" id="profile_info">
+				<form action="{{url('admin/marketplace/metadata')}}" data-parsley-validate method="post" id="profile_info">
 				 {{ csrf_field() }}
 		        <div class="modal-body form-box-item">
 					<div class="input-container">
@@ -175,4 +179,14 @@
         
   } 
 </script>	
+
+<!-- This is data table -->
+    <script src="{{asset('/allscript')}}/datatables/js/jquery.dataTables.min.js"></script>
+  
+    <script>
+        $(function () {
+            $('#myTable').DataTable();
+        });
+
+    </script>
 @endsection

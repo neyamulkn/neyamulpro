@@ -11,10 +11,6 @@
 
 <style>
 
-
-
-
-
 figure.user-avatar.small {
     margin: 13px 13px 13px 0;
     float: left;

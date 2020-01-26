@@ -48,12 +48,14 @@
 				case 'all':
 					if($show_notify->type == 'withdrawal'){
 						$withdrawal = App\Withdraw::where('invoice_id', $show_notify->item_id)->first();
-						if(Auth::user()->role_id == env('ADMIN')){ 
-							$url = route('admin.withdraw_detials', $show_notify->item_id);
-							$msg = 'withdrawal requested';
-						}else{
-							$url = route('withdraw_detials', $show_notify->item_id);
-							$msg = 'withdrawal requested '. $withdrawal->status;
+						if($withdrawal){
+							if(Auth::user()->role_id == env('ADMIN')){ 
+								$url = route('admin.withdraw_detials', $show_notify->item_id);
+								$msg = 'withdrawal requested';
+							}else{
+								$url = route('withdraw_detials', $show_notify->item_id);
+								$msg = 'withdrawal requested '. $withdrawal->status;
+							}
 						}
 						echo '<a href=""><div class="profile-notification '.($show_notify->read == 0 ? 'unread' : '').'">
 								<div class="profile-notification-body">

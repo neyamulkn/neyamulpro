@@ -4,35 +4,89 @@
 @endsection
 
 @section('metatag')
-    <meta name="description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
-    <meta name="image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    <meta name="description" content="{!! strip_tags(str_limit($get_job->job_dsc, 160)) !!}">
+    <meta name="image" content="{{ asset('allscript/images/logo.png') }}">
     <meta name="rating" content="5">
+    <meta name="keywords" content="{{$get_job->job_title}}">
+    
     <!-- Schema.org for Google -->
-    <meta itemprop="name" content="HOTLancer - the largest freelancer Marketplace">
-    <meta itemprop="description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
-    <meta itemprop="image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    <meta itemprop="name" content="{{$get_job->job_title  .' – '. Request::segment(1) .' – '. 'HOTLancer'}}">
+    <meta itemprop="description" content="{{ strip_tags(str_limit($get_job->job_dsc, 160)) }}">
+    <meta itemprop="image" content="{{ asset('allscript/images/logo.png') }}">
+    
+    <meta itemprop="keywords" content="{{$get_job->job_title}}">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="HOTLancer - the largest freelancer Marketplace">
-    <meta name="twitter:description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
-    <meta name="twitter:site" content="https://hotlancer.com/">
-    <meta name="twitter:creator" content="@HeRaKhan">
-    <meta name="twitter:image:src" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
+    <meta name="twitter:title" content="{{$get_job->job_title  .' – '. Request::segment(1) .' – '. 'HOTLancer'}}">
+    <meta name="twitter:description" content="{{ strip_tags(str_limit($get_job->job_dsc, 160)) }}">
+    <meta name="twitter:site" content="{{ url()->full() }}">
+    <meta name="twitter:creator" content="{{$get_job->username}}">
+    <meta name="twitter:image:src" content="{{ asset('allscript/images/logo.png') }}">
     <meta name="twitter:player" content="#">
+    <meta name="twitter:keywords" content="{{$get_job->job_title}}">
+    
     <!-- Twitter - Product (e-commerce) -->
     
     <!-- Open Graph general (Facebook, Pinterest & Google+) -->
-    <meta name="og:title" content="HOTLancer - the largest freelancer Marketplace">
-    <meta name="og:description" content="Hire top‑quality freelancers for your next project from the largest and most trusted freelancer site. Learn how you can get even more done with increased productivity and find out why 90% of our customers rehire.">
-    <meta name="og:image" content="https://hotlancer.com/allscript/images/hotlancer.jpg">
-    <meta name="og:url" content="https://hotlancer.com/">
+    <meta name="og:title" content="{{$get_job->job_title  .' – '. Request::segment(1) .' – '. 'HOTLancer'}}">
+    <meta name="og:description" content="{{ strip_tags(str_limit($get_job->job_dsc, 160)) }}">
+    <meta name="og:image" content="{{ asset('allscript/images/logo.png') }}">
+    <meta name="og:url" content="{{ url()->full() }}">
     <meta name="og:site_name" content="HOTLancer">
     <meta name="og:locale" content="en">
+    <meta name="og:keywords" content="{{$get_job->job_title}}">
     <meta name="og:video" content="#">
     <meta name="fb:admins" content="1323213265465">
     <meta name="fb:app_id" content="13212465454">
     <meta name="og:type" content="product">
+    <script type="application/ld+json">
+	{
+	  "@context": "https://schema.org/",
+	  "@type": "Product","category":"Corporate",
+	  "name": "{{$get_job->job_title  .' – '. Request::segment(1) .' – '. 'HOTLancer'}}",
+	  "image": [
+	    "{{ asset('allscript/images/logo.png') }}"
+	   ],
+	  "description": "{{ strip_tags(str_limit($get_job->job_dsc, 160)) }}",
+	  "sku": "HOTLancer",
+	  "mpn": "925872",
+	  "brand": {
+	    "@type": "Thing",
+	    "name": "HOTLancer"
+	  },
+	  "review": {
+	    "@type": "Review",
+	    "reviewRating": {
+	      "@type": "Rating",
+	      "ratingValue": "4",
+	      "bestRating": "5"
+	    },
+	    "author": {
+	      "@type": "Person",
+	      "name": "{{$get_job->username}}"
+	    }
+	  },
+	  "aggregateRating": {
+	    "@type": "AggregateRating",
+	    "ratingValue": "4.4",
+	    "reviewCount": "89"
+	  },
+	  "offers": {
+	    "@type": "Offer",
+	    "url": "{{ url()->full() }}",
+	    "priceCurrency": "USD",
+	    "price": "{{ $get_theme_detail->price_regular }}",
+	    "priceValidUntil": "{!!  \Carbon\Carbon::parse($get_job->created_at)->format('M d, Y') !!}",
+	    "itemCondition": "https://schema.org/UsedCondition",
+	    "availability": "https://schema.org/InStock",
+	    "seller": {
+	      "@type": "Organization",
+	      "name": "{{$get_job->username}}"
+	    }
+	  }
+	}
+	</script>
 @endsection
 @section('css')
 	<link rel="stylesheet" href="{!! asset('allscript/css/vendor/simple-line-icons.css') !!}">

@@ -4,8 +4,9 @@
 <head>
 	<title>@yield('title')</title>
 	@yield('metatag')
-	@yield('css')
+	
 	<link rel="stylesheet" href="{{ asset('allscript/css/style.css') }}">
+	@yield('css')
 	<link rel="stylesheet" href="{{ asset('allscript/css/custom.css') }}">
 	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/toastr.css') }}">
 	<!-- favicon -->
@@ -219,21 +220,18 @@
 							</ul>
 						<!-- /DROPDOWN NOTIFICATIONS -->
 					</div>
-
-					
 				</div>
 			@endif
 		
-
 				<!-- ACCOUNT ACTIONS -->
-				@guest
+			@guest
 				<div class="account-actions no-space">
 					<a href="#" class="interesting-link">Our Blog</a>
 					<a href="#" class="interesting-link">How It Works</a>
 					<a href="{{ route('register') }}" class="button primary">Register</a>
 					<a href="{{ route('login') }}" class="button secondary">Login</a>
 				</div>
-				@endguest
+			@endguest
 				<!-- /ACCOUNT ACTIONS -->
 			</div>
 			<!-- /USER BOARD -->

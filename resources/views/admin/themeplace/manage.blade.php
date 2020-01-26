@@ -60,7 +60,7 @@ figure.user-avatar.small {
 				<div class="tab-header primary" >
 					<!-- TAB ITEM -->
 					<div class="tab-item {{(Request::route('status') == 'active') ? 'selected': ''}}" onclick="get_order('active')">
-						<p class="text-header">ACTIVE {{(Request::route('status') == 'active') ? 'selected': ''}} ({{$active}})</p>
+						<p class="text-header">ACTIVE</p>
 					</div>
 					<div class="tab-item {{(Request::route('status') == 'draft')? 'selected': ''}}" onclick="get_order('draft')">
 						<p class="text-header">DRAFT ({{$draft}})</p>
@@ -115,17 +115,16 @@ figure.user-avatar.small {
 				                                <td>${{$view_theme->price_regular}}</td>
 				                                <td>${{($view_theme->total_earn)? $view_theme->total_earn : 0}}</td>
 				                                <td>{{$view_theme->status}}</td>
-				                               
+				                                
 				                                <td>
 				                                    <label for="sv" class="select-block v3">
 				                                        <select onchange="action_type(this.value,'{{$view_theme->theme_url}}', '{{$view_theme->theme_id}}')"  name="sv" id="sv">
 				                                            <option value="0">select action</option>
-				                                            @if($view_theme->status != 'active')
+				                                           
 				                                            <option value="active">Approve</option>
-				                                            @else
+				                                          
 				                                            <option value="reject">Reject</option>
-				                                            @endif
-				                                            <option value="edit">Edit</option>
+				                                            
 				                                            <option value="delete">Delete</option>
 				                                        </select>
 				                                        <!-- SVG ARROW -->
@@ -222,26 +221,25 @@ figure.user-avatar.small {
 <script type="text/javascript">
 	function action_type(type, theme_url=null, theme_id=null) {
 
-	if(type == 'approve'){
-		if (confirm("Are you sure delete it.?")) {
+	if(type == 'active' || type == 'reject'){
+		if (confirm("Are you sure "+type+" it.?")) {
        
-            var  link = '{{route("delete_theme")}}';
+            var  link = '{{route("approveOrReject")}}';
             $.ajax({
-            url:link,
-            method:"post",
-            data:{
-            	theme_id: theme_id,
-            	_token: '{{csrf_token()}}'
-            },
-            success:function(data){
-                if(data){
-                    $("#item"+theme_id).hide();
-                    toastr.error(data);
-                }else{
-                	toastr.error(data);
-                }
+	            url:link,
+	            method:"post",
+	            data:{
+	            	theme_id: theme_id,
+	            	status: type,
+	            	_token: '{{csrf_token()}}'
+	            },
+	            success:function(data){
+	                if(data.status == 'success'){
+	                    toastr.success(data.message);
+	                }else{
+	                	toastr.error(data.message);
+	                }
 	           }
-	        
 	        });
 	    }
 	    return false;

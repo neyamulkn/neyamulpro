@@ -167,16 +167,25 @@ class themefrontController extends Controller
                 ->where('themes.theme_url', $theme_url)
                 ->select('themes.*', 'users.username',  'theme_category.category_name','theme_subcategory.subcategory_name', 'userinfos.user_image', 'userinfos.user_title')->first();
 
-        $get_theme_comment = DB::table('theme_comments')
+        if($get_theme_detail){
+
+            $get_theme_comment = DB::table('theme_comments')
                 ->join('users', 'theme_comments.user_id', 'users.id')
                 ->leftJoin('userinfos', 'theme_comments.user_id', 'userinfos.user_id')
                 ->where('theme_comments.theme_id', $get_theme_detail->theme_id)
                 ->select('theme_comments.*', 'users.username','userinfos.user_image')
                 ->orderBy('theme_comments.com_id', 'DESC');
+                // all comment for comment page
                 $all_comments = $get_theme_comment->get();
                 $get_theme_comment = $get_theme_comment->paginate(5);
+
+
+            $get_another_theme = DB::table('themes')
+            ->join('users', 'themes.user_id', 'users.id')
+            ->leftJoin('userinfos', 'themes.user_id', 'userinfos.user_id')
+            ->select('themes.theme_name', 'themes.theme_id', 'themes.main_image', 'themes.theme_url', 'themes.theme_name', 'themes.search_tag','themes.price_regular', 'users.username', 'userinfos.user_image')
+            ->where('themes.user_id', $get_theme_detail->user_id)->limit(6)->get();
         
-        if($get_theme_detail){
            // refferel_user_name
             if(isset($_GET['ref'])){
                 Session::put('refferel_user_name', $_GET['ref']);
@@ -190,30 +199,29 @@ class themefrontController extends Controller
                 ]);
             }
 
-                $get_theme_features = DB::table('theme_features')
-                ->where('theme_id',  $get_theme_detail->theme_id)->get()->toArray();
+            $get_theme_features = DB::table('theme_features')->leftJoin('theme_filters', 'theme_features.feature_id', 'theme_filters.filter_id')
+            ->where('theme_id', $get_theme_detail->theme_id)->get();
 
-                 $total_sale = themeOrder::where('theme_id',  $get_theme_detail->theme_id)
-                ->select(DB::raw('count(*) as total_sale'))
-                ->first();
+             $total_sale = themeOrder::where('theme_id',  $get_theme_detail->theme_id)
+            ->select(DB::raw('count(*) as total_sale'))
+            ->first();
 
-                // view only comment page redirect
-                if(isset($comments)){
-                    return view('frontend.theme.comments')->with(compact('get_theme_detail', 'all_comments','total_sale', 'get_theme_features'));
-                }
+            // view only comment page redirect
+            if(isset($comments)){
+                return view('frontend.theme.comments')->with(compact('get_theme_detail', 'all_comments','total_sale', 'get_theme_features', 'get_another_theme'));
+            }
 
+            $theme_additiona_images = DB::table('theme_additiona_img')
+            ->where('theme_id',  $get_theme_detail->theme_id)->get()->toArray();
 
-                $theme_additiona_images = DB::table('theme_additiona_img')
-                ->where('theme_id',  $get_theme_detail->theme_id)->get()->toArray();
+            $get_theme_reviews = DB::table('theme_reviews')
+            ->join('users', 'theme_reviews.buyer_id', 'users.id')
+            ->leftJoin('userinfos', 'theme_reviews.buyer_id', 'userinfos.user_id')
+            ->where('theme_id',  $get_theme_detail->theme_id)
+            //->select(DB::raw('count(*) as total_review'), DB::raw('sum(ratting_star) as total_ratting'))
+            ->get();
 
-                $get_theme_reviews = DB::table('theme_reviews')
-                ->join('users', 'theme_reviews.buyer_id', 'users.id')
-                ->leftJoin('userinfos', 'theme_reviews.buyer_id', 'userinfos.user_id')
-                ->where('theme_id',  $get_theme_detail->theme_id)
-                //->select(DB::raw('count(*) as total_review'), DB::raw('sum(ratting_star) as total_ratting'))
-                ->get();
-
-                return view('frontend.theme.theme-details')->with(compact('get_theme_features', 'get_theme_detail', 'theme_additiona_images', 'get_theme_reviews','total_sale', 'get_theme_comment'));
+            return view('frontend.theme.theme-details')->with(compact('get_theme_features', 'get_theme_detail', 'theme_additiona_images', 'get_theme_reviews','total_sale', 'get_theme_comment', 'get_another_theme'));
         }else{
             return redirect('/');
         }

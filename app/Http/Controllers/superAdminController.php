@@ -29,7 +29,7 @@ class superAdminController extends Controller
 
     public function create_gig_category(Request $request){
       $request->validate([
-          'category_name' => 'required|unique:gig_home_category',
+          'category_name' => 'required',
       ]);
 
       $insertOrupdate = DB::table('gig_home_category')->where('id', $request->id)->first();
@@ -58,59 +58,32 @@ class superAdminController extends Controller
 
     public function marketplace_category_edit($id){
         
-            $get_category = DB::table('gig_home_category')->where('id', $id)->first();
-                          
-            $output = '';      
-            $output .= '
-                <input type="hidden" name="id" value="'.$get_category->id.'">
-                <div class="input-container">
-                <div class="input-container">
-                    <label class="rl-label">Category Name</label>
-                    <input name="category_name" value="'.$get_category->category_name.'" type="text" id="" placeholder="Enter category here...">
-                </div>
-            </div>
-
-            <div class="input-container">
-                <label for="status" class="rl-label required">Status</label>
-                <label for="status" class="select-block">
-                    <select name="status" id="status">
-                        <option '. ($get_category->status == 1 ? "selected": " ") .' value="1">Active</option>
-                        <option '. ($get_category->status == 2 ? "selected": " ") .' value="2">Unactive</option>
-                        
-                    </select>
-                    <!-- SVG ARROW -->
-                    <svg class="svg-arrow">
-                        <use xlink:href="#svg-arrow"></use>
-                    </svg>
-                    <!-- /SVG ARROW -->
-                </label>
-            </div>
-        ';
-       
-      echo $output;
+      $get_category = DB::table('gig_home_category')->where('id', $id)->first();
+      
+      echo view('admin.editpages.category-edit')->with(compact('get_category'));
     }
 
     public function marketplace_category_delete($id){
-        $get_data = DB::table('gig_home_category')->where('id', $id)->delete();
+        $delete = DB::table('gig_home_category')->where('id', $id)->delete();
 
-        if($get_data){
+        if($delete){
             echo "Data successfully deleted.";
         }else{
-            echo "Sorry Data not deleted.";
+            echo "Sorry data not deleted.";
         }
     }
 
     public function gig_subcategory(){
       $get_subcategory = DB::table('gig_subcategories')
-                ->join('gig_home_category', 'gig_subcategories.category_id', '=', 'gig_home_category.id')
-                ->select('gig_subcategories.*', 'gig_home_category.category_name')
-                ->get();
+        ->join('gig_home_category', 'gig_subcategories.category_id', '=', 'gig_home_category.id')
+        ->select('gig_subcategories.*', 'gig_home_category.category_name')
+        ->get();
        return view('admin.marketplace.gig-subcategory')->with(compact('get_subcategory'));
     }
 
 
-  public function create_gig_subcategory(Request $request){
-        $request->validate(['subcategory_name' => 'required:unique:gig_subcategories',]);
+  public function marketplace_subcategory(Request $request){
+        $request->validate(['subcategory_name' => 'required',]);
 
         $insertOrupdate = DB::table('gig_subcategories')->where('id', $request->id)->first();
        
@@ -128,7 +101,7 @@ class superAdminController extends Controller
            }else{
               Toastr::error('Sorry Sub category not updated.'); 
            }
-            return redirect('admin/marketplace/gig-subcategory');
+          
         }
         else{
             $success = gig_subcategory::create($data);
@@ -138,71 +111,28 @@ class superAdminController extends Controller
            }else{
               Toastr::error('Sorry sub category not insert.'); 
            }
-          return redirect('admin/marketplace/gig-subcategory');
-        } 		
+         
+        } 	
+    return back();	
   }
 
   public function marketplace_subcategory_edit($id){
-        $get_data = DB::table('gig_subcategories')
-                    ->join('gig_home_category', 'gig_subcategories.category_id', '=', 'gig_home_category.id')
-                     ->select('gig_subcategories.*', 'gig_home_category.category_name')
-                    ->where('gig_subcategories.id', $id)
-                    ->first();
-            // get category
-            $get_category = DB::table('gig_home_category')->get();
-                          
-            $output = '';      
-            $output .= '
-              <input type="hidden" name="id" value="'.$get_data->id.'">
-                <div class="input-container">
-                <div class="input-container">
-                    <label class="rl-label">Category Name</label>
-                    <input name="subcategory_name" value="'.$get_data->subcategory_name.'" type="text" id="" placeholder="Enter category here...">
-                </div>
-            </div>
-
-            <div class="input-container">
-                <label for="Category" class="rl-label required">Category</label>
-                <label for="Category" class="select-block">
-                    <select name="category_id" id="Category">';
-
-                    foreach($get_category as $category){ 
-                         $output .=  '<option '. ( $get_data->category_id==$category->id ? "selected" : " " ) .' value="'.$category->id.'">'.$category->category_name.'</option>';
-                        
-                    }
-                  $output .= '</select>
-                    <!-- SVG ARROW -->
-                    <svg class="svg-arrow">
-                        <use xlink:href="#svg-arrow"></use>
-                    </svg>
-                    <!-- /SVG ARROW -->
-                </label>
-            </div>
-
-            <div class="input-container">
-                <label for="status" class="rl-label required">Status</label>
-                <label for="status" class="select-block">
-                    <select name="status" id="status">
-                        <option value="1">Active</option>
-                        <option value="2">Unactive</option>
-                        
-                    </select>
-                    <!-- SVG ARROW -->
-                    <svg class="svg-arrow">
-                        <use xlink:href="#svg-arrow"></use>
-                    </svg>
-                    <!-- /SVG ARROW -->
-                </label>
-            </div>
-        ';
-       
-    echo $output;
+    $data = [];
+    $data['get_data'] = DB::table('gig_subcategories')
+        ->join('gig_home_category', 'gig_subcategories.category_id', '=', 'gig_home_category.id')
+        ->select('gig_subcategories.*', 'gig_home_category.category_name')
+        ->where('gig_subcategories.id', $id)
+        ->first();
+        // get category
+    $data['get_category'] = DB::table('gig_home_category')->get();
+ 
+    echo view('admin.editpages.subcategory-edit')->with($data);
   }   
 
   public function marketplace_subcategory_delete($id) {
-     $get_data = DB::table('gig_subcategories')->where('id', $id)->delete();
+     $delete = DB::table('gig_subcategories')->where('id', $id)->delete();
 
-      if($get_data){
+      if($delete){
           echo "Data successfully deleted.";
       }else{
           echo "Sorry Data not deleted.";
@@ -246,7 +176,7 @@ class superAdminController extends Controller
               Toastr::error('Sorry price scope not insert.'); 
            }
         } 
-      return redirect('admin/marketplace/gig-pricescope');
+      return back();
     }
 
       // edit gig_pricescope data
@@ -291,69 +221,142 @@ class superAdminController extends Controller
      echo $output;
   }
   public function marketplace_pricescope_delete($id) {
-      $get_data = gig_metadata::where('sub_filter_id', $id)->delete();
+      $delete = gig_metadata::where('sub_filter_id', $id)->delete();
 
-        if($get_data){
+        if($delete){
             echo "Data successfully deleted.";
         }else{
             echo "Sorry Data not deleted.";
         }
     }
+
+
     //theme option
 
     public function theme_category(){
-        $get_category = DB::table('theme_category')->paginate(2);
+        $get_category = DB::table('theme_category')->paginate(15);
         return view('admin.themeplace.category')->with(compact('get_category'));
     }
 
     public function create_theme_category(Request $request){
-        $request->validate([
-            'category_name' => 'required|unique:theme_category',
-        ]);
-        $data = [
-            'category_name' => $request->category_name,
-            'category_url' => str_slug($request->category_name),
-            'sorting' => '',
-            'status' =>  $request->status
-         ];
+      
+      $request->validate([
+          'category_name' => 'required',
+      ]);
 
-         $insert = DB::table('theme_category')->insert($data);
-         if($insert){
-              Toastr::success('Category intert successfully');
-           }else{
-              Toastr::error('Sorry category not interted.'); 
-           }
-          return back();
+      $insertOrupdate = DB::table('theme_category')->where('id', $request->id)->first();
+        
+      $data = [
+        'category_name' => $request->category_name,
+        'category_url' => str_slug($request->category_name),
+        'sorting' => '',
+        'status' =>  $request->status
+      ];
+      
+      if($insertOrupdate){
+            $success = DB::table('theme_category')->where('id', $request->id)->update($data);
+            if($success){
+              Toastr::success('update successfully', 'Category');
+              echo "update";
+           }else{ Toastr::error('Sorry category not updated.'); }
+        }
+        else{
+            $success = DB::table('theme_category')->insert($data);
+            if($success){ Toastr::success('Inserted successfully', 'Category');
+            }else{ Toastr::error('Sorry category not insert.');} 
+        }
+      return back();
         
     }
 
-
-    public function theme_subcategory(){
-      $get_category = DB::table('theme_category')->get();
-      return view('admin.themeplace.subcategory')->with(compact('get_category'));
+    public function theme_category_edit($id){
+        
+      $get_category = DB::table('theme_category')->where('id', $id)->first();
+      
+      echo view('admin.editpages.category-edit')->with(compact('get_category'));
     }
 
-    public function create_theme_subcategory(Request $request){
-        $request->validate([
-            'subcategory_name' => 'required|unique:theme_subcategory',
-        ]);
+    public function theme_category_delete($id){
+        $delete = DB::table('theme_category')->where('id', $id)->delete();
+
+        if($delete){
+            echo "Data successfully deleted.";
+        }else{
+            echo "Sorry data not deleted.";
+        }
+    }
+
+
+
+  public function theme_subcategory(){
+    $get_category = DB::table('theme_category')->get();
+    $get_subcategory = DB::table('theme_subcategory')
+      ->join('theme_category', 'theme_subcategory.category_id', '=', 'theme_category.id')
+      ->select('theme_subcategory.*', 'theme_category.category_name')
+      ->get();
+    return view('admin.themeplace.subcategory')->with(compact('get_category', 'get_subcategory'));
+  }
+
+  public function create_theme_subcategory(Request $request){
+        $request->validate(['subcategory_name' => 'required',]);
+
+        $insertOrupdate = DB::table('theme_subcategory')->where('id', $request->id)->first();
+       
         $data = [
-            'subcategory_name' => $request->subcategory_name,
-            'subcategory_url' => str_slug($request->subcategory_name),
-            'category_id' => $request->category_id,
-            'status' =>  $request->status
+          'subcategory_name' => $request->subcategory_name,
+          'subcategory_url' => str_slug($request->subcategory_name),
+          'category_id' => $request->category_id,
+          'status' =>  $request->status
         ];
-        $insert = DB::table('theme_subcategory')->insert($data);
-         if($insert){
-            Toastr::success('Subcategory inserted successfully');
-         }else{
-            Toastr::error('Sorry subcategory not inserted.');
-         }
-         return back();
-    } 
+
+        if($insertOrupdate){
+            $success = DB::table('theme_subcategory')->where('id', $request->id)->update($data);
+            if($success){
+              Toastr::success('Sub category update successfully');
+           }else{
+              Toastr::error('Sorry Sub category not updated.'); 
+           }
+          
+        }
+        else{
+            $success = DB::table('theme_subcategory')->insert($data);
+            if($success){
+
+              Toastr::success('Sub category inserted successfully');
+           }else{
+              Toastr::error('Sorry sub category not insert.'); 
+           }
+         
+        }   
+    return back();  
+  }
+
+  public function theme_subcategory_edit($id){
+    $data = [];
+    $data['get_data'] = DB::table('theme_subcategory')
+        ->join('gig_home_category', 'theme_subcategory.category_id', '=', 'gig_home_category.id')
+        ->select('theme_subcategory.*', 'gig_home_category.category_name')
+        ->where('theme_subcategory.id', $id)
+        ->first();
+        // get category
+    $data['get_category'] = DB::table('theme_category')->get();
+ 
+    echo view('admin.editpages.subcategory-edit')->with($data);
+  }   
+
+  public function theme_subcategory_delete($id) {
+     $delete = DB::table('theme_subcategory')->where('id', $id)->delete();
+
+      if($delete){
+          echo "Data successfully deleted.";
+      }else{
+          echo "Sorry Data not deleted.";
+      }
+  }
+  
 
     public function theme_subchildcategory(){
-         return view('admin.themeplace.subchild_category');
+        return view('admin.themeplace.subchild_category');
     }
 
     public function create_theme_subchildcategory(Request $request){
@@ -395,18 +398,19 @@ class superAdminController extends Controller
 
         if($insertOrupdate){
             $success = DB::table('workplace_category')->where('id', $request->id)->update($data);
-            if($success){
-              Toastr::success('Inserted successfully', 'Category');
+            
+           if($success){
+              Toastr::success('update successfully', 'Category');
            }else{
-              Toastr::error('Sorry category not inserted.'); 
+              Toastr::error('Sorry category not updated.'); 
            }
         }
         else{
             $success = DB::table('workplace_category')->insert($data);
             if($success){
-              Toastr::success('update successfully', 'Category');
+              Toastr::success('Inserted successfully', 'Category');
            }else{
-              Toastr::error('Sorry category not updated.'); 
+              Toastr::error('Sorry category not inserted.'); 
            }
         }
         return back();
@@ -414,42 +418,15 @@ class superAdminController extends Controller
 
     public function workplace_category_edit($id){
         
-            $get_category = DB::table('workplace_category')->where('id', $id)->first();
-                          
-            $output = '';      
-            $output .= '
-                <input type="hidden" name="id" value="'.$get_category->id.'">
-                <div class="input-container">
-                <div class="input-container">
-                    <label class="rl-label">Category Name</label>
-                    <input name="category_name" value="'.$get_category->category_name.'" type="text" id="" placeholder="Enter category here...">
-                </div>
-            </div>
-
-            <div class="input-container">
-                <label for="status" class="rl-label required">Status</label>
-                <label for="status" class="select-block">
-                    <select name="status" id="status">
-                        <option '. ($get_category->status == 1 ? "selected": " ") .' value="1">Active</option>
-                        <option '. ($get_category->status == 2 ? "selected": " ") .' value="2">Unactive</option>
-                        
-                    </select>
-                    <!-- SVG ARROW -->
-                    <svg class="svg-arrow">
-                        <use xlink:href="#svg-arrow"></use>
-                    </svg>
-                    <!-- /SVG ARROW -->
-                </label>
-            </div>
-        ';
-       
-      echo $output;
+      $get_category = DB::table('workplace_category')->where('id', $id)->first();
+      echo view('admin.editpages.category-edit')->with(compact('get_category'));                 
+           
     }
 
     public function workplace_category_delete($id) {
-         $get_data = DB::table('workplace_category')->where('id', $id)->delete();
+         $delete = DB::table('workplace_category')->where('id', $id)->delete();
 
-        if($get_data){
+        if($delete){
             echo "Data successfully deleted.";
         }else{
             echo "Sorry Data not deleted.";
@@ -467,7 +444,7 @@ class superAdminController extends Controller
     }
 
     public function create_workplace_subcategory(Request $request){
-
+        
         $data = [
             'subcategory_name' => $request->subcategory_name,
             'subcategory_url' => str_slug($request->subcategory_name),
@@ -475,70 +452,51 @@ class superAdminController extends Controller
             'status' =>  $request->status
         ];
 
-        $insert = DB::table('workplace_subcategory')->insert($data);
-         if($insert){
-             return back()->with('msg', 'subcategory inserted successfully');
-         }else{
-             return back()->with('msg', 'sorry category not inserted.');
-         }
+        $insertOrupdate = DB::table('workplace_subcategory')->where('id', $request->id)->first();
+        
+        if($insertOrupdate){
+            $success = DB::table('workplace_subcategory')->where('id', $request->id)->update($data);
+            
+          if($success){
+              Toastr::success('update successfully', 'subcategory');
+          }else{
+              Toastr::error('Sorry subcategory not updated.'); 
+          }
+        }
+        else{
+            $success = DB::table('workplace_subcategory')->insert($data);
+            if($success){
+              Toastr::success('Inserted successfully', 'subcategory');
+           }else{
+              Toastr::error('Sorry category not inserted.'); 
+           }
+        }
+        return back();
     }
-
 
     public function workplace_subcategory_edit($id){
-        $get_data = DB::table('workplace_subcategory')
-                    ->join('workplace_category', 'workplace_subcategory.category_id', '=', 'workplace_category.id')
-                    ->select('workplace_subcategory.*', 'workplace_category.category_name')
-                    ->where('workplace_subcategory.id', $id)
-                    ->first();
+      $data = [];
+      $data['get_data'] = DB::table('workplace_subcategory')
+        ->join('workplace_category', 'workplace_subcategory.category_id', '=', 'workplace_category.id')
+        ->select('workplace_subcategory.*', 'workplace_category.category_name')
+        ->where('workplace_subcategory.id', $id)
+        ->first();
 
-            $get_category = DB::table('workplace_category')->get();
-                          
-            $output = '';      
-            $output .= '
-                <div class="input-container">
-                <div class="input-container">
-                    <label class="rl-label">Category Name</label>
-                    <input name="subcategory_name" value="'.$get_data->subcategory_name.'" type="text" id="" placeholder="Enter category here...">
-                </div>
-            </div>
-
-            <div class="input-container">
-                <label for="Category" class="rl-label required">Category</label>
-                <label for="Category" class="select-block">
-                    <select name="category_id" id="Category">';
-
-                    foreach($get_category as $category){ 
-                         $output .=  '<option '. ( $get_data->category_id==$category->id ? "selected" : " " ) .' value="'.$category->id.'">'.$category->category_name.'</option>';
-                        
-                    }
-                  $output .= '</select>
-                    <!-- SVG ARROW -->
-                    <svg class="svg-arrow">
-                        <use xlink:href="#svg-arrow"></use>
-                    </svg>
-                    <!-- /SVG ARROW -->
-                </label>
-            </div>
-
-            <div class="input-container">
-                <label for="status" class="rl-label required">Status</label>
-                <label for="status" class="select-block">
-                    <select name="status" id="status">
-                        <option value="1">Active</option>
-                        <option value="2">Unactive</option>
-                        
-                    </select>
-                    <!-- SVG ARROW -->
-                    <svg class="svg-arrow">
-                        <use xlink:href="#svg-arrow"></use>
-                    </svg>
-                    <!-- /SVG ARROW -->
-                </label>
-            </div>
-        ';
-       
-      echo $output;
+      $data['get_category'] = DB::table('workplace_category')->get();
+      echo view('admin.editpages.subcategory-edit')->with($data);
+    
     }
+
+    public function workplace_subcategory_delete($id) {
+         $delete = DB::table('workplace_subcategory')->where('id', $id)->delete();
+
+        if($delete){
+            echo "Data successfully deleted.";
+        }else{
+            echo "Sorry Data not deleted.";
+        }
+    }
+
 
     public function paymentMethod(){
       $get_method = PaymentMethod::all();

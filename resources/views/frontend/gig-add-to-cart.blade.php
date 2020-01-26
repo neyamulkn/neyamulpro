@@ -86,7 +86,7 @@
 
 		 		?>
 					<li class="dropdown-item">
-						<a href="{{url('order/checkout/'.$get_cart->cart_id)}}" class="link-to"></a>
+						<a href="{{route('order_checkout', $get_cart->cart_id)}}" class="link-to"></a>
 						<!-- SVG PLUS -->
 						<svg class="svg-plus">
 							<use xlink:href="#svg-plus"></use>

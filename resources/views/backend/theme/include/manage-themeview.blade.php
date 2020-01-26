@@ -34,6 +34,10 @@
                     <label for="sv" class="select-block v3">
                         <select onchange="action_type(this.value, '{{$view_theme->theme_url}}', '{{$view_theme->theme_id}}')"  name="sv" id="sv">
                             <option value="0">select action</option>
+                            @if(Auth::user()->role_id == env('ADMIN')){
+                            <option value="active">Approve</option>
+                            <option value="reject">Reject</option>
+                            @endif
                             <option value="edit">Edit</option>
                             <option value="delete">Delete</option>
                         </select>

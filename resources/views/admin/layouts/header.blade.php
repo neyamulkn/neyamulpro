@@ -121,8 +121,8 @@
 				<!-- /USER AVATAR -->
 
 				<!-- USER INFORMATION -->
-				<p class="user-name">neyamul</p>
-				<p class="user-money">$745.00</p>
+				<p class="user-name">{{Auth::user()->username}}</p>
+				<p class="user-money">${{Auth::user()->wallet}}</p>
 				<!-- /USER INFORMATION -->
 			</div>
 			<!-- /USER QUICKVIEW -->
@@ -152,25 +152,24 @@
 				<ul class="inner-dropdown">
 					
 					<li class="inner-dropdown-item">
-						<a href="{{url('admin/marketplace/gig-category')}}">Add Gig category</a>
+						<a href="{{url('admin/marketplace/category')}}">Add Gig category</a>
 					</li>
 					<li class="inner-dropdown-item">
-						<a href="{{url('admin/marketplace/gig-subcategory')}}">Add sub category</a>
+						<a href="{{url('admin/marketplace/subcategory')}}">Add sub category</a>
 					</li>
 					<li class="inner-dropdown-item">
-						<a href="{{url('admin/marketplace/filter/')}}">Add Filter</a>
+						<a href="{{url('admin/marketplace/filter')}}">Add Filter</a>
 					</li>
 					<li class="inner-dropdown-item">
-						<a href="{{url('admin/marketplace/gig-metadata')}}">Add Sub Filter</a>
+						<a href="{{url('admin/marketplace/metadata')}}">Add Sub Filter</a>
 					</li>
 					<li class="inner-dropdown-item">
-						<a href="{{url('admin/marketplace/gig-pricescope')}}">Add gig price scope</a>
+						<a href="{{url('admin/marketplace/pricescope')}}">Add gig price scope</a>
 					</li>
 
 				</ul>
 				<!-- INNER DROPDOWN -->
 			</li>
-
 
 			<p class="side-menu-title">Workplace Section</p>
 
@@ -278,7 +277,7 @@
 
 
 			<li class="dropdown-item">
-				<a href="dashboard-notifications.html">
+				<a href="{{route('notifications')}}">
                     <span class="sl-icon icon-star"></span>
                     Notifications
                 </a>
@@ -287,7 +286,7 @@
                 <!-- /PIN -->
 			</li>
 			<li class="dropdown-item">
-				<a href="{{url('dashboard/inbox/ ')}}">
+				<a href="{{route('inbox')}}">
                     <span class="sl-icon icon-envelope"></span>
                     Messages
                 </a>
@@ -317,24 +316,7 @@
                     Buyer Orders
                 </a>
 			</li>
-			<li class="dropdown-item">
-				<a href="dashboard-affiliate-program.html">
-                    <span class="sl-icon icon-diamond"></span>
-                    Affiliate Program
-                </a>
-			</li>
-			<li class="dropdown-item">
-				<a href="dashboard-statement.html">
-                    <span class="sl-icon icon-energy"></span>
-                    Earning Statement
-                </a>
-			</li>
-			<li class="dropdown-item">
-				<a href="dashboard-statistics.html">
-                    <span class="sl-icon icon-chart"></span>
-                    Statistics
-                </a>
-			</li>
+			
 		</ul>
 		<!-- /DROPDOWN -->
 

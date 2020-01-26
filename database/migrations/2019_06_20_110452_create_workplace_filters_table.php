@@ -16,7 +16,7 @@ class CreateWorkplaceFiltersTable extends Migration
         Schema::create('workplace_filters', function (Blueprint $table) {
             $table->increments('filter_id');
             $table->string('filter_name');
-            $table->string('subcategory_id');
+            $table->integer('subcategory_id');
             $table->string('type');
             $table->string('filter_msg')->nullable();
            

@@ -5,6 +5,8 @@
 @section('css')
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/login.css">
+	<link rel="stylesheet" type="text/css" href="{{asset('/allscript')}}/datatables/css/dataTables.bootstrap4.css">
+
 @endsection
 
 @section('content')
@@ -16,7 +18,7 @@
 				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Category</button>
             </div>
             <!-- /HEADLINE -->
-            <table class="table table-bordered">
+            <table id="myTable" class="table table-bordered table-striped" >
 			    <thead>
 			      <tr>
 			        <th>Serial</th>
@@ -33,7 +35,7 @@
 				        <td>{{$show_category->category_name}}</td>
 				        <td>@if($show_category->status == 1) Active @else Deactive @endif</td>
 				        <td>
-				        	<button type="button" onclick="edit('{{$show_category->id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"><i class="fa fa-trash" aria-hidden="true"></i> Edit</button> |
+				        	<button type="button" onclick="edit('{{$show_category->id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"><i class="fa fa-trash" aria-hidden="true"></i> Edit</button> 
 							<button type="button" onclick="deleteItem('{{ $show_category->id }}' )" class="btn btn-danger btn-sm"> <i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
 						</td>
 				      </tr>
@@ -46,7 +48,7 @@
 <!-- update Modal -->
   <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
-	    <form action="{{url('admin/marketplace/create-gig-category')}}" data-parsley-validate method="post" id="profile_info">
+	    <form action="{{url('admin/marketplace/category')}}" data-parsley-validate method="post" id="profile_info">
 	      <!-- Modal content-->
 	      <div class="modal-content">
 	        <div class="modal-header">
@@ -79,7 +81,7 @@
 
 			
 	        	<div class="modal-body form-box-item">
-	        		<form action="{{url('admin/marketplace/create-gig-category')}}" data-parsley-validate method="post" id="profile_info">
+	        		<form action="{{url('admin/marketplace/category')}}" data-parsley-validate method="post" id="profile_info">
 				 	{{ csrf_field() }}
 						<div class="input-container">
 							<div class="input-container">
@@ -119,11 +121,12 @@
 
 @section('js')
 
-<script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
 
-<script type="text/javascript">
+	<script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
+
+	<script type="text/javascript">
 	
-	  function edit(id){
+	  	function edit(id){
             var  link = '<?php echo URL::to("/admin/marketplace/category/edit/");?>/'+id;
             $.ajax({
             url:link,
@@ -138,8 +141,8 @@
         });
         
     }
-function deleteItem(id) {
-    if (confirm("Are you sure delete it.?")) {
+	function deleteItem(id) {
+    	if (confirm("Are you sure delete it.?")) {
        
             var  link = '<?php echo URL::to("admin/marketplace/category/delete");?>/'+id;
             $.ajax({
@@ -151,13 +154,22 @@ function deleteItem(id) {
                     
                      $("#item"+id).hide();
                     toastr.info(data);
-                }
-            }
-        
+	                }
+	            }
+	        
+	        });
+	    }
+	    return false;        
+  	} 
+	</script>
+
+	<!-- This is data table -->
+    <script src="{{asset('/allscript')}}/datatables/js/jquery.dataTables.min.js"></script>
+    
+   
+    <script>
+        $(function () {
+            $('#myTable').DataTable();
         });
-    }
-    return false;
-        
-  } 
-</script>
+    </script>
 @endsection

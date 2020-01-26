@@ -16,9 +16,9 @@ class CreateFiltersTable extends Migration
         Schema::create('filters', function (Blueprint $table) {
             $table->increments('filter_id');
             $table->string('filter_name');
-            $table->string('sub_category_id');
+            $table->integer('sub_category_id');
             $table->string('mete_tag');
-            $table->string('filter_msg');
+            $table->string('filter_msg')->nullable();
             $table->timestamps();
         });
     }

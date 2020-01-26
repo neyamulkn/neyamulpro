@@ -3,7 +3,7 @@
 @section('title', 'Manage gigs')
 @section('css')
 
-    <link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/font-awesome.min.css">
+  
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/tooltipster.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/c.css">
 @endsection
@@ -142,21 +142,18 @@
 <script src="{{asset('/allscript')}}/js/vendor/imgLiquid-min.js"></script>
 <!-- XM Tab -->
 <script src="{{asset('/allscript')}}/js/vendor/jquery.xmtab.min.js"></script>
-<!-- Side Menu -->
-<script src="{{asset('/allscript')}}/js/side-menu.js"></script>
+
 <!-- Liquid -->
 <script src="{{asset('/allscript')}}/js/liquid.js"></script>
 <!-- Checkbox Link -->
 <script src="{{asset('/allscript')}}/js/checkbox-link.js"></script>
 <!-- Image Slides -->
 <script src="{{asset('/allscript')}}/js/image-slides.js"></script>
-
+ 
 <!-- Tooltip -->
 <script src="{{asset('/allscript')}}/js/tooltip.js"></script>
 <!-- User Quickview Dropdown -->
 <script src="{{asset('/allscript')}}/js/user-board.js"></script>
-<!-- Footer -->
-<script src="{{asset('/allscript')}}/js/footer.js"></script>
 
 <!-- Dashboard Header -->
 <script src="{{asset('/allscript')}}/js/dashboard-header.js"></script>

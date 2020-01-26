@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\filter;
 use App\filter_subcategory;
 use App\gig_subcategory;
+use App\Workplace_filter_category;
 use DB;
 use App\gig_metadata;
+use App\Theme_filter_category;
 use Toastr;
 class filterController extends Controller
 {
@@ -55,8 +57,7 @@ class filterController extends Controller
               }
             }
 
-
-	           if($success){
+	         if($success){
 	              Toastr::success('Filter update successfully');
 	           }else{
 	              Toastr::error('Sorry filter not updated.'); 
@@ -80,7 +81,7 @@ class filterController extends Controller
 	              Toastr::error('Sorry filter not insert.'); 
 	           }
 	        } 
-	      return redirect('admin/marketplace/filter');
+	      return back();
 	  	
     }
 
@@ -132,13 +133,13 @@ class filterController extends Controller
 					<div class="input-container">
 						<label for="Category" class="rl-label required">Meta tag </label>
 						<div class="col-md-4">
-		                   <input type="checkbox" '.($get_filters->mete_tag == "Yes" ? "checked" : " ").' id="price" name="mete_tag" value="'.$get_filters->mete_tag.'">
-	                      <label for="price">
-	                          <span class="checkbox primary primary"></span>
-	                          Yes/No
-	                      </label>
+                 <input type="checkbox" '.($get_filters->mete_tag == "Yes" ? "checked" : " ").' id="price" name="mete_tag" value="'.$get_filters->mete_tag.'">
+                  <label for="price">
+                      <span class="checkbox primary primary"></span>
+                      Yes/No
+                  </label>
 
-		                </div>
+              </div>
 					</div>
 					<div class="input-container">
 						<div class="input-container">
@@ -197,7 +198,7 @@ class filterController extends Controller
               Toastr::error('Sorry sub filter not insert.'); 
            }
         } 
-      return redirect('admin/marketplace/gig-metadata');
+      return back();
   }
 
   // edit gig sub filter data
@@ -262,35 +263,48 @@ class filterController extends Controller
         }
   }
 
-
-
     //theme filter
 
     public function theme_filter(){
-    	return view('admin.themeplace.filter');
+      $get_filter_data =DB::table('theme_filters')->get();
+      //dd($get_filter_data);
+      return view('admin.themeplace.filter')->with(compact('get_filter_data'));
+    
     }
 
 
     public function insert_theme_filter(Request $request){
-		if($request->category_id){
-			$category_id = implode(',',  $request->category_id);
-		}else{
-			$category_id = $request->category_id;
-		}
 
-		$data = [
-			'filter_name' => $request->filter_name,
-			'category_id' => $category_id,
-			'type' =>  $request->type,
-			'filter_msg' => $request->filter_msg
-			];
+  		if($request->category_id){
+  			$category_id = implode(',',  $request->category_id);
+  		}else{
+  			$category_id = $request->category_id;
+  		}
 
-		$insert = DB::table('theme_filters')->insert($data);
-         if($insert){
-             return back()->with('msg', 'Filter inserted successfully');
-         }else{
-             return back()->with('msg', 'Sorry Filter not inserted.');
+  		$data = [
+  			'filter_name' => $request->filter_name,
+  			'category_id' => $category_id,
+  			'type' =>  $request->type,
+  			'filter_msg' => $request->filter_msg
+  			];
+
+  		$insertId = DB::table('theme_filters')->insertGetId($data);
+           
+      if($insertId){
+          foreach ($request->category_id as $category_id) {
+            $filter_data = [
+              'filter_id' => $insertId,
+              'category_id' => $category_id
+            ];
+            Theme_filter_category::create($filter_data);
          }
+         Toastr::success('Filter inserted successfully');
+         
+      }else{
+         Toastr::error('Sorry filter not inserted.');
+      }
+
+       return back();
 
     }
 
@@ -309,45 +323,100 @@ class filterController extends Controller
 			];
 
 		$insert = DB::table('theme_subfilters')->insert($data);
-         if($insert){
-             return back()->with('msg', 'Filter inserted successfully');
-         }else{
-             return back()->with('msg', 'Sorry Filter not inserted.');
-         }
-
+      if($insert){
+        return back()->with('msg', 'Filter inserted successfully');
+      }else{
+        return back()->with('msg', 'Sorry Filter not inserted.');
+      }
     }
 
 
     // workplace filter
 
-     public function workplace_filter(){
-    	return view('admin.workplace.filter');
+    public function workplace_filter(){
+      $get_filter_data =DB::table('workplace_filters')->get();
+
+      return view('admin.workplace.filter')->with(compact('get_filter_data'));
+    	
     }
 
 
-    public function insert_workplace_filter(Request $request){
-		if($request->category_id){
-			$category_id = implode(',',  $request->category_id);
-		}else{
-			$category_id = $request->category_id;
-		}
+  public function workplace_filter_store(Request $request){
+  	
+    // dd($request->all());
 
-		$data = [
-			'filter_name' => $request->filter_name,
-			'subcategory_id' => $category_id,
-			'type' =>  $request->type,
-			'filter_msg' => $request->filter_msg,
-			];
+  		$data = [
+  			'filter_name' => $request->filter_name,
+  			'subcategory_id' => implode(',',  $request->subcategory_id),
+  			'type' =>  $request->type, 
+  			'filter_msg' => $request->filter_msg,
+  		];
 
-		$insert = DB::table('workplace_filters')->insert($data);
-         if($insert){
-             return back()->with('msg', 'Filter inserted successfully');
-         }else{
-             return back()->with('msg', 'Sorry Filter not inserted.');
-         }
+     
+      $insertOrupdate = DB::table('workplace_filters')->where('filter_id', $request->id)->first();
 
+      if($insertOrupdate){
+          $success = DB::table('workplace_filters')->where('filter_id', $request->id)->update($data);
+
+            Workplace_filter_category::where('filter_id', $request->id)->delete(); 
+            // at first delete this all filter data then insert bcz update problem
+
+            if($success){
+                foreach($request->subcategory_id as $sub_category) {
+                $filter_data = [
+                  'filter_id' => $request->id,
+                  'category_id' => $sub_category
+                ];
+
+                Workplace_filter_category::create($filter_data);
+              }
+            }
+
+            if($success){
+              Toastr::success('Filter update successfully');
+            }else{
+              Toastr::error('Sorry filter not updated.'); 
+            }
+
+          }else{
+              $insertId = DB::table('workplace_filters')->insertGetId($data);
+              if($insertId){
+                foreach ($request->subcategory_id as $sub_category) {
+                $filter_data = [
+                  'filter_id' => $insertId,
+                  'category_id' => $sub_category
+                ];
+
+                Workplace_filter_category::create($filter_data);
+               }
+             }
+              if($insertId){
+                Toastr::success('Filter inserted successfully');
+             }else{
+                Toastr::error('Sorry filter not insert.'); 
+             }
+          } 
+        return back();
     }
 
+    public function workplace_filter_edit($id){
+      $data = [];
+      $data['get_data'] = DB::table('workplace_filters')->where('filter_id', $id)->first();
+      $data['get_category'] = DB::table('workplace_subcategory')->get(); 
+      echo view('admin.editpages.workplace-filter')->with($data);  
+    }
+
+
+  public function workplace_filter_delete($id) {
+         $delete = DB::table('workplace_filters')->where('filter_id', $id)->delete();
+
+        if($delete){
+           Workplace_filter_category::where('filter_id', $id)->delete(); 
+            echo "Data successfully deleted.";
+        }else{
+            echo "Sorry Data not deleted.";
+        }
+    }
     //workplace sub filter
 
     public function workplace_subfilter(){

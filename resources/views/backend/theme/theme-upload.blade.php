@@ -279,11 +279,18 @@ code {
 						<div class="upload-file-actions">
 							<form id="fileUploadForm" method="post" action="{{ route('file_upload') }}" enctype="multipart/form-data">
 	                      		@csrf
-								<input type="file" onchange="uploadselectFile()" required="required" style="display: none;" name="uploadFile" id="uploadFile">
-								<label for="uploadFile" class="button dark-light">Upload File...</label>
-								<p><span id="success">Max file size 2gb</span>  <span class="loader" style="display: none;">
-									<img src="{{asset('image/loading.gif')}}" width="20" /></span></p>
-								<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
+								<input type="file" accept=".zip,.rar,.7zip" onchange="uploadselectFile()" required="required" style="display: none;" name="uploadFile" id="uploadFile">
+								<label for="uploadFile" class="button dark-light">Choose File...</label>
+								<p><span id="success">
+									@if($get_theme->main_file != null)
+									<input type="hidden" form="main_form" name="main_file" value="{{$get_theme->main_file}}"><a  title="Download file" href="{{$get_theme->main_file}}" download=""><i class="fa fa-paperclip" aria-hidden="true"></i> {{$get_theme->main_file}}</a>@else
+	             					Max file size 2gb 
+	             					@endif
+	             				</span> 
+									
+								<span class="loader" style="display: none;">
+								<img src="{{asset('image/loading.gif')}}" width="20" /></span></p>
+								<input type="hidden" name="theme_id" value="{{$get_theme->theme_id}}">
 								<input type="submit" style="display: none;" id="main_fileSubmit" />
 							</form>
 						</div>
@@ -299,7 +306,12 @@ code {
 							</div>
 							<!-- /BADGE PROGRESS -->
 							<p class="text-header progress-percent">0%</p>
-							<span id="closeBtn"></span>
+							<span id="closeBtn">
+								@if($get_theme->main_file)
+								<span title="Delele file" onclick="remove_item('{{$get_theme->theme_id}}', 'file')" class="button dark-light square">
+		                    	<img src="http://localhost:8000/allscript/images/dashboard/close-icon-small.png" alt="close-icon"></span>
+		                    	@endif
+			              </span>
 						</div>
 					</div>
 					<!-- UPLOAD FILE -->
@@ -312,12 +324,19 @@ code {
 						<div class="upload-file-actions">
 						<form id="imageUploadForm" method="post" action="{{ route('image_upload') }}" enctype="multipart/form-data">
                       		@csrf
-							<input type="file" onchange="uploadselectImage()" required="required" style="display: none;" name="uploadImage" id="uploadImage">
-							<label for="uploadImage" class="button dark-light">Upload File...</label>
-							<p ><span id="success-image">Max file size 2gb </span>
+							<input type="file" accept="image/*" onchange="uploadselectImage()" required="required" style="display: none;" name="uploadImage" id="uploadImage">
+							<label for="uploadImage" class="button dark-light">Choose File...</label>
+							<p ><span id="success-image">
+								@if($get_theme->main_image != null)
+									<input type="hidden" form="main_form" name="main_image" value="{{$get_theme->main_image}}"> 
+	             					<a title="view image" href="{{ asset('theme/images/'.$get_theme->main_image)}}" target="_blank"> <img src="{{ asset('theme/images/'.$get_theme->main_image)}}" width="90" height="50"> </a>
+	             				@else
+	             					Max file size 2mb
+	             				@endif
+             					</span>
 								<span style="display: none;" class="loader-image" ><img src="{{asset('image/loading.gif')}}" width="20" /></span></p>
 
-							<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
+							<input type="hidden" name="theme_id" value="{{$get_theme->theme_id}}">
 							<input type="submit" style="display: none;" id="main_imageSubmit" />
 						</form>
 						</div>
@@ -333,7 +352,10 @@ code {
 							</div>
 							<!-- /BADGE PROGRESS -->
 							<p class="text-header progress-percent-image">0%</p>
-							<span id="closeBtn-image"></span>
+							<span id="closeBtn-image">@if($get_theme->main_image)
+							<span title="Delele image" onclick="remove_item('{{$get_theme->theme_id}}', 'image')" class="button dark-light square">
+	                    	<img src="http://localhost:8000/allscript/images/dashboard/close-icon-small.png" alt="close-icon"></span>
+	                    	@endif</span>
 						</div>
 					</div>
 					<!-- UPLOAD FILE -->
@@ -343,7 +365,7 @@ code {
 				 
 			<form action="{{ route('insert_theme') }}" id="main_form" method="post" data-parsley-validate  enctype="multipart/form-data">
 				{{csrf_field()}}
-				<input type="hidden" name="theme_url" value="{{Request::segment(4)}}">
+				<input type="hidden" name="theme_id" value="{{$get_theme->theme_id}}">
 				<!-- INPUT CONTAINER -->
 				<div class="ttinput-group">
 				  <label class="ttinput-groupt" for="summary">Summary</label>
@@ -414,57 +436,77 @@ code {
 				<br/>
 
 				<div class="clearfix"></div>
-						<div class="ttinput-group">
-						  <label class="ttinput-groupt" for="name">Sub category </label>
-							<div class="inputs">
-								<label for="sv" class="select-block va">
-									<select required="required" name="sub_category" id="vr">
-										@foreach($get_subcategory as $show_subcategory)
-											<option {{( $show_subcategory->id == $get_theme->sub_category)? 'selected' : '' }} value="{{$show_subcategory->id}}" >{{$show_subcategory->subcategory_name}}</option>
-										@endforeach
-									</select>
-									<!-- SVG ARROW -->
-									<svg class="svg-arrow">
-										<use xlink:href="#svg-arrow"></use>
-									</svg>
-									<!-- /SVG ARROW -->
-								</label>
-								<small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</small>
-							</div>
+					<div class="ttinput-group">
+					  <label class="ttinput-groupt" for="name">Sub category </label>
+						<div class="inputs">
+							<label for="sv" class="select-block va">
+								<select onchange="getChild(this.value, {{$get_theme->theme_id}})" required="required" name="sub_category" id="vr">
+									@foreach($get_subcategory as $show_subcategory)
+										<option {{( $show_subcategory->id == $get_theme->sub_category)? 'selected' : '' }} value="{{$show_subcategory->id}}" >{{$show_subcategory->subcategory_name}}</option>
+									@endforeach
+								</select>
+								<!-- SVG ARROW -->
+								<svg class="svg-arrow">
+									<use xlink:href="#svg-arrow"></use>
+								</svg>
+								<!-- /SVG ARROW -->
+							</label>
+							<small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</small>
 						</div>
-						<div class="clearfix"></div>
-						
+					</div>
+					<div class="clearfix"></div>
+					<div class="ttinput-group" id="child_category">
+
+					@if(count($get_childcategory)> 0)
+					
+		              	<label class="ttinput-groupt" for="name">Subchild category </label>
+			            <div class="inputs">
+			                <label for="sv" class="select-block va">
+			                  	<select required="required" name="child_category">
+			                  		<option value="">Select child category</option>
+			                  		@foreach($get_childcategory as $childcategory)
+			                    	<option  value="{{$childcategory->id}}" {{( $childcategory->id == $get_theme->child_category)? 'selected' : '' }} >{{$childcategory->subchild_category_name}}</option>
+			                    	@endforeach
+			                	</select>
+			                  <svg class="svg-arrow"><use xlink:href="#svg-arrow"></use> </svg>
+			              </label>
+			              <small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</small>
+			            </div>
+					@endif
+					</div>
 				<!-- /INPUT CONTAINER -->
 				
 				@foreach($get_filters as $show_filter)
+					<?php $theme_features = DB::table('theme_features')->where('theme_id', $get_theme->theme_id)->where('feature_id', $show_filter->filter_id)->pluck('feature_name')->toArray();
+						
+					?>
 
-				@if($show_filter->type == 'radio' )
+					@if($show_filter->type == 'radio' )
 					
 						<div class="clearfix"></div>
 						<div class="ttinput-group">
 						  <label class="ttinput-groupt" >{{ $show_filter->filter_name}}</label>
-							 <div class="inputs">
-							 	
-								<label class="themeswwqq"><input class="themeswwqqrd" type="radio" value="Yes" name="radio[{{ $show_filter->filter_id}}]"> Yes</label>
-								<label class="themeswwqq"><input class="themeswwqqrd" type="radio" value="No"  name="radio[{{ $show_filter->filter_id}}]"> No</label>
-								<label class="themeswwqq"><input class="themeswwqqrd" type="radio" value="N/A" name="radio[{{ $show_filter->filter_id}}]" > N/A</label>
+
+						  	<div class="inputs">
+								<label class="themeswwqq"><input {{( in_array('Yes', $theme_features)) ? 'checked' : ''}} class="themeswwqqrd" type="radio" value="Yes" name="radio[{{ $show_filter->filter_id}}]"> Yes</label>
+								<label class="themeswwqq"><input {{( in_array('No', $theme_features)) ? 'checked' : ''}} class="themeswwqqrd" type="radio" value="No"  name="radio[{{ $show_filter->filter_id}}]"> No</label>
+								<label class="themeswwqq"><input {{(  in_array('N/A', $theme_features) ) ? 'checked' : ''}} class="themeswwqqrd" type="radio" value="N/A" name="radio[{{ $show_filter->filter_id}}]" > N/A</label>
 							</div>
 						</div>
 						<div class="clearfix"></div>
+					@endif
 
-				@endif
-
-				@if($show_filter->type == 'select' )
+					@if($show_filter->type == 'select' )
 						<div class="clearfix"></div>
 						<div class="ttinput-group">
 						  <label class="ttinput-groupt">{{ $show_filter->filter_name}}</label>
 						  <div class="inputs">
+						  	<?php $get_subfilters = DB::table('theme_subfilters')->where('filter_id', $show_filter->filter_id)->orderBy('theme_subfilters.id')->get();
+							?>
 
-							<?php $get_subfilters = DB::table('theme_subfilters')->where('filter_id', $show_filter->filter_id)->get(); ?>
-							
 							<select multiple="multiple" name="select[{{$show_filter->filter_id}}]" id="hhhfgfd">
 								@foreach($get_subfilters as $show_subfilter)
-									<option value="{{$show_subfilter->sub_filtername}}">{{$show_subfilter->sub_filtername}}</option>
+									<option {{(in_array($show_subfilter->id, $theme_features)) ? 'selected' : ''}} value="{{$show_subfilter->id}}">{{$show_subfilter->sub_filtername}}</option>
 								@endforeach
 							</select>
 						  </div>
@@ -479,14 +521,15 @@ code {
 						  	<label class="ttinput-groupt" for="name">{{ $show_filter->filter_name}}</label>
 							<div class="inputs">
 								<label for="sv" class="select-block">
-									<?php $get_subfilters = DB::table('theme_subfilters')->where('filter_id', $show_filter->filter_id)->get(); ?>
-									
+									<?php $get_subfilters = DB::table('theme_subfilters')->leftJoin('theme_features', 'theme_subfilters.id', 'theme_features.feature_name')->where('filter_id', $show_filter->filter_id)->orderBy('theme_subfilters.id')->get();
+									?>
+
 									<select name="dropdown[{{$show_filter->filter_id}}]" id="sv">
 										
 										@foreach($get_subfilters as $show_subfilter)
-											<option value="{{$show_subfilter->sub_filtername}}">{{$show_subfilter->sub_filtername}}</option>
+											<option {{( in_array($show_subfilter->id, $theme_features)) ? 'selected' : ''}} value="{{$show_subfilter->id}}">{{$show_subfilter->sub_filtername}}</option>
 										@endforeach
-										<option value="N/A">N/A</option>
+										<option {{( in_array('N/A', $theme_features)) ? 'selected' : ''}} value="N/A">N/A</option>
 									</select>
 									<!-- SVG ARROW -->
 									<svg class="svg-arrow">
@@ -529,7 +572,7 @@ code {
 					  <label class="ttinput-groupt" for="name">Search Tags</label>
 						<div class="inputs">
 							<label class="select-block va">
-							<input type="text" value="" style="border:none !important;" name="search_tag" value="" id="tags-input" data-role="tagsinput" />
+							<input type="text" value="{{$get_theme->search_tag}}" style="border:none !important;" name="search_tag" value="" id="tags-input" data-role="tagsinput" />
 							</label>
 							<small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</a></small>
 						</div>
@@ -558,8 +601,6 @@ code {
 								  <br>
 								  <input value="{{ $get_theme->price_regular}}" class="jspricld" type="number" required="required" min="1" maxlength="7" id="price_regular"  name="price_regular" >
 								</div>
-								
-								
 							</div>
 						</div>
 						<div class="licendation">
@@ -685,208 +726,232 @@ code {
 
 @section('js')
 
-<script type="text/javascript" src="{{asset('allscript/js/jquery.form.js')}}"></script>
+	<script type="text/javascript" src="{{asset('allscript/js/jquery.form.js')}}"></script>
 
 
-<script type="text/javascript">
-	
-	function remove_item(file_item){
+	<script type="text/javascript">
+			
+		function remove_item(theme_id, type){
+			if (confirm("Are you sure delete "+type+".?")) {
+				var  link = '{{route("delete_folder_item")}}';
+				$.ajax({
+				    url:link,
+				    method:"get",
+				    data:{
+				        theme_id:theme_id,
+				        type:type,
+				    },
+				    success:function(data){
+				        if(data){
+				           	toastr.success(data);
+				          	$('.progress-bar-'+type).text('100%');
+				          	$('.progress-percent-'+type).text('100%');
+				          	$('.progress-bar-'+type).css('width', '100%');
+				          	if(type == 'image'){
+				          		$('#success-image').html('Max file size 2gb');
+				          		$('#closeBtn-image').html('');
+				      		}else{
+				      			$('#success').html('Max file size 2gb');
+				      			$('#closeBtn').html('');
+				      		}
+				           
+				      	}
+				   	}
+				});
+			}
+		}
 
-	//var  link = '{{route("delete_folder_item")}}/'+file_item;
-alert(file_item);
-	// $.ajax({
-	//     url:link,
-	//     method:"get",
-	//     data:{
-	//         file_item:file_item
-	//     },
-	//     success:function(data){
-	//         if(data){
-	           
-	//           $('.progress-bar-'+type).text('0%');
-	//           $('.progress-percent-'+type).text('0%');
-	//           $('.progress-bar-'+type).css('width', '0%');
-	           
-	//       	}
-	//    	}
-	// });
-}
-</script>
-<script>
+		function getChild(subcategory_id, theme_id){
+            var  link = '{{route("getChild")}}';
+            $.ajax({
+            url:link,
+            method:"get",
+            data:{
+            	subcategory_id: subcategory_id,
+            	theme_id: theme_id,
+            },
+            success:function(data){
+	                
+	                   $('#child_category').html(data);
+	                
+	           	}
+	        });
+	    }
+	    
+	</script>
 
-function uploadselectFile(){
-   $("#main_fileSubmit").click();
-}
+	<script>
+		function uploadselectFile(){
+		   $("#main_fileSubmit").click();
+		}
 
-$(document).ready(function(){
+		$(document).ready(function(){
 
-    $('#fileUploadForm').ajaxForm({
-      beforeSend:function(){
-        $('.loader').css('display', 'block');
-      },
-      uploadProgress:function(event, position, total, percentComplete)
-      {
-        $('.progress-bar-file').text(percentComplete + '%');
-        $('.progress-percent').text(percentComplete + '%');
-        $('.progress-bar-file').css('width', percentComplete + '%');
-      },
-      success:function(data)
-      {
-        if(data.errors)
-        {
-          $('.progress-bar-file').text('0%');
-          $('.progress-percent').text('0%');
-          $('.progress-bar-file').css('width', '0%');
-          $('#success').html('<span class="text-danger"><b>'+data.errors+'</b></span>');
-        }
-        if(data.success)
-        {
-          $('.progress-bar-file').text('Upload completed');
-          $('.progress-bar-file').css('width', '100%');
-          $('#closeBtn').html('<span class="text-success"><b>'+data.success+'</b></span><br /><br />');
-          $('.loader').css('display', 'none');
-          $('#success').html(data.image);
-        }
-      }
-    });
- });
+	    $('#fileUploadForm').ajaxForm({
+	      beforeSend:function(){
+	        $('.loader').css('display', 'inline-block');
+	      },
+	      uploadProgress:function(event, position, total, percentComplete)
+	      {
+	        $('.progress-bar-file').text(percentComplete + '%');
+	        $('.progress-percent').text(percentComplete + '%');
+	        $('.progress-bar-file').css('width', percentComplete + '%');
+	      },
+	      success:function(data)
+	      {
+	        if(data.errors)
+	        {
+	          $('.progress-bar-file').text('0%');
+	          $('.progress-percent').text('0%');
+	          $('.progress-bar-file').css('width', '0%');
+	          $('#success').html('<span class="text-danger"><b>'+data.errors+'</b></span>');
+	        }
+	        if(data.success)
+	        {
+	          $('.progress-bar-file').text('Upload completed');
+	          $('.progress-bar-file').css('width', '100%');
+	          $('#closeBtn').html('<span class="text-success"><b>'+data.success+'</b></span><br /><br />');
+	          $('.loader').css('display', 'none');
+	          $('#success').html(data.image);
+	        }
+	      }
+	    });
+	 });
 
-function uploadselectImage(){
-   $("#main_imageSubmit").click();
-}
+		function uploadselectImage(){
+		   $("#main_imageSubmit").click();
+		}
 
-$(document).ready(function(){
-    $('#imageUploadForm').ajaxForm({
-      beforeSend:function(){
-         $('.loader-image').css('display', 'block');
-      },
-      uploadProgress:function(event, position, total, percentComplete)
-      {
-        $('.progress-bar-image').text(percentComplete + '%');
-        $('.progress-percent-image').text(percentComplete + '%');
-        $('.progress-bar-image').css('width', percentComplete + '%');
-      },
-      success:function(data)
-      {
-        if(data.errors)
-        {
-          $('.progress-bar-image').text('0%');
-          $('.progress-percent-image').text('0%');
-          $('.progress-bar-image').css('width', '0%');
-          $('#success-image').html('<span class="text-danger"><b>'+data.errors+'</b></span>');
-        }
-        if(data.success)
-        {
-          $('.progress-bar-image').text('Upload completed');
-          $('.progress-bar-image').css('width', '100%');
-          $('#closeBtn-image').html('<span class="text-success"><b>'+data.success+'</b></span><br /><br />');
-          $('.loader-image').css('display', 'none');
-          $('#success-image').html(data.image);
-        }
-      }
-    });
+		$(document).ready(function(){
+		    $('#imageUploadForm').ajaxForm({
+		      beforeSend:function(){
+		         $('.loader-image').css('display', 'inline-block');
+		      },
+		      uploadProgress:function(event, position, total, percentComplete)
+		      {
+		        $('.progress-bar-image').text(percentComplete + '%');
+		        $('.progress-percent-image').text(percentComplete + '%');
+		        $('.progress-bar-image').css('width', percentComplete + '%');
+		      },
+		      success:function(data)
+		      {
+		        if(data.errors)
+		        {
+		          $('.progress-bar-image').text('0%');
+		          $('.progress-percent-image').text('0%');
+		          $('.progress-bar-image').css('width', '0%');
+		          $('#success-image').html('<span class="text-danger"><b>'+data.errors+'</b></span>');
+		        }
+		        if(data.success)
+		        {
+		          $('.progress-bar-image').text('Upload completed');
+		          $('.progress-bar-image').css('width', '100%');
+		          $('#closeBtn-image').html('<span class="text-success"><b>'+data.success+'</b></span><br /><br />');
+		          $('.loader-image').css('display', 'none');
+		          $('#success-image').html(data.image);
+		        }
+		      }
+		    });
 
-});
+		});
 
-</script>
+	</script>
 
-<!-- tags  -->
-<script src="{{asset('tags')}}/typeahead.js"></script>
-<script src="{{asset('tags')}}/bootstrap-tagsinput.js"></script>
-<script>
+	<!-- tags  -->
+	<script src="{{asset('tags')}}/typeahead.js"></script>
+	<script src="{{asset('tags')}}/bootstrap-tagsinput.js"></script>
+	<script>
 
-    var countries = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      prefetch: {
-        url: '{{ url("/tags/input/") }}',
-        filter: function(list) {
-          return $.map(list, function(name) {
-            return { name: name }; });
-        }
-      }
-    });
-    countries.initialize();
+	    var countries = new Bloodhound({
+	      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+	      queryTokenizer: Bloodhound.tokenizers.whitespace,
+	      prefetch: {
+	        url: '{{ url("/tags/input/") }}',
+	        filter: function(list) {
+	          return $.map(list, function(name) {
+	            return { name: name }; });
+	        }
+	      }
+	    });
+	    countries.initialize();
 
-    $('#tags-input').tagsinput({
+	    $('#tags-input').tagsinput({
 
-      typeaheadjs: {
-        name: 'countries',
-        displayKey: 'name',
-        valueKey: 'name',
-        source: countries.ttAdapter()
-      }
-    });
-</script>
+	      typeaheadjs: {
+	        name: 'countries',
+	        displayKey: 'name',
+	        valueKey: 'name',
+	        source: countries.ttAdapter()
+	      }
+	    });
+	</script>
 
-<!-- end tags
- -->
+	<!-- end tags
+	 -->
 
-<script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
-<script src="{{asset('/allscript')}}/js/advanced.js"></script>
-<script src="{{asset('/allscript')}}/js/wysihtml.js"></script>
+	<script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
+	<script src="{{asset('/allscript')}}/js/advanced.js"></script>
+	<script src="{{asset('/allscript')}}/js/wysihtml.js"></script>
 
-<script>
-  var editor = new wysihtml5.Editor("textarea", {
-    toolbar:        "toolbar",
-    stylesheets:    "{{asset('/allscript')}}/e/1.css",
-    parserRules:    wysihtml5ParserRules
-  });
-  
-  var log = document.getElementById("log");
-  
-  editor
-    .on("load", function() {
-      log.innerHTML += "<div>load</div>";
-    })
-    .on("focus", function() {
-      log.innerHTML += "<div>focus</div>";
-    })
-    .on("red", function() {
-      log.innerHTML += "<div>blur</div>";
-    })
-    .on("change", function() {
-      log.innerHTML += "<div>change</div>";
-    })
-    .on("paste", function() {
-      log.innerHTML += "<div>paste</div>";
-    })
-    .on("newword:composer", function() {
-      log.innerHTML += "<div>newword:composer</div>";
-    })
-    .on("undo:composer", function() {
-      log.innerHTML += "<div>undo:composer</div>";
-    })
-    .on("redo:composer", function() {
-      log.innerHTML += "<div>redo:composer</div>";
-    });
-</script>
+	<script>
+	  var editor = new wysihtml5.Editor("textarea", {
+	    toolbar:        "toolbar",
+	    stylesheets:    "{{asset('/allscript')}}/e/1.css",
+	    parserRules:    wysihtml5ParserRules
+	  });
+	  
+	  var log = document.getElementById("log");
+	  
+	  editor
+	    .on("load", function() {
+	      log.innerHTML += "<div>load</div>";
+	    })
+	    .on("focus", function() {
+	      log.innerHTML += "<div>focus</div>";
+	    })
+	    .on("red", function() {
+	      log.innerHTML += "<div>blur</div>";
+	    })
+	    .on("change", function() {
+	      log.innerHTML += "<div>change</div>";
+	    })
+	    .on("paste", function() {
+	      log.innerHTML += "<div>paste</div>";
+	    })
+	    .on("newword:composer", function() {
+	      log.innerHTML += "<div>newword:composer</div>";
+	    })
+	    .on("undo:composer", function() {
+	      log.innerHTML += "<div>undo:composer</div>";
+	    })
+	    .on("redo:composer", function() {
+	      log.innerHTML += "<div>redo:composer</div>";
+	    });
+	</script>
 
 
-<script type="text/javascript">
-	function form_sumbit(){
+	<script type="text/javascript">
+		function form_sumbit(){
 
-	var theme_name = document.getElementById('name').value;
-	var summary = document.getElementById('summary').value;
-	var textarea = document.getElementById('textarea').value;
-	var price_regular = document.getElementById('price_regular').value;
-	var main_image = document.getElementById('main_image').value;
-	var main_file = document.getElementById('main_file').value;
+		var theme_name = document.getElementById('name').value;
+		var summary = document.getElementById('summary').value;
+		var textarea = document.getElementById('textarea').value;
+		var price_regular = document.getElementById('price_regular').value;
+		var main_image = document.getElementById('main_image').value;
+		var main_file = document.getElementById('main_file').value;
 
-	if( theme_name != '' && textarea != '' && price_regular != '' && summary != '' && main_image != '' && main_file != '' ){
-		document.getElementById('form_sumbit_btn').innerHTML = 'Uploading please wait...';
+		if( theme_name != '' && textarea != '' && price_regular != '' && summary != '' && main_image != '' && main_file != '' ){
+			document.getElementById('form_sumbit_btn').innerHTML = 'Uploading please wait...';
 
+		}
 	}
+	</script>
 
-	
-}
-</script>
+	<!-- XM Pie Chart -->
+	<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
+	<!-- XM LineFill -->
+	<script src="{{asset('/allscript')}}/js/vendor/jquery.xmlinefill.min.js"></script>
 
-<!-- XM Pie Chart -->
-<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
-<!-- XM LineFill -->
-<script src="{{asset('/allscript')}}/js/vendor/jquery.xmlinefill.min.js"></script>
-
-<!-- Dashboard UploadItem -->
-<script src="{{asset('/allscript')}}/js/dashboard-uploaditem.js"></script>
+	<!-- Dashboard UploadItem -->
+	<script src="{{asset('/allscript')}}/js/dashboard-uploaditem.js"></script>
 @endsection

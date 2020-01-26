@@ -9,10 +9,12 @@ class theme extends Model
     protected $fillable = [
     'user_id',
     'theme_name',
+    'theme_url',
     'summary',
     'description',
     'category_id',
     'sub_category',
+    'child_category',
     'demo_url',
     'screenshort_url',
     'search_tag',

@@ -10,6 +10,7 @@ use Validator;
 use App\theme;
 use Exception;
 use Toastr;
+use Redirect;
 class themeController extends Controller
 {
 	public function __construct()
@@ -29,7 +30,7 @@ class themeController extends Controller
        }
         echo json_encode($tags);
     }
-
+    // insert title theme upload first step
     public function theme_upload_title(Request $request){
     	$user_id = Auth::user()->id;
     	$url = $this->createSlug($request->theme_name);
@@ -40,17 +41,17 @@ class themeController extends Controller
 			    'category_id' => $request->category_id
 			];
 
-			$insert_id = DB::table('themes')->insert($data);
+			$insert_id = theme::create($data);
 
 			if($insert_id){
 				Toastr::success('Theme upload first step successfully completed.');
 				return redirect('dashboard/themeplace/upload/'.$url);
 			}else{
 				Toastr::error('Sorry something is wrong theme insert failed');
-				return back();
+				//return back();
 			}
 		}
-
+    // create theme unique slug 
     public function createSlug($slug)
     {
       $slug = str_slug($slug);
@@ -66,28 +67,61 @@ class themeController extends Controller
         }
       }else{ return $slug; }   
     }
-
+    // theme upload second step 
     public function theme_upload_form($url){
-        $user_id = Auth::user()->id;
-    	$get_theme = theme::where('theme_url', $url)->where('user_id', $user_id)->first();
 
-      	if($get_theme)
-      	{
-    		$get_subcategory = DB::table('theme_subcategory')->where('category_id', $get_theme->category_id)->get();
-    	
-    		$get_filters = DB::table('theme_filters')->where('category_id', $get_theme->category_id)->orderBy('type', 'ASC')->get();
-    		
-    		return view('backend.theme.theme-upload')->with(compact('get_theme','get_subcategory', 'get_filters'));
+      $data = [];
+      $user_id = Auth::user()->id;
+    	$data['get_theme'] = theme::where('theme_url', $url)->where('user_id', $user_id)->first();
+
+      if($data['get_theme'])
+      {
+    		$data['get_subcategory'] = DB::table('theme_subcategory')->where('category_id', $data['get_theme']->category_id)->get();
+
+        $data['get_childcategory'] = DB::table('theme_subchild_category')->where('subcategory_id', $data['get_theme']->sub_category)->get();
+    	//dd($data['get_childcategory']);
+    		$data['get_filters'] = DB::table('theme_filter_categories')
+        ->join('theme_filters', 'theme_filter_categories.filter_id','theme_filters.filter_id')
+        ->where('theme_filter_categories.category_id', $data['get_theme']->category_id)->orderBy('type', 'ASC')->get();
+
+    		return view('backend.theme.theme-upload')->with($data);
     	    	
     	}else{
+        Toastr::error('Sorry invalid theme url.');
     		return back();
     	}     
     }
+    // get child category by sub category
+    public function getChild(Request $request){
 
+      $get_childcategory = DB::table('theme_subchild_category')->where('subcategory_id', $request->subcategory_id)->get();
+
+      if(count($get_childcategory)>0){
+
+          $childcategory_id = theme::where('theme_id',  $request->theme_id)->first();
+
+          $output = '
+              <label class="ttinput-groupt" for="name">Subchild category </label>
+              <div class="inputs">
+                <label for="sv" class="select-block va">
+                  <select required="required" name="child_category" >
+                    <option value="">Select child category</option>';
+                    foreach($get_childcategory as $childcategory){
+                      $output .= '<option '. ( $childcategory->id == $childcategory_id->child_category ? 'selected' : '' ).' value="'.$childcategory->id.'">'. $childcategory->subchild_category_name.'</option>';
+                    }
+              $output .= '</select>
+                  <svg class="svg-arrow"><use xlink:href="#svg-arrow"></use> </svg>
+              </label>
+              <small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</small>
+            </div>';
+        echo $output;
+      }       
+    }
+    //main file upload theme by ajax
     public function file_upload(Request $request)
         {
          $rules = array(
-          'uploadFile'  => 'required|max:2048'
+          'uploadFile'  => 'required|max:307200'
          );
 
          $error = Validator::make($request->all(), $rules);
@@ -101,21 +135,21 @@ class themeController extends Controller
          $new_name = rand() . '.' . $uploadFile->getClientOriginalExtension();
          $uploadFile->move(public_path('theme/zipfile'), $new_name);
 
-        $theme_url = $request->theme_url;
-     	$data = ['main_file' => $new_name ];
-    	$insert_id = theme::where('theme_url',  $theme_url)->update($data);
-         $output = array(
-             'success' => '<span  onclick="remove_item('.$new_name.')" class="button dark-light square">
+        $theme_id = $request->theme_id;
+     	  $data = ['main_file' => $new_name ];
+        $insert_id = theme::where('theme_id',  $theme_id)->update($data);
+        $output = array(
+             'success' => '<span  onclick="remove_item('.$theme_id.', \'file\')" class="button dark-light square">
                     <img src="'.asset('/allscript/images/dashboard/close-icon-small.png').'" alt="close-icon">
                   </span>',
              'image'  => '<input type="hidden" form="main_form" name="main_file" value="'.$new_name.'"><a href="'.$new_name.'"/><i class="fa fa-paperclip" aria-hidden="true"></i> '.$new_name.' </a>'
             );
 
-          return response()->json($output);
+      return response()->json($output);
     }
-
-    function image_upload(Request $request)
-        {
+    //main image upload by ajax
+    public function image_upload(Request $request)
+    {
          $rules = array(
           'uploadImage'  => 'required|max:2048'
          );
@@ -128,37 +162,41 @@ class themeController extends Controller
          }
          $uploadImage = $request->file('uploadImage');
 
-    	$new_name = rand() . '.' . $uploadImage->getClientOriginalExtension();
-    	$uploadImage->move(public_path('theme/images'), $new_name);
-    	$theme_url = $request->theme_url;
-     	$data = ['main_image' => $new_name ];
-    	$insert_id = theme::where('theme_url',  $theme_url)->update($data);
+        $new_name = rand() . '.' . $uploadImage->getClientOriginalExtension();
+      	$uploadImage->move(public_path('theme/images'), $new_name);
+      	$theme_id = $request->theme_id;
+       	$data = ['main_image' => $new_name ];
+      	$insert_id = theme::where('theme_id',  $theme_id)->update($data);
 
          $output = array(
-             'success' => '<a href="#" onclick="remove_file('.$new_name.')" class="button dark-light square">
-                    <img src="'.asset('/allscript/images/dashboard/close-icon-small.png').'" alt="close-icon">
-                  </a>',
+             'success' => '<span onclick="remove_item('.$theme_id.', \'image\')" class="button dark-light square">
+                    <img src="'.asset('allscript/images/dashboard/close-icon-small.png').'" alt="close-icon">
+                  </span>',
              'image'  => '<input type="hidden" form="main_form" name="main_image" value="'.$new_name.'"> 
-             <img src="'.asset('/theme/images/'.$new_name).'" width="90" height="50"/>'
+             <img src="'.asset('theme/images/'.$new_name).'" width="90" height="50"/>'
             );
 
-          return response()->json($output);
+        return response()->json($output);
     }
 
-    public function insert_theme(Request $request){
-		$user_id = Auth::user()->id;
+  // insert theme 
+  public function insert_theme(Request $request){
+
+
+		  $user_id = Auth::user()->id;
     	
     	try{
 	    	// theme source file
-			$main_file = $request->file('main_file');
-			$main_image = $request->file('main_image');
-			$theme_url = $request->theme_url;
-	        $search_tag = $request->search_tag;
-			$data = [
+			 $main_file = $request->file('main_file');
+			 $main_image = $request->file('main_image');
+			 $theme_url = $request->theme_url;
+	     $search_tag = $request->search_tag;
+			 $data = [
 			    'theme_name' => $request->theme_name,
 			    'summary' => $request->summary,
 			    'description' => $request->description,
 			    'sub_category' => $request->sub_category,
+          'child_category' => $request->child_category,
 			    'demo_url' => $request->demo_url,
 			    'screenshort_url' => $request->screenshort_url,
 			    'search_tag' => strtolower($search_tag),
@@ -167,13 +205,15 @@ class themeController extends Controller
 			  	'status'  => 'pending'
 		  	];
           
-		  	$insert_id = theme::where('theme_url',  $theme_url)->update($data);
+		  	$insert_id = theme::where('theme_id',  $request->theme_id)->update($data);
+        
 		  	if($insert_id)
 		  	{
+          DB::table('theme_features')->where('theme_id', $request->theme_id)->delete();
 		  		if(isset($request->radio)){
 		      foreach($request->radio as $feature_id => $feature_name){
 	            	$data = [
-    					    'theme_id' => $insert_id,
+    					    'theme_id' => $request->theme_id,
     					    'feature_type' => 'radio',
     					    'feature_id' => $feature_id,
     					    'feature_name' => $feature_name
@@ -185,7 +225,7 @@ class themeController extends Controller
 			    if(isset($request->select)){
 		            foreach($request->select as $feature_id => $feature_name){
 		            	$data = [
-      					    'theme_id' => $insert_id,
+      					    'theme_id' => $request->theme_id,
       					    'feature_type' => 'select',
       					    'feature_id' => $feature_id,
       					    'feature_name' => $feature_name
@@ -198,7 +238,7 @@ class themeController extends Controller
 			    if(isset($request->dropdown)){
 		            foreach($request->dropdown as $feature_id => $feature_name){
 		            	$data = [
-      					    'theme_id' => $insert_id,
+      					    'theme_id' => $request->theme_id,
       					    'feature_type' => 'dropdown',
       					    'feature_id' => $feature_id,
       					    'feature_name' => $feature_name
@@ -214,70 +254,77 @@ class themeController extends Controller
       	   				$additional_image_newname = 'theme-image-'.rand('123456', '999999').'.'. $additonal_image->getClientOriginalExtension();
       	  				$additonal_image->move(public_path('theme/images/'), $additional_image_newname);
 
-      					 DB::table('theme_additiona_img')->insert(['theme_id' => $insert_id, 'theme_additiona_img' => $additional_image_newname]);
+      					 DB::table('theme_additiona_img')->insert(['theme_id' => $request->theme_id, 'theme_additiona_img' => $additional_image_newname]);
       			   }
 			    }
 
-            	Toastr::success('Thanks your theme insert successfully completed.');
-            	return redirect(route('manage_theme'));
+        	Toastr::success('Thanks your theme insert successfully completed.');
+        	return redirect(route('manage_theme', 'pending'));
         
 		  	}else{
-
 		  		Toastr::error('Sorry something is wrong theme insert failed');
-            	return back();
 		  	}
 		}catch(\Exception $e){
 	    	Toastr::error($e->getMessage());
-            return back();
 	    }
+    return back();
 	}
 
+  // manage theme by status
 	public function manage_theme($status='active'){
 		$user_id = Auth::user()->id;
-        // get status bar
+        //count theme status  (active, pending etc)
         $get_status = DB::table('themes');
-        if(Auth::user()->role_id != 1){
+        if(Auth::user()->role_id != env('ADMIN')){
             $get_status = $get_status->where('themes.user_id' , '=', $user_id);
         }
         $get_status = $get_status->get();
+
         // show theme by status
         $get_theme_info = DB::table('themes')
             ->leftJoin('theme_orders', 'themes.theme_id', 'theme_orders.theme_id')
             ->leftJoin('theme_category', 'themes.category_id', 'theme_category.category_url')
             ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.subcategory_url')
-            ->selectRaw('themes.*, count(theme_orders.theme_id) total_sell, sum(theme_orders.total_price) total_earn')
-            ->where('themes.user_id', $user_id);
-           
+            ->selectRaw('themes.*, count(theme_orders.theme_id) total_sell, sum(theme_orders.total_price) total_earn');
+
+            if(Auth::user()->role_id != env('ADMIN')){
+              $get_theme_info = $get_theme_info->where('themes.user_id', $user_id);
+            }
+
             if($status != 'all'){
                 $get_theme_info = $get_theme_info->where('themes.status', $status);
             }
            
-            $get_theme_info = $get_theme_info->groupBy('themes.theme_id')->paginate(2);
-        
-        // $_get for pagination
+            $get_theme_info = $get_theme_info->groupBy('themes.theme_id')->orderBy('themes.theme_id', 'DESC')->paginate(10);
+
+        //check request ajax or direact url $_get for pagination ajax call
         if(!isset($_GET['type'])){
-            if(Auth::user()->role_id == 1){
+            if(Auth::user()->role_id == env('ADMIN')){
                 return view('admin.themeplace.manage')->with(compact('get_theme_info', 'get_status')); 
             }
             return view('backend.theme.manage')->with(compact('get_theme_info', 'get_status')); 
         }else{
-            // view page data
+            // view page data by status 
             if(count($get_theme_info)>0){
               echo view('backend.theme/include/manage-themeview')->with(compact('get_theme_info'));
            
             }else{
                 echo 'No '.$status. ' theme found.';
             }
-        }
-}
+        } 
+  }
 
-
+  // delte theme 
 	public function delete_theme(Request $request)
     {
         $user_id = Auth::user()->id;
         
         try{
-            $get_path = DB::table('themes')->where('theme_id', $request->theme_id)->first(); 
+            $get_path = DB::table('themes')->where('theme_id', $request->theme_id);
+              if(Auth::user()->role_id != env('ADMIN')){
+                $get_path = $get_path->where('user_id', $user_id);
+              }
+             $get_path = $get_path->first(); 
             
             $image_path = public_path('theme/images/'.$get_path->main_image );
             if(file_exists($image_path)){
@@ -289,13 +336,39 @@ class themeController extends Controller
                 @unlink($file_path);
             }
 
-            DB::table('themes')->where('user_id', $user_id)->where('theme_id', $request->theme_id)->delete();
-            
+            $delete = DB::table('themes')->where('theme_id', $request->theme_id);
+            if(Auth::user()->role_id != env('ADMIN')){
+                $delete = $delete->where('user_id', $user_id);
+            }
+            $delete = $delete->delete();
             echo 'Theme deleted successfully.';  
         }catch(\Exception $e){
             return $e->getMessage();
         }
            
+    }
+
+
+    public function delete_folder_item(Request $request){
+      $user_id = Auth::user()->id;
+        
+      $theme = theme::where('theme_id', $request->theme_id)->where('user_id', $user_id)->first();
+
+      if($request->type == 'file'){
+        $file_path = public_path('theme/zipfile/'.$theme->main_file );
+        theme::where('theme_id', $request->theme_id)->where('user_id', $user_id)->update(['main_file' => null]);
+      }else{
+        $file_path = public_path('theme/images/'.$theme->main_image );
+        theme::where('theme_id', $request->theme_id)->where('user_id', $user_id)->update(['main_image' => null]);
+      }
+      
+      if(file_exists($file_path)){
+        @unlink($file_path);
+        echo $request->type .' successfully deleted.'; 
+      }else{
+        echo $request->type .' deleted field.'; 
+      }
+     
     }
 
 

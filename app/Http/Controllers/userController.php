@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\user;
 use Auth;
+use Toastr;
 class userController extends Controller
 {
      public function user_register(Request $data)
@@ -21,7 +22,7 @@ class userController extends Controller
             $user->account_type = $data->account_type;
             $user->country = 'Bangldesh'; //$country
             $get = $user->save();
-          
+        
     }
 
     public function validation($data)
@@ -32,5 +33,18 @@ class userController extends Controller
             'password' => ['required', 'string', 'min:6', 'confirmed'],
             'account_type' => ['required'],
         ]);
+    }
+
+    public function switchUser(){
+        $user = User::find(Auth::user()->id);
+
+        if($user->role_id == env('BUYER')){
+            $user->update(['role_id' => env('FRELANCER')]);
+            Toastr::success('Switch To Seller');
+        }else{
+            $user->update(['role_id' => env('BUYER')]);
+            Toastr::success('Switch To Buyer');
+        }
+        return back();
     }
 }

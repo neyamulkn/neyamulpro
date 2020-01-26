@@ -19,4 +19,8 @@ class job_order extends Model
         'transection_id',
         'status'
     ];
+
+    public function getJob(){
+        return $this->belongsTo(job::class, 'job_id', 'job_id');
+    }
 }

@@ -3,6 +3,9 @@
 @section('title', 'Insert maketplace subcategory')
 
 @section('css')
+<link rel="stylesheet" type="text/css"
+        href="{{asset('/allscript')}}/datatables/css/dataTables.bootstrap4.css">
+
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/login.css">
 @endsection
@@ -16,7 +19,7 @@
 				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Sub Category</button>
             </div>
             <!-- /HEADLINE -->
-            <table class="table table-bordered">
+            <table id="myTable" class="table table-bordered table-striped">
 			    <thead>
 			      <tr>
 			        <th>Serial</th>
@@ -48,7 +51,7 @@
          <!-- update Modal -->
   <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
-    	<form action="{{url('admin/create-gig-subcategory')}}" data-parsley-validate method="post" id="profile_info">
+    	<form action="{{url('admin/marketplace/subcategory')}}" data-parsley-validate method="post" id="profile_info">
 	      <!-- Modal content-->
 	      <div class="modal-content">
 	        <div class="modal-header">
@@ -79,7 +82,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>	
 				</div>
 		        <div class="modal-body form-box-item">
-					<form action="{{url('admin/create-gig-subcategory')}}" data-parsley-validate method="post" id="profile_info">
+					<form action="{{url('admin/marketplace/subcategory')}}" data-parsley-validate method="post" id="profile_info">
 					 {{ csrf_field() }}
 					
 					<div class="input-container">
@@ -145,7 +148,7 @@
 <script type="text/javascript">
 	
 	  function edit(id){
-            var  link = '<?php echo URL::to("/admin/marketplace/subcategory/edit/");?>/'+id;
+            var  link = '<?php echo URL::to("admin/marketplace/subcategory/edit/");?>/'+id;
             $.ajax({
             url:link,
             method:"get",
@@ -181,4 +184,14 @@
         
   } 
 </script>	
+
+<!-- This is data table -->
+    <script src="{{asset('/allscript')}}/datatables/js/jquery.dataTables.min.js"></script>
+   
+    <script>
+        $(function () {
+            $('#myTable').DataTable();
+        });
+
+    </script>
 @endsection

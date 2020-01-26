@@ -163,7 +163,7 @@ li.financial-institutes__logo {
 	<div class="section-wrap">
 		<div class="section">
 			<!-- SIDEBAR -->
-			<form action="{{url('order/placeorder/payment')}}" method="post">
+			<form action="{{route('gigOrderPayment')}}" method="post">
 				
 					{{csrf_field()}}
 					<input type="hidden" name="gig_id" value="{{$get_gigs->gig_id}}">
@@ -195,8 +195,7 @@ li.financial-institutes__logo {
 					</div>
 
 					<div class="cart-overview-item">
-						<p class="text-header small"><span class="primary">Delivery Time
-: </span></p>
+						<p class="text-header small"><span class="primary">Delivery Time: </span></p>
 						<p id="total_price" class="price">{{$package['delivery_time']}} day</p>
 					</div>
 				</div>

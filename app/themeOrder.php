@@ -17,4 +17,8 @@ class themeOrder extends Model
         'payment_method',
         'transection_id',  
     ];
+
+    public function getTheme(){
+        return $this->belongsTo(theme::class, 'theme_id', 'id');
+    }
 }

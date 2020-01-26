@@ -4,9 +4,9 @@
 @section('css')
 	<link rel="stylesheet" href="{!! asset('allscript/css/vendor/simple-line-icons.css') !!}">
 	<link rel="stylesheet" href="{{asset('allscript/css/vendor/font-awesome.min.css')}}">
+	<link rel="stylesheet" href="{{asset('allscript/workplace/jobs.css')}}">
 
 @endsection
-<link rel="stylesheet" href="{{asset('allscript/workplace/jobs.css')}}">
 
 @section('content')
 

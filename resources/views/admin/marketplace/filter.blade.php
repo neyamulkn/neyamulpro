@@ -11,8 +11,8 @@
         <div class="dashboard-content">
             <!-- HEADLINE -->
             <div class="headline buttons primary">
-                <h4>Gigs Sub Category</h4>
-				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Sub Category</button>
+                <h4>Marketplace Filter lists</h4>
+				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Filter</button>
             </div>
             <!-- /HEADLINE -->
             <table class="table table-bordered">
@@ -34,22 +34,21 @@
 				        <td>{{$show_filter->filter_name}}</td>
 				        <td>
 				        	<?php
-				        	
 				        		$j=1;
 				        		$create_array = explode(',', $show_filter->sub_category_id); //convert array for check 
 					            for($i=0; $i<count($create_array); $i++){
 					    			$get_data = DB::table('gig_subcategories')->where('id', $create_array[$i])->first();
 					    			if($get_data ){
 					    			echo $j++.'. '.$get_data->subcategory_name.'<br/> ';
-					    		}
+					    			}
 						    	}
 				        	?>
 				        </td>
-				        <td>{{$show_filter->mete_tag }}</td>
-				        <td>{{$show_filter->filter_msg  }}</td>
+				        <td>{{ $show_filter->mete_tag }}</td>
+				        <td>{{ $show_filter->filter_msg }}</td>
 				        <td>
-				        	<button type="button" onclick="edit('{{$show_filter->filter_id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button>
-							<button type="button" onclick="deleteItem('{{ $show_filter->filter_id }}' )" class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+				        	<button title="Edit" type="button" onclick="edit('{{$show_filter->filter_id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>
+							<button title="Delete" type="button" onclick="deleteItem('{{ $show_filter->filter_id }}' )" class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i> </button>
 						</td>
 				      </tr>
 			      	@endforeach

@@ -27,11 +27,12 @@
 			      </tr>
 			    </thead>
 			    <tbody>
+			    	<?php $i= 1; ?>
 			    	@foreach($get_category as $category)
-				      <tr>
-				        <td>John <?php $id = '<script>alert("alsdf")</script>'; echo $id; ?></td>
-				        <td>Doe</td>
-				        <td>john@example.com</td>
+				      <tr id="item{{$category->id}}">
+				        <td>{{ $i++ }}</td>
+				        <td>{{$category->category_name}} </td>
+				        <td>@if($category->status == 1) Active @else Deactive @endif</td>
 				        <td>
 				        	<button type="button" onclick="edit('{{$category->id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"><i class="fa fa-trash" aria-hidden="true"></i> Edit</button> 
 							<button type="button" onclick="deleteItem('{{ $category->id }}' )" class="btn btn-danger btn-sm" aria-hidden="true"> <i class="fa fa-trash"></i> Delete</button>
@@ -95,10 +96,10 @@
 	</div>
 <!-- End add model---->
 
-      	    <!-- update Modal -->
+<!-- update Modal -->
   <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
-	    <form action="{{url('admin/marketplace/create-gig-category')}}" data-parsley-validate method="post" id="profile_info">
+	    <form action="{{route('insert_theme_cat')}}" data-parsley-validate method="post" id="profile_info">
 	      <!-- Modal content-->
 	      <div class="modal-content">
 	        <div class="modal-header">
@@ -130,7 +131,7 @@
 <script type="text/javascript">
 	
 	  function edit(id){
-            var  link = '<?php echo URL::to("/admin/marketplace/category/edit/");?>/'+id;
+            var  link = '{{ URL::to("admin/themeplace/category/edit/") }}/'+id;
             $.ajax({
             url:link,
             method:"get",
@@ -146,17 +147,16 @@
     }
 function deleteItem(id) {
     if (confirm("Are you sure delete it.?")) {
-       
-            var  link = '<?php echo URL::to("admin/marketplace/category/delete");?>/'+id;
+      
+            var  link = '{{ URL::to("admin/themeplace/category/delete") }}/'+id;
             $.ajax({
             url:link,
             method:"get",
             
             success:function(data){
                 if(data){
-                    
-                     $("#item"+id).hide();
-                    toastr.info(data);
+                    $("#item"+id).hide();
+                    toastr.error(data);
                 }
             }
         

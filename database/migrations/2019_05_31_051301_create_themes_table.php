@@ -22,6 +22,7 @@ class CreateThemesTable extends Migration
             $table->text('description');
             $table->integer('category_id');
             $table->integer('sub_category');
+            $table->integer('child_category')->nullable();
             $table->char('demo_url', 255)->nullable();
             $table->char('screenshort_url', 255)->nullable();
             $table->text('search_tag');

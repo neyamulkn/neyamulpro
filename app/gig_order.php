@@ -21,4 +21,8 @@ class gig_order extends Model
         'delivery_time',
         'status'
     ];
+
+    public function getGig(){
+        return $this->belongsTo(gig_basic::class, 'gig_id', 'gig_id');
+    }
 }
