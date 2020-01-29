@@ -298,7 +298,7 @@ class superAdminController extends Controller
   }
 
   public function create_theme_subcategory(Request $request){
-        $request->validate(['subcategory_name' => 'required',]);
+        $request->validate(['subcategory_name' => 'required', 'unique:theme_subcategory']);
 
         $insertOrupdate = DB::table('theme_subcategory')->where('id', $request->id)->first();
        

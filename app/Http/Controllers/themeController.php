@@ -38,7 +38,8 @@ class themeController extends Controller
 			    'user_id' => $user_id,
 			    'theme_name' => $request->theme_name,
 			    'theme_url' => $url,
-			    'category_id' => $request->category_id
+			    'category_id' => $request->category_id,
+          'status' => 'pending'
 			];
 
 			$insert_id = theme::create($data);

@@ -103,10 +103,10 @@
 				<div class="headline tertiary">
 					<h4>{{$get_theme_info->total()}} Products Found</h4>
 					<form id="shop_filter_form" name="shop_filter_form">
-						<label for="price_filter" class="select-block">
-							<select name="price_filter" id="price_filter">
-								<option value="0">Price (High to Low)</option>
-								<option value="1">Price (Low to High)</option>
+						<label for="price_sort" class="select-block">
+							<select name="price_sort"  id="price_sort">
+								<option value="ASC" selected="selected" >Price (Low to High)</option>
+								<option value="DESC">Price (High to Low)</option>
 							</select>
 							<!-- SVG ARROW -->
 							<svg class="svg-arrow">
@@ -114,10 +114,10 @@
 							</svg>
 							<!-- /SVG ARROW -->
 						</label>
-						<label for="itemspp_filter" class="select-block">
-							<select name="itemspp_filter" id="itemspp_filter">
-								<option value="0">12 Items Per Page</option>
-								<option value="1">6 Items Per Page</option>
+						<label for="per-page" class="select-block">
+							<select name="per-page" id="per-page">
+								<option value="15">15 Items Per Page</option>
+								<option value="30">30 Items Per Page</option>
 							</select>
 							<!-- SVG ARROW -->
 							<svg class="svg-arrow">
@@ -232,23 +232,12 @@
 			<div class="sidebar">
 				<!-- DROPDOWN -->
 				<ul class="dropdown hover-effect tertiary">
-					@foreach($get_theme_info as $show_theme_info)
+					@foreach($get_subcategories as $subcategory)
 					<li class="dropdown-item">
-						<a href="#">Digital Graphics sdf</a>
+						<a href="#">{{$subcategory->subcategory_name}}</a>
 					</li>
 					@endforeach
-					<li class="dropdown-item active">
-						<a href="#">Illustration</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Web Design</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Stock Photography</a>
-					</li>
-					<li class="dropdown-item">
-						<a href="#">Code and Plugins</a>
-					</li>
+					
 				</ul>
 				<!-- /DROPDOWN -->
 
@@ -261,12 +250,12 @@
 					<input id="token" type="hidden" name="_token" value="{{csrf_token() }}" />
 						<!-- CHECKBOX -->
 					
-						@foreach($theme_subchild_category as $show_theme_subchild_category)
-							<input type="checkbox" id="tag{{$show_theme_subchild_category->id }}" value="{{$show_theme_subchild_category->id }}" class="common_selector platform" name="filter1">
-							<label for="tag{{$show_theme_subchild_category->id }}">
+						@foreach($theme_subchild_category as $subchild_category)
+							<input type="checkbox" @if (in_array(109 , explode(',', Request::get('tags')) )) checked @endif id="tag{{$subchild_category->id }}" value="{{$subchild_category->id }}" class="common_selector platform" name="filter1">
+							<label for="tag{{$subchild_category->id }}">
 								<span class="checkbox primary "><span></span></span>
-								{{$show_theme_subchild_category->subchild_category_name}}
-								<span class="quantity">3</span>
+								{{$subchild_category->subchild_category_name}}
+								<span class="quantity">{{$subchild_category->totalTheme}}</span>
 							</label>
 						@endforeach
 
@@ -276,30 +265,43 @@
 				
 				<!-- /SIDEBAR ITEM -->
 				<!-- SIDEBAR ITEM -->
-				<div class="sidebar-item">
-					<h4>File Types</h4>
-					<hr class="line-separator">
+				@foreach($get_filters as $get_filter)
 
-					@foreach($theme_filters as $theme_filter)
+
+				<div class="sidebar-item">
+					<h4>{{$get_filter->filter_name}}</h4>
+					<hr class="line-separator">
+					<form id="shop_search_form" name="shop_search_form">
+					<input id="token" type="hidden" name="_token" value="{{csrf_token() }}" />
 						<!-- CHECKBOX -->
-					
-						<input type="checkbox" id="{{$theme_filter->filter_id }}" value="{{$theme_filter->filter_id }}" class="common_selector filter_type" name="filter1">
-							<label for="{{$theme_filter->filter_id }}">
+					<?php $theme_subfilters = DB::table('theme_subfilters')
+						->join('theme_features', 'theme_subfilters.id', '=', 'theme_features.feature_name')
+						->where('theme_features.feature_id', $get_filter->filter_id)
+						->select(
+							'theme_subfilters.*',
+							 DB::raw("count('theme_features.feature_name') AS total_gigs" ))
+						->groupBy('theme_features.feature_name')
+						->get(); ?>
+						@foreach($theme_subfilters as $theme_subfilter)
+							<input type="checkbox" id="{{$theme_subfilter->id }}" value="{{$theme_subfilter->id }}" class="common_selector theme_subfilter" name="filter1">
+							<label for="{{$theme_subfilter->id }}">
 								<span class="checkbox primary primary"><span></span></span>
-								{{$theme_filter->filter_name }}
-								<span class="quantity">3</span>
+								{{$theme_subfilter->sub_filtername }}
+								<span class="quantity">{{$theme_subfilter->total_gigs }}</span>
 							</label>
-					<!-- /CHECKBOX -->
-					@endforeach
-				
+							@endforeach
+
+						<!-- /CHECKBOX -->
+					</form>
 				</div>
+				@endforeach
 				<!-- /SIDEBAR ITEM -->
 
 				<!-- SIDEBAR ITEM -->
 				<div class="sidebar-item range-feature">
 					<h4>Price Range</h4>
 					<hr class="line-separator spaced">
-					<input type="hidden" id="price-range"  class="price-range-slider tertiary" value="1000" form="shop_search_form">
+					<input type="hidden" id="price-range"  class="price-range-slider tertiary" value="@if(Request::get('price')) {{Request::get('price')}} @else 700 @endif" form="shop_search_form">
 					<a form="shop_search_form" id="price_btn" class="button mid tertiary common_selector">Update your Search</a>
 				</div>
 				<!-- /SIDEBAR ITEM -->
@@ -338,15 +340,17 @@ $(document).ready(function(){
 	});
 
 
-	function filter_data(page)
+	function filter_data(page=null)
     {
+    	
     	$('.filter_data').html('<div id="loading" style="" ></div>');
         var tags = get_filter('platform');
         var filter_type = get_filter('filter_type');
         var price = document.getElementById('price-range').value;
+      
         if(page == null){var page = 1;}
         //var delivery = get_filter('delivery');
-		// var gig_sort = ($( "#gig_asc option:selected" ).val());
+		var price_sort = ($( "#price_sort option:selected" ).val());
 		var category = "{{ Request::route('category') }}" ;
 		var subcategory = "{{ Request::route('subcategory') }}";
 		var src_item = "{{Request::input('item')}}";
@@ -383,17 +387,16 @@ $(document).ready(function(){
         });
         return filter;
     }
+
+
     $('.common_selector').click(function(){
 		filter_data();
     });
 
-    $('#gig_asc').on('change', function(){
+    $('#price_sort').on('change', function(){
 		filter_data();
  	});
 
- 	$('.common_selector').click(function(){
-		filter_data();
-    });
 
 
 });

@@ -4,7 +4,7 @@
 @section('css')
 <link rel="stylesheet" href="{{ asset('allscript')}}/css/vendor/simple-line-icons.css">
     <link rel="stylesheet" href="{{ asset('allscript')}}/css/vendor/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ asset('allscript')}}/css/bootstrap.min.css">
+    
 <style>
 .button.big.primary.wcart.v3 {
     text-align: center;

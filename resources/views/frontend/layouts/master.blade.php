@@ -4,7 +4,7 @@
 <head>
 	<title>@yield('title')</title>
 	@yield('metatag')
-	
+	<link rel="stylesheet" href="{{ asset('allscript')}}/css/bootstrap.min.css">
 	<link rel="stylesheet" href="{{ asset('allscript/css/style.css') }}">
 	@yield('css')
 	<link rel="stylesheet" href="{{ asset('allscript/css/custom.css') }}">
@@ -86,6 +86,11 @@
 	    display: block;
 	    background: #1cbdf9;
 	    color: #fff;
+	}
+	.h4, .h5, .h6, h4, h5, h6 {margin: initial;padding: initial;}
+	.checkbox, .radio {
+	    margin-top: 0px;
+	    margin-bottom: 0px;
 	}
 </style>
 </head>

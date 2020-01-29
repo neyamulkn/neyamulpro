@@ -76,7 +76,7 @@
 	    "@type": "Offer",
 	    "url": "{{ url()->full() }}",
 	    "priceCurrency": "USD",
-	    "price": "{{ $get_theme_detail->price_regular }}",
+	    "price": "{{ $get_job->budget }}",
 	    "priceValidUntil": "{!!  \Carbon\Carbon::parse($get_job->created_at)->format('M d, Y') !!}",
 	    "itemCondition": "https://schema.org/UsedCondition",
 	    "availability": "https://schema.org/InStock",
@@ -250,130 +250,35 @@
 							@endforeach
 							
 						</div>
-						<br/><hr class="line-separator"><br/>
-						<div class="post-paragraph half up-half1">
-							<h4 class="post-title small">Activity on this job</h4>
-							<!-- POST ITEM LIST -->
-							<ul class="post-item-list">
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Lorem ipsum dolor sit amet</p>
-								</li>
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Nostrud Exertation</p>
-								</li>
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Laborum: Lorem ipsum dolor sit </p>
-								</li>
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Lorem ipsum dolor sit amet</p>
-								</li>
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Nostrud Exertation</p>
-								</li>
-							</ul>
-							<!-- POST ITEM LIST -->
-						</div>
-						<div class="post-paragraph half up-half1">
-							<h4 class="post-title small">Preferred qualifications</h4>
-							<!-- POST ITEM LIST -->
-							<ul class="post-item-list">
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Lorem ipsum dolor sit amet</p>
-								</li>
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Nostrud Exertation</p>
-								</li>
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Laborum: Lorem ipsum dolor sit </p>
-								</li>
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Lorem ipsum dolor sit amet</p>
-								</li>
-								<li>
-									<!-- SVG CHECK -->
-									<svg class="svg-check bullet-icon">
-										<use xlink:href="#svg-check"></use>
-									</svg>
-									<!-- /SVG CHECK -->
-									<p>Nostrud Exertation</p>
-								</li>
-							</ul>
-							<!-- POST ITEM LIST -->
-						</div>
-						<br/><br/><hr class="line-separator">
-					<div class="clearfix"></div>
+						<hr class="line-separator">
+						<div class="clearfix"></div>
 					
-<!-- SHARE -->
-								<div class="share-links-wrap">
-									<p class="text-header small">Social Share:</p>
-									<!-- SHARE LINKS -->
-									<ul class="share-links hoverable">
-										<li><a href="http://www.facebook.com/sharer.php?u={!! url('workplace/'.$get_job->job_title_slug) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-facebook"></i></a></li>
-										<li><a href="https://twitter.com/share?url={!! url('workplace/'.$get_job->job_title_slug) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;text={!! $get_job->job_title !!}&amp;hashtags=HOTLancer" target="_blank"><i class="fa fa-twitter"></i></a></li>
-								
-										<li><a href="http://reddit.com/submit?url={!! url('workplace/'.$get_job->job_title_slug) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;title={!! $get_job->job_title !!}" target="_blank"><i class="fa fa-reddit"></i></a></li>
-										<li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={!! url('workplace/'.$get_job->job_title_slug) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-linkedin"></i></a></li>
-									</ul>
-									<!-- /SHARE LINKS -->
-								</div>
-								<!-- /SHARE -->
-								<!-- Affiliate SHARE -->
-								<div class="share-links-wrap">
-									<p class="text-header small">Affiliate Link:</p>
-									<!-- Affiliate SHARE LINKS -->
-									<ul class="share-links v3">
-										<input type="text" value="{{ url('workplace/'.$get_job->job_title_slug) }}@if(Auth::check())?ref={{Auth::user()->username}}@endif" id="myInput">
-										<button onclick="myFunction()"><i class="fa fa-copy"></i></button>
-									</ul>
-									<!-- /Affiliate SHARE LINKS -->
-								</div>
-								<!-- /Affiliate SHARE -->
-				</article>
+					<!-- SHARE -->
+						<div class="share-links-wrap">
+							<p class="text-header small">Social Share:</p>
+							<!-- SHARE LINKS -->
+							<ul class="share-links hoverable">
+								<li><a href="http://www.facebook.com/sharer.php?u={!! url('workplace/'.$get_job->job_title_slug) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="https://twitter.com/share?url={!! url('workplace/'.$get_job->job_title_slug) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;text={!! $get_job->job_title !!}&amp;hashtags=HOTLancer" target="_blank"><i class="fa fa-twitter"></i></a></li>
+						
+								<li><a href="http://reddit.com/submit?url={!! url('workplace/'.$get_job->job_title_slug) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif&amp;title={!! $get_job->job_title !!}" target="_blank"><i class="fa fa-reddit"></i></a></li>
+								<li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={!! url('workplace/'.$get_job->job_title_slug) !!}@if(Auth::check())?ref={{Auth::user()->username}}@endif" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+							</ul>
+							<!-- /SHARE LINKS -->
+						</div>
+						<!-- /SHARE -->
+						<!-- Affiliate SHARE -->
+						<div class="share-links-wrap">
+							<p class="text-header small">Affiliate Link:</p>
+							<!-- Affiliate SHARE LINKS -->
+							<ul class="share-links v3">
+								<input type="text" value="{{ url('workplace/'.$get_job->job_title_slug) }}@if(Auth::check())?ref={{Auth::user()->username}}@endif" id="myInput">
+								<button onclick="myFunction()"><i class="fa fa-copy"></i></button>
+							</ul>
+							<!-- /Affiliate SHARE LINKS -->
+						</div>
+						<!-- /Affiliate SHARE -->
+					</article>
 				</div>
 			</div>
 			<!-- CONTENT -->

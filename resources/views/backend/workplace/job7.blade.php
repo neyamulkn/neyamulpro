@@ -81,7 +81,7 @@
                 <div class="cattwork">
                     <b class="cattworks">Description </b><hr/>
                     
-                    <p>{{$get_job->job_dsc}}</p>
+                    <p>{!! $get_job->job_dsc !!}</p>
                     
                 </div>
 
