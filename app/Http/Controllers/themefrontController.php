@@ -9,6 +9,7 @@ use Session;
 use Redirect;
 use Exception;
 use App\ref_count;
+use App\theme;
 use App\themeOrder;
 use App\theme_review;
 use App\ThemeComment;
@@ -51,15 +52,19 @@ class themefrontController extends Controller
         // get filter tags by search for leftsite bar
         $theme_subchild_category = DB::table('theme_subchild_category')
             ->join('themes', 'theme_subchild_category.id', 'themes.child_category')
+
             ->where('themes.sub_category', $get_id->subcategory_id)
             ->where('themes.status', 'active')
             ->selectRaw('theme_subchild_category.*, count(themes.child_category) totalTheme')->groupBy('themes.child_category')->get();
                                
         // get filter by search for leftsite bar
         $get_filters = DB::table('theme_filter_categories')
-            ->LeftJoin('theme_filters', 'theme_filter_categories.filter_id', 'theme_filters.filter_id')
+            ->join('theme_filters', 'theme_filter_categories.filter_id', 'theme_filters.filter_id')
+            ->join('theme_features', 'theme_filter_categories.filter_id', 'theme_features.feature_id')
             ->where('theme_filter_categories.category_id', $get_id->id)->where('theme_filters.type', 'select')
             ->groupBy('theme_filters.filter_id')->get();
+
+
 
 
         $get_theme_info = DB::table('themes')
@@ -68,7 +73,9 @@ class themefrontController extends Controller
             ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
             ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
             ->leftJoin('theme_filters', 'themes.category_id', 'theme_filters.category_id')
-            ->select('themes.*', 'theme_category.category_name', 'users.name', 'userinfos.user_image', 'users.id', 'users.username', 'theme_subcategory.subcategory_name')
+            ->leftJoin('theme_features', 'themes.theme_id', '=', 'theme_features.theme_id')
+            ->leftJoin('theme_reviews', 'themes.theme_id', '=', 'theme_reviews.theme_id')
+            ->select('themes.*', 'theme_category.category_name', 'users.name', 'userinfos.user_image', 'users.id', 'users.username', 'theme_subcategory.subcategory_name', DB::raw('count(*) as total_review'))
             ->where('theme_category.category_url', $request->category)
             ->where('theme_subcategory.subcategory_url',  $request->subcategory)
             ->where('themes.status', 'active')
@@ -76,7 +83,9 @@ class themefrontController extends Controller
 
             if(Input::has('item') && !empty(Input::get('item'))){
                 $src = Input::get('item');
-              $get_theme_info =  $get_theme_info->where('themes.theme_name', 'LIKE', '%'. $src .'%');
+              $get_theme_info =  $get_theme_info->where(function($query) use ($src) {
+                $query->where('themes.theme_name', 'LIKE', '%'. $src .'%')
+                ->orWhere('themes.search_tag', 'LIKE', '%'. $src .'%'); });
             }
             if(isset($request->price) && !empty($request->price)){
                 $price = explode(',',  $request->price);
@@ -96,18 +105,18 @@ class themefrontController extends Controller
             $get_theme_info = $get_theme_info->whereIn('themes.child_category', $tags);
         }
 
-        // if(isset($request->filer_type)){
-        //      if(!is_array($request->filer_type)){ // direct url tags
-        //         $filer_type =  explode(',', $request->filer_type);
+        if(isset($request->filer_type)){
+            if(!is_array($request->filer_type)){ // direct url tags
+                $filer_type =  explode(',', $request->filer_type);
 
-        //     }else{ // filter by ajax
-        //         $filer_type = implode(',', $request->filer_type);
+            }else{ // filter by ajax
+                $filer_type = implode(',', $request->filer_type);
 
-        //     }
+            }
 
-        //     $get_theme_info = $get_theme_info->whereIn('themes.child_category', [$filer_type]);
-        // }
-
+            $get_theme_info = $get_theme_info->whereIn('theme_features.feature_id', [$filer_type]);
+        }
+     
         $get_theme_info = $get_theme_info->paginate(30);
 
         if(!isset($_GET['filter'])){
@@ -117,62 +126,121 @@ class themefrontController extends Controller
         }
 
     }
-    public function theme_search(){
-        try{
+    public function theme_search(Request $request){
+
+            $category_id = $sub_category = '';
             $src = Input::get('item');
-            $search_keyword = DB::table('themes')->leftJoin('theme_category', 'themes.category_id', 'theme_category.id');
+            $search_keyword = DB::table('themes')->join('theme_category', 'themes.category_id', 'theme_category.id');
                 if(Input::has('item')  && !empty(Input::get('item'))){
-                  $search_keyword =  $search_keyword->where('themes.theme_name', 'LIKE', '%'. $src .'%');
+                  $search_keyword =  $search_keyword->where(function($query) use ($src) {
+                    $query->where('themes.theme_name', 'LIKE', '%'. $src .'%')
+                    ->orWhere('themes.search_tag', 'LIKE', '%'. $src .'%'); });
                 }
                 if(Input::has('cat') && !empty(Input::get('cat'))){
-                  $search_keyword =  $search_keyword->where('theme_category.category_url', Input::get('cat'));
+                    $search_keyword =  $search_keyword->where('theme_category.category_url', Input::get('cat'));
                 }
                 $search_keyword = $search_keyword->select("themes.sub_category", "themes.category_id")->first();
 
+                if($search_keyword){
+                    $category_id = $search_keyword->category_id;
+                    $sub_category = $search_keyword->sub_category;
+                }
+
+
             $data = array();
-            $data['theme_category'] = DB::table('theme_category')->get();
+            $data['all_category'] = DB::table('theme_category')->get();
             // get filter tags id by search key for leftsite bar
-            $theme_subchild_category = DB::table('theme_subchild_category');
-            if($search_keyword){
-               $theme_subchild_category = $theme_subchild_category->where('subcategory_id', $search_keyword->sub_category);
+          
+            $data['theme_subchild_category'] = DB::table('theme_subchild_category')
+            ->join('themes', 'theme_subchild_category.id', 'themes.child_category')
+            ->where('themes.sub_category', $sub_category)
+            ->where('themes.status', 'active')
+            ->selectRaw('theme_subchild_category.*, count(themes.child_category) totalTheme')->groupBy('themes.child_category')->get();
+
+            $data['theme_category'] = DB::table('theme_category')
+                    ->join('themes', 'theme_category.id', 'themes.category_id')
+                    ->where(function($query) use ($src) {
+                    $query->where('themes.theme_name', 'LIKE', '%'. $src .'%')
+                    ->orWhere('themes.search_tag', 'LIKE', '%'. $src .'%'); })->groupBy('theme_category.id')->get();
+
+        
+            // get filter by search for leftsite bar
+            $data['get_filters'] = DB::table('theme_filter_categories')
+                ->join('theme_filters', 'theme_filter_categories.filter_id', 'theme_filters.filter_id')
+                ->join('theme_features', 'theme_filter_categories.filter_id', 'theme_features.feature_id')
+                ->where('theme_filter_categories.category_id', $category_id)->where('theme_filters.type', 'select')
+                ->groupBy('theme_filters.filter_id')->get();
+
+
+
+        $get_theme_info = DB::table('themes')
+            ->leftJoin('users', 'themes.user_id', 'users.id')
+            ->leftJoin('userinfos', 'themes.user_id', '=', 'userinfos.user_id')
+            ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
+            ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
+            ->leftJoin('theme_filters', 'themes.category_id', 'theme_filters.category_id')
+            ->leftJoin('theme_features', 'themes.theme_id', '=', 'theme_features.theme_id')
+            ->leftJoin('theme_reviews', 'themes.theme_id', '=', 'theme_reviews.theme_id')
+            ->select('themes.*', 'theme_category.category_name', 'users.name', 'userinfos.user_image', 'users.id', 'users.username', 'theme_subcategory.subcategory_name', DB::raw('count(*) as total_review'))
+            
+            ->where('themes.status', 'active')
+            ->groupBy('themes.theme_id');
+
+            if(Input::has('item') && !empty(Input::get('item'))){
+                $src = Input::get('item');
+                $get_theme_info =  $get_theme_info->where(function($query) use ($src) {
+                    $query->where('themes.theme_name', 'LIKE', '%'. $src .'%')
+                    ->orWhere('themes.search_tag', 'LIKE', '%'. $src .'%');
+                });
             }
-            $data['theme_subchild_category'] = $theme_subchild_category->get();
-
-            $get_subcategories = DB::table('theme_subcategory')
-            ->join('theme_category', 'theme_subcategory.category_id', 'theme_category.id')->where('theme_category.category_url', $search_keyword->category_id)->get();
-
-            // get filter by search key for leftsite bar
-            $theme_filters = DB::table('theme_filters');
-            if($search_keyword){
-               $theme_filters = $theme_filters->where('category_id', $search_keyword->category_id)->where('type', 'select');
+            if(Input::has('cat') && !empty(Input::get('cat'))){
+                $get_theme_info =  $get_theme_info->where('theme_category.category_url', Input::get('cat'));
             }
-            $data['theme_filters'] = $theme_filters->get();
+            if(isset($request->price) && !empty($request->price)){
+                $price = explode(',',  $request->price);
 
-            $get_theme_info = DB::table('themes')
-                ->leftJoin('users', 'themes.user_id', 'users.id')
-                ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
-                ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
-                ->select('themes.*', 'theme_category.category_name', 'users.name', 'users.id', 'users.username', 'theme_subcategory.subcategory_name')
-                ->groupBy('themes.theme_id');
-                if(Input::has('item')){
-                  $get_theme_info =  $get_theme_info->where('themes.theme_name', 'LIKE', '%'. $src .'%');
-                }
-                if(Input::has('cat') && !empty(Input::get('cat'))){
-                  $get_theme_info =  $get_theme_info->where('theme_category.category_url', Input::get('cat'));
-                }
-                $data['get_theme_info'] = $get_theme_info->paginate(5);
-                return view('frontend.theme.theme-categories')->with($data);
-        }catch(\Exception $e){
-            Toastr::error($e->getMessage());
-            return back();
+                $get_theme_info = $get_theme_info->whereBetween('themes.price_regular', [$price[0],$price[1]]); 
+            }
+
+
+        if(isset($request->tags) && !empty($request->tags) ){
+             if(!is_array($request->tags)){ // direct url tags
+                $tags =  explode(',', $request->tags);
+
+            }else{ // filter by ajax
+                $tags = $request->tags;
+            }
+
+            $get_theme_info = $get_theme_info->whereIn('themes.child_category', $tags);
         }
+
+        if(isset($request->filer_type)){
+            if(!is_array($request->filer_type)){ // direct url tags
+                $filer_type =  explode(',', $request->filer_type);
+
+            }else{ // filter by ajax
+                $filer_type = implode(',', $request->filer_type);
+
+            }
+
+            $get_theme_info = $get_theme_info->whereIn('theme_features.feature_id', [$filer_type]);
+        }
+     
+        $data['get_theme_info'] = $get_theme_info->paginate(4);
+
+        if(!isset($_GET['filter'])){
+            return view('frontend.theme.search')->with($data);
+        }else{ // ajax request 
+           echo view('frontend.theme.get_filterdata')->with($data);
+        }
+
     }
 
     public function suggest_keyword(Request $request){
        $get_keyord = DB::table('key_keyword')->select('keyword_name')->where('key_keyword.keyword_name', 'LIKE', '%'. $request->src_key .'%')->get();
        if(count($get_keyord)>0){
-            foreach ($get_keyord as $key) {
-               echo '<li><a href="?item='.$key->keyword_name.'" >'.$key->keyword_name.'</a></li>';
+            foreach ($get_keyord as $key) { // if search from index page
+               echo '<li><a href="'.(isset($request->page) ? route('theme_search') : '').'?item='.$key->keyword_name.'" >'.$key->keyword_name.'</a></li>';
             }
        }
     }
@@ -199,6 +267,7 @@ class themefrontController extends Controller
                 $all_comments = $get_theme_comment->get();
                 $get_theme_comment = $get_theme_comment->paginate(5);
 
+            theme::where('theme_url', $theme_url)->increment('view_counts');
 
             $get_another_theme = DB::table('themes')
             ->join('users', 'themes.user_id', 'users.id')
@@ -287,22 +356,7 @@ class themefrontController extends Controller
 
         $output = '';
         if(count($get_theme_info)>0){
-            foreach($get_theme_info as $show_theme_info) {
-                $output .=' <a class="hideDisplay">
-                        <img class="user-avatar medium" src="'.asset('theme/images/'.$show_theme_info->main_image).'" alt="">
-                      <span class="showDisplayOnHover">
-                        <div class="magnifier" style="width: 477px;overflow: hidden; position: absolute;z-index: 99999">
-                            <div class="size-limiter"><img alt="" src="'.asset('theme/images/'.$show_theme_info->main_image).'"></div><strong>'.$show_theme_info->theme_name.'</strong>
-                            <div class="info">
-                                <div class="author-category">by <span class="author">'.$show_theme_info->username.'</span></div>
-                                <div class="price"><span class="cost"><sup>$</sup>'.$show_theme_info->price_regular.'</span></div>
-                            </div>
-                            <div class="footer"><span class="category">'.$show_theme_info->category_name.' /'.$show_theme_info->subcategory_name.'</span><span class="gst-notice">All prices are in USD</span></div>
-                        </div>
-                      </span>
-                    </a>';
-            }
-            echo $output;
+            echo view('frontend.theme.tooltipstheme')->with(compact('get_theme_info'));
         }else{
             echo "Sorry no data available.";
         }
@@ -327,6 +381,7 @@ class themefrontController extends Controller
             // })
             ->where('theme_orders.buyer_id', $buyer_id)
             ->groupBy('theme_orders.order_id')
+            ->orderBy('theme_orders.id', 'DESC')
             ->get();
         return view('frontend/theme/theme-download')->with(compact('get_theme'));
     }

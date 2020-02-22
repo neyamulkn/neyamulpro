@@ -8,22 +8,37 @@ use Auth;
 use Session;
 use DB;
 use Redirect;
+use Toastr;
 class ThemeOrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     
     public function theme_checkout(Request $request){
-        if(!Auth::check()){
-            return Redirect::route('login');
-        }
-        $user_id = null;
-        if(Auth::check()){  $user_id = Auth::user()->id; }
+        
+       
+        $user_id = Auth::user()->id;
+        $session_id =  Session::get('session_id');
+      
 
         //if direct purchase buy now button
         if(isset($request->purchase)){
+
+            // check own theme
+            $check = DB::table('themes')->where('theme_id', $request->theme_id)->first();
+            // if try to buy own theme redirect prev page
+            if($check->user_id == $user_id){
+                Toastr::error("Sorry can\'t buy your own theme");
+                return back();
+            }
+
             $data = [
                 'theme_id' => $request->theme_id,
                 'price' => $request->price,
-                'user_id' => $user_id
+                'user_id' => $user_id,
+                'created_at' => now(),
             ];
             $insertId = DB::table('theme_add_to_cart')->insertGetId($data);
 
@@ -32,7 +47,7 @@ class ThemeOrderController extends Controller
             ->where('theme_add_to_cart.cart_id', $insertId)
             ->get();
             Session::put('buy_theme_cart_id', $insertId);
-           
+          
         }else{
             $session_id = 0;
             $session_id =  Session::get('session_id');
@@ -43,7 +58,7 @@ class ThemeOrderController extends Controller
             ->orWhere('session_id', $session_id)
             ->get();
         }
-       return view('frontend/theme/theme-payment')->with(compact('get_theme_info'));
+        return view('frontend/theme/theme-payment')->with(compact('get_theme_info'));
     }
 
 
@@ -56,13 +71,6 @@ class ThemeOrderController extends Controller
             $session_id = 0;
             $session_id =  Session::get('session_id'); // for guest user add to cart
            
-            // check refferel_user_name
-            if(Session::has('refferel_user_name')){
-                if(Session::get('refferel_user_name') != $username){
-                 $ref_user = Session::get('refferel_user_name');
-                }
-            }else{ $ref_user = null; }
-
             //get all cart item 
             $get_themecart_info = DB::table('theme_add_to_cart')
             ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
@@ -70,11 +78,19 @@ class ThemeOrderController extends Controller
             ->orWhere('session_id', $session_id)
             ->get();
 
-                $trnx_id = Session::get('paypal_payment_id');
-                Session::forget('paypal_payment_id');
+            $trnx_id = Session::get('paypal_payment_id');
+            Session::forget('paypal_payment_id');
 
             // all cart item buyer purchas 
             foreach ($get_themecart_info  as $show_themecart_info) {
+
+                // check refferel_user_name
+                if(Session::has('refferel_user_name')){
+                    if(Session::get('refferel_user_name') != $username && Session::get('refferel_user_name') != $show_themecart_info->theme_id){
+                     $ref_user = Session::get('refferel_user_name');
+                    }
+                }else{ $ref_user = null; }
+                
                 $order_id =strtoupper(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), -8)); 
                 $data = [
                     'order_id' => $order_id,
@@ -121,13 +137,7 @@ class ThemeOrderController extends Controller
        
         \Stripe\Stripe::setApiKey("sk_test_USX32J7O4Oxh4gsTMwlAY5zr00t9yNdFxr");
     if(isset($request->stripeToken)){
-        // check refferel_user_name
-        if(Session::has('refferel_user_name')){
-            if(Session::get('refferel_user_name') != $username){
-             $ref_user = Session::get('refferel_user_name');
-            }
-        }else{ $ref_user = null; }
-
+       
         //get all cart item 
         $get_themecart_info = DB::table('theme_add_to_cart')
         ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
@@ -137,6 +147,13 @@ class ThemeOrderController extends Controller
 
         // all cart item buyer purchas 
         foreach ($get_themecart_info  as $show_themecart_info) {
+                // check refferel_user_name
+                if(Session::has('refferel_user_name')){
+                    if(Session::get('refferel_user_name') != $username && Session::get('refferel_user_name') != $show_themecart_info->theme_id){
+                     $ref_user = Session::get('refferel_user_name');
+                    }
+                }else{ $ref_user = null; }
+
             $order_id =strtoupper(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), -8)); 
                 $data = [
                     'order_id' => $order_id,
@@ -164,7 +181,7 @@ class ThemeOrderController extends Controller
             }
 
             if($insert){
-                return redirect('/themeplace/downloads/theme/'.Auth::user()->username);
+                return Redirect::route('theme_downloads');
             }
         }
          return redirect('/themeplace/cart/view'.Auth::user()->username);

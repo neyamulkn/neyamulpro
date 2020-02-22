@@ -5,134 +5,81 @@
 	<link rel="stylesheet" href="{!! asset('allscript/css/vendor/simple-line-icons.css') !!}">
 	<link rel="stylesheet" href="{{asset('allscript/css/vendor/font-awesome.min.css')}}">
 	<link rel="stylesheet" href="{{asset('allscript/workplace/jobs.css')}}">
+	<style type="text/css">
+.src-section{
+	width: 86%;
+	 position: relative;
+	margin: 0px auto;
+	background: #fff;
+    padding: 10px !important;
+    margin-top: 10px !important;
+}
+.search_bar{
+	position: absolute;
+    top: 50px;
+    left: 7%;
+    margin: 0px auto;
+    width: 38%;
+    border:1px solid #ccc;
+    border-top: none;
+    background: #fafafa;
+    z-index: 999;
+    display: none;
 
+}
+.search_bar li{
+	padding: 10px;	
+	display: block;
+}
+.search_bar li a{
+	display: block;
+}
+.search_bar li:hover{
+	
+	background-color: #fff;
+}
+
+	</style>
 @endsection
 
 @section('content')
 
-	<!-- SECTION -->
-	
-	<!-- SECTION HEADLINE -->
-	<div class="jp_top_header_img_wrapper">
-        <div class="jp_slide_img_overlay"></div>
-        <div class="jp_banner_heading_cont_wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="jp_job_heading_wrapper">
-                            <div class="jp_job_heading">
-                                <h1><span>3,000+</span> Browse Jobs</h1>
-                                <p>Find Jobs, Employment &amp; Career Opportunities</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="jp_header_form_wrapper">
-                            <div class="col-lg-4">
-                                <input type="text" placeholder="Keyword e.g. (Job Title, Description, Tags)">
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="jp_form_location_wrapper">
-                                    <i class="fa fa-dot-circle-o first_icon"></i>
-									<select>
-										<option>Select Location</option>
-										<option>Select Location</option>
-										<option>Select Location</option>
-										<option>Select Location</option>
-										<option>Select Location</option>
-									</select>
-									<i class="fa fa-angle-down second_icon"></i>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="jp_form_exper_wrapper">
-                                    <i class="fa fa-dot-circle-o first_icon"></i>
-									<select>
-										<option>Experience</option>
-										<option>Experience</option>
-										<option>Experience</option>
-										<option>Experience</option>
-										<option>Experience</option>
-									</select>
-									<i class="fa fa-angle-down second_icon"></i>
-                                </div>
-                            </div>
-                            <div class="col-lg-2">
-                                <div class="jp_form_btn_wrapper">
-                                    <ul>
-                                        <li><a href="#"><i class="fa fa-search"></i> Search</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="jp_banner_main_jobs_wrapper">
-                            <div class="jp_banner_main_jobs">
-                                <ul>
-                                    <li><i class="fa fa-tags"></i> Trending Keywords :</li>
-                                    <li><a href="#">ui designer,</a></li>
-                                    <li><a href="#">developer,</a></li>
-                                    <li><a href="#">senior</a></li>
-                                    <li><a href="#">it company,</a></li>
-                                    <li><a href="#">design,</a></li>
-                                    <li><a href="#">call center</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="jp_banner_jobs_categories_wrapper">
-            <div class="container">
-                <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border jp_job_cate_left_border_bottom">
-                    <div class="jp_top_jobs_category">
-                        <i class="fa fa-code"></i>
-                        <h3><a href="#">Developer</a></h3>
-                        <p>(240 jobs)</p>
-                    </div>
-                </div>
-                <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border_bottom">
-                    <div class="jp_top_jobs_category">
-                        <i class="fa fa-laptop"></i>
-                        <h3><a href="#">Technology</a></h3>
-                        <p>(504 jobs)</p>
-                    </div>
-                </div>
-                <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border_bottom">
-                    <div class="jp_top_jobs_category">
-                        <i class="fa fa-bar-chart"></i>
-                        <h3><a href="#">Accounting</a></h3>
-                        <p>(2250 jobs)</p>
-                    </div>
-                </div> 
-                <div class="jp_top_jobs_category_wrapper jp_job_cate_left_border_res">
-                    <div class="jp_top_jobs_category">
-                        <i class="fa fa-medkit"></i>
-                        <h3><a href="#">Medical</a></h3>
-                        <p>(202 jobs)</p>
-                    </div>
-                </div>
-                <div class="jp_top_jobs_category_wrapper">
-                    <div class="jp_top_jobs_category">
-                        <i class="fa fa-university"></i>
-                        <h3><a href="#">Government</a></h3>
-                        <p>(1457 jobs)</p>
-                    </div>
-                </div>
-                <div class="jp_top_jobs_category_wrapper">
-                    <div class="jp_top_jobs_category">
-                        <i class="fa fa-th-large"></i>
-                        <h3><a href="#">All Jobs</a></h3>
-                        <p>(2000+ jobs)</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-	<!-- /SECTION HEADLINE -->
-	
+	<!-- BANNER -->
+	<div class="banner-wrap">
+		<section class="banner banner-v2 v3">
+			<h3><span>46,129 WordPress Themes & Website Templates From $2</span></h3>
+			<h5>WordPress themes, web templates and more. Brought to you by the largest global community of creatives.</h5>
+
+			<div style="position: relative; width: 100%;" >
+			
+				<form action="{{ route('job_search') }}" style="width: 86%;" class="search-widget-form" >
+					<input type="text"  value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" required onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
+					<label for="cat" class="select-block">
+						<select name="cat" id="cat">
+							<option  value="">All Categories</option>
+							@foreach($get_category as $show_category)
+
+								<option {{(isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url)? 'selected' : ''}} value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
+							@endforeach
+						</select>
+						<!-- SVG ARROW -->
+						<svg class="svg-arrow">
+							<use xlink:href="#svg-arrow"></use>
+						</svg>
+						<!-- /SVG ARROW -->
+					</label>
+					<button class="button medium primary">Search Now!</button>
+				</form>
+
+				<div class="search_bar" id="search_bar" >
+					<ul>
+						<span id="show_suggest_key"></span>
+					</ul>
+				</div>
+			</div>
+		</section>
+	</div>
+	<!-- /BANNER -->
 	<!-- SECTION -->
 	<div class="section-wrap">
 		<div class="section">
@@ -441,6 +388,40 @@
 @endsection
 
 @section('js')
+<script type="text/javascript">
+	function search_bar(src_key){
+		
+		$.ajax({
+			method:'post',
+			url:'{{ route("suggest_keyword") }}',
+			data:{src_key:src_key, route: 'job_search', _token: '{{csrf_token()}}'},
+			datatype: "text",
+			success:function(data){
+				if(data !=null){
+					
+					document.getElementById('search_bar').style.display = 'block';
+					document.getElementById('show_suggest_key').innerHTML = data;
+				}else{
+					
+					document.getElementById('search_bar').style.display = 'none';
+					
+				}
+			}
+		});
+	}
 
+	function search_field(src){
+	 	document.getElementById('item').value = src;
+	 	document.getElementById('search_bar').style.display = 'none';
+	}
+
+
+	
+	$( document.body ).click(function() {
+		if($('#search_bar').css('display') == 'block'){
+		    document.getElementById('search_bar').style.display = 'none';
+		}
+	});
+</script>
 
 @endsection

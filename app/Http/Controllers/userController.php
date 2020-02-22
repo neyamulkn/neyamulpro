@@ -7,9 +7,26 @@ use Illuminate\Support\Facades\Hash;
 use App\user;
 use Auth;
 use Toastr;
+use Redirect;
 class userController extends Controller
 {
-     public function user_register(Request $data)
+
+    public function dashboard(){
+        if(Auth::user()->role_id == env('ADMIN')){
+            $path = 'admin_dashboard';
+        }elseif(Auth::user()->role_id == env('BUYER')){
+            $path = 'user_dashboard';
+        }
+        elseif(Auth::user()->role_id == env('FRELANCER')){
+            $path = 'user_dashboard';
+        }else{
+            $path = '404';
+        }
+
+        return Redirect::route($path);
+    }
+
+    public function user_register(Request $data)
     {
        $this->validation($data);
         $ip = $_SERVER['REMOTE_ADDR'];

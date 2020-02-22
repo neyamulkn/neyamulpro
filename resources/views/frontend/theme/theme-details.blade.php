@@ -281,15 +281,19 @@ span.icon-arrow-right.small {
 						Extended License
 					</label>
 					<!-- /CHECKBOX -->
-
-					<input type="hidden" name="price" value="{!! $get_theme_detail->price_regular !!}" id="price">
-					<p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
-					<button type="submit" name="purchase" value="purchase" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
+					
+					
+						<input type="hidden" name="price" value="{!! $get_theme_detail->price_regular !!}" id="price">
+						<p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
+						<button type="submit" name="purchase" value="purchase" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
+					
+					
 				</form>
 
 					<button onclick="add_to_cart('{!! $get_theme_detail->theme_id !!}')" class="button mid tertiary half">Add to Cart </button>
 					<button class="button mid secondary wicon half"><span class="icon-heart"></span>652</button>
 					<div class="clearfix"></div>
+					
 				</div>
 
 				<!-- SIDEBAR ITEM -->
@@ -1016,20 +1020,23 @@ span.icon-arrow-right.small {
 
 <script>
 
-
 	function add_to_cart(theme_id){
 		var price = $('#price').val();
 
 		$.ajax({
 			method:'post',
-			url:'{!!  URL::to("/themeplace/cart/")  !!}',
+			url:'{{  URL::to("/themeplace/cart/") }}',
 			data:{
 				theme_id:theme_id,
 				price:price,
-				_token:"{!!  csrf_token()  !!}"
+				_token:"{{  csrf_token()  }}"
 			},
 			success:function(data){
-				toastr.success(data);
+				if(data.status == 'success'){
+					toastr.success(data.msg);
+				}else{
+					toastr.error(data.msg);
+				}
 			}
 		});
 

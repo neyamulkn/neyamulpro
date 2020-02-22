@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-
+@section('title', $get_job->job_title)
 
 @section('css')
     <link rel="stylesheet" href="{{asset('/allscript')}}/css/hl-work.css">
@@ -50,7 +50,7 @@
             </div>
         <form  action="{{url('dashboard/workplace/job-post/insert/step_five')}}" method="post">
                 {{csrf_field()}}
-            <input type="hidden" name="post_id" value="{{Request::segment(4)}}">
+           <input type="hidden" name="slug" value="{{$get_job->job_title_slug}}">
                  
             <div class="workr81">
                 <div class="workttsr">
@@ -89,7 +89,7 @@
                     
                 </div>
                 <div class="downloadtheme5">
-                    <a href="{{url('dashboard/workplace/job-post/'.$get_job->job_id.'/step/3')}}" class="button mid tertiary half v3">Back</a><br>
+                    <a href="{{url('dashboard/workplace/job-post/'.$get_job->job_title_slug.'/step/4')}}" class="button mid tertiary half v3">Back</a><br>
                     <button type="submit" class="button mid secondary wicon half  v3">Next</button><br>
                 </div>
                 <div class="clearfix"></div>

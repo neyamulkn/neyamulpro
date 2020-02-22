@@ -16,7 +16,9 @@
 	.search-widget-form button.medium{
 		width: 15% !important;
 	}
-
+.h4, .h5, .h6, h4, h5, h6{
+  margin: initial !important;
+}
 	.product-list.list.full {
     width: 100% !important;
 	}
@@ -223,11 +225,7 @@ td {
 }
 
 
-.paginations a, .paginations .page-link{
-display: block;
-padding: 6px 10px;
-color: #fff;
-}
+
 
 .outer-ring img{
 	border-radius: 50%; width: 45px; height: 45px;
@@ -277,6 +275,4 @@ color: #fff;
 .comment-reply-form button{
 	float: right;
 }
-
-
 

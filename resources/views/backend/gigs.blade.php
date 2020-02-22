@@ -96,7 +96,29 @@ font-weight: bold;
   border-left: none;
   height: 300px;
 }
-   </style>
+
+</style>
+
+<!-- tags -->
+   <link href="{{asset('tags')}}/typeahead.css"  rel="stylesheet" />
+    <link href="{{asset('tags')}}/bootstrap-tagsinput.css" rel="stylesheet">
+    <style>
+    .bootstrap-tagsinput{text-align: left;}
+    .twitter-typeahead { display:initial !important; }
+    .bootstrap-tagsinput {line-height:40px;display:block !important;}
+    .bootstrap-tagsinput .tag {background:#09F;padding:5px;border-radius:4px;}
+    .tt-hint {top:2px !important;}
+    .tt-input{vertical-align:baseline !important;}
+    .typeahead { border: 1px solid #CCCCCC;border-radius: 4px;padding: 8px 12px;width: 300px;font-size:1.5em;}
+    .tt-menu { width:300px; }
+    span.twitter-typeahead .tt-suggestion {padding: 10px 20px;  border-bottom:#CCC 1px solid;cursor:pointer;}
+    span.twitter-typeahead .tt-suggestion:last-child { border-bottom:0px; }
+    .demo-label {font-size:1.5em;color: #686868;font-weight: 500;}
+    .bgcolor {max-width: 440px;height: 200px;background-color: #c3e8cb;padding: 40px 70px;border-radius:4px;margin:20px 0px;}
+    .tt-menu{width: 100%;}
+    .ttinput-group{overflow: hidden;}
+    </style>
+<!--end tags -->
 @endsection
 @section('content')
 <?php $step=0;  if(Request::route('step')){$step = Request::route('step');}?><br/>
@@ -111,7 +133,7 @@ font-weight: bold;
                        
                     </li> 
 					
-					<li class="rms-step <?php if ($step == 2){ echo "rms-current-step"; } ?>">
+					           <li class="rms-step <?php if ($step == 2){ echo "rms-current-step"; } ?>">
                         <span class="step-icon "><i class="fa fa-credit-card" aria-hidden="true"></i></span>
                         <span class="step-title">Pricing </span>
                        
@@ -227,57 +249,48 @@ font-weight: bold;
                                    		</div>
                                     </div>
 
-								<label class="rl-label filter_boreder">How would you want to pay?</label>
-														
-			             <div class="row">
+      								              <label class="rl-label filter_boreder">How would you want to pay?</label>
+      														
+      			                       <div class="row">
 
-											<label for="fixedid" class="col-md-6 labbel_box"  onclick="activeButton('fixed')">
-												<div class="p-lg-top-bottom ng-pristine ng-untouched ng-valid eo-button-box eo-button-box-radio ng-not-empty report_hidden <?php //if($userinfo->skill_level == 'Entry'){echo 'active';} ?>" id="fixed">
-												<span>$$$</span><br/>
-												<span class="m-sm-bottom">Fixed Price</span>
-												<input required="" type="radio" id="fixedid" class="labbel_box_radio"  name="gig_payment_type" value="fixed">
-												</div>
-			                                </label>
-											<label for="monthlyid" class="col-md-6  labbel_box"  for="Intermediate" onclick="activeButton('monthly')">
-												<div class="p-lg-top-bottom ng-pristine ng-untouched ng-valid eo-button-box eo-button-box-radio ng-not-empty report_hidden <?php //if($userinfo->skill_level == 'Intermediate'){echo 'active';} ?>" id="monthly">
-												<span>$$$</span><br/>
-												<span class="m-sm-bottom">Monthly Price</span>
-												<input required="" type="radio" id="monthlyid" class="labbel_box_radio" name="gig_payment_type"  value="monthly">
-												</div>
-											</label>
-			                     	</div>
+                											<label for="fixedid" class="col-md-6 labbel_box"  onclick="activeButton('fixed')">
+                												<div class="p-lg-top-bottom ng-pristine ng-untouched ng-valid eo-button-box eo-button-box-radio ng-not-empty report_hidden <?php //if($userinfo->skill_level == 'Entry'){echo 'active';} ?>" id="fixed">
+                												<span>$$$</span><br/>
+                												<span class="m-sm-bottom">Fixed Price</span>
+                												<input required="" type="radio" id="fixedid" class="labbel_box_radio"  name="gig_payment_type" value="fixed">
+                												</div>
+      			                         </label>
+              											<label for="monthlyid" class="col-md-6  labbel_box"  for="Intermediate" onclick="activeButton('monthly')">
+              												<div class="p-lg-top-bottom ng-pristine ng-untouched ng-valid eo-button-box eo-button-box-radio ng-not-empty report_hidden <?php //if($userinfo->skill_level == 'Intermediate'){echo 'active';} ?>" id="monthly">
+              												<span>$$$</span><br/>
+              												<span class="m-sm-bottom">Monthly Price</span>
+              												<input required="" type="radio" id="monthlyid" class="labbel_box_radio" name="gig_payment_type"  value="monthly">
+              												</div>
+              											</label>
+      			                     	</div>
 
 
                                     <div class="row">
                                         <div class="col-md-12">
                                         	<div class="inpt-form-group"> 
-	                                            <label for="gig_search_tag" class="rl-label">Search Tags</label>
-	                                            <div class="inpt-group">
-	                                            	<select name="gig_search_tag[]" required="required" id="gig_search_tag" multiple="multiple" style="width:100%" class="select2">
-                        														<?php
-                        															$key_keyword = DB::table('key_keyword')->get();
-                        															
-                        														 ?>
-                        														@foreach($key_keyword as $keyword)
-                        															<option value="{{$keyword->keyword_name}}">{{$keyword->keyword_name}}</option>
-                        														@endforeach
-                        													</select>
-
-
-	                                            </div>
+                                              <label for="gig_search_tag" class="rl-label">Search Tags</label>
+                                              <div class="inputs">
+                        														<label class="select-block va">
+                                                    <input type="text" value="" style="border:none !important;" name="gig_search_tag" value="" id="tags-input" data-role="tagsinput" />
+                                                    </label>
+                                              </div>
                                             </div>
-                                        
                                          </div>
-                                    </div>
-                                    	<div class="rms-footer-section">
-							                <div class="button-section">
-							                    <span class="nextstep">
-							                        <button class="btn">Next Step
-							                            <small>Your information</small>
-							                       </button> 
-							                    </span>
-							                </div>
-							            </div>
+                                    </div><br/>
+                                    <div class="rms-footer-section">
+          							                <div class="button-section">
+          							                    <span class="nextstep">
+          							                        <button class="btn">Next Step
+          							                            <small>Your information</small>
+          							                       </button> 
+          							                    </span>
+        							                   </div>
+        							             </div>
                                 </form>
                                 </div> 
 
@@ -469,23 +482,56 @@ $("select").on('change', function(e) {
         }
     }
 
-function openCity(evt, cityName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
+      function openCity(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+      }
 
-// Get the element with id="defaultOpen" and click on it
-document.getElementById("defaultOpen").click();
+      // Get the element with id="defaultOpen" and click on it
+      document.getElementById("defaultOpen").click();
 
-    </script> 
+  </script> 
+
+
+  <!-- tags  -->
+  <script src="{{asset('tags')}}/typeahead.js"></script>
+  <script src="{{asset('tags')}}/bootstrap-tagsinput.js"></script>
+  <script>
+
+      var countries = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: {
+          url: '{{ url("/tags/input/") }}',
+          filter: function(list) {
+            return $.map(list, function(name) {
+              return { name: name }; });
+          }
+        }
+      });
+      countries.initialize();
+
+      $('#tags-input').tagsinput({
+
+        typeaheadjs: {
+          name: 'countries',
+          displayKey: 'name',
+          valueKey: 'name',
+          source: countries.ttAdapter()
+        }
+      });
+  </script>
+
+  <!-- end tags
+   -->
 <script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
 @endsection

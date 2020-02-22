@@ -444,7 +444,7 @@ $(document).on('click', '.pagination a', function(e){
 		if(src_key != ''){
 			$.ajax({
 				method:'post',
-				url:'{{ route('suggest_keyword') }}',
+				url:'{{ route('gigs_suggest_keyword') }}',
 				data:{src_key:src_key, _token: '{{csrf_token()}}'},
 				datatype: "text",
 				success:function(data){

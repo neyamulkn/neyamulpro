@@ -1,7 +1,7 @@
 
 <div class="col-lgh">
 	<div class="headline primary">
-	    <h4>2 Products Found</h4>
+	    <h4>{{$get_jobs->total()}} jobs found</h4>
 	    <div class="clearfix"></div>
 	</div>
     @foreach($get_jobs as $show_job)
@@ -35,12 +35,9 @@
 		<div class="jp_job_post_keyword_wrapper">
 			<ul>
 				<li><i class="fa fa-tags"></i>Keywords :</li>
-				<li><a href="#">ui designer,</a></li>
-				<li><a href="#">developer,</a></li>
-				<li><a href="#">senior</a></li>
-				<li><a href="#">it company,</a></li>
-				<li><a href="#">design,</a></li>
-				<li><a href="#">call center</a></li>
+				@foreach(explode(',', $show_job->search_tag) as $search_tag)
+                    <li>{{$search_tag}}</li>
+                @endforeach
 			</ul>
 		</div>
 	   </div>

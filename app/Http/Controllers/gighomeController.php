@@ -21,13 +21,11 @@ use Illuminate\Support\Facades\Input;
 class gighomeController extends Controller
 {
 
-
     public function marketplace(){
 
         $get_category = DB::table('gig_home_category')->get();
         return view('frontend.gigs')->with(compact('get_category'));
     }
-
 
     public function gig_view(Request $request){
 
@@ -54,8 +52,9 @@ class gighomeController extends Controller
         }
         $src = Input::get('item');
         if(Input::has('item') && !empty(Input::get('item'))){
-            $get_gigs =  $get_gigs->where('gig_basics.gig_title', 'LIKE', '%'.$src.'%');
-            $get_gigs =  $get_gigs->orWhere('gig_basics.gig_search_tag', 'LIKE', '%'.$src.'%');
+           $get_gigs =  $get_gigs->where(function($query) use ($src) {
+                $query->where('gig_basics.gig_title', 'LIKE', '%'. $src .'%')
+                ->orWhere('gig_basics.gig_search_tag', 'LIKE', '%'. $src .'%'); });
         }
 
         // if(isset($request->delivery)){
@@ -84,12 +83,67 @@ class gighomeController extends Controller
         $get_gigs = $get_gigs->paginate(3);
 
         if(!isset($_GET['filter'])){
-            return view('frontend.gigs-categories')->with(compact('get_gigs', 'get_filters'));
+            return view('frontend.search')->with(compact('get_gigs', 'get_filters'));
         }else{
             echo view('frontend.gig-filter-data')->with(compact('get_gigs'));
         }
        
 
+    }
+
+    public function suggest_keyword(Request $request){
+       $get_keyord = DB::table('key_keyword')->select('keyword_name')->where('key_keyword.keyword_name', 'LIKE', '%'. $request->src_key .'%')->get();
+       if(count($get_keyord)>0){
+            foreach ($get_keyord as $key) { // if search from index page
+               echo '<li><a href="'.(isset($request->page) ? route('marketplace_search') : '').'?item='.$key->keyword_name.'" >'.$key->keyword_name.'</a></li>';
+            }
+       }
+    }
+
+    public function search_gigs(Request $request){
+       
+       $get_gigs = DB::table('gig_basics')
+            ->leftJoin('gig_prices', 'gig_basics.gig_id', '=', 'gig_prices.gig_id')
+            ->leftJoin('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
+            ->leftJoin('users', 'gig_basics.gig_user_id', '=', 'users.id')
+            ->leftJoin('userinfos', 'gig_basics.gig_user_id', '=', 'userinfos.user_id')
+            ->leftJoin('gig_home_category', 'gig_basics.category_name', '=', 'gig_home_category.id')
+            ->leftJoin('gig_subcategories', 'gig_basics.gig_subcategory', '=', 'gig_subcategories.id');
+
+        if(isset($request->payment)){
+             $get_gigs = $get_gigs->where('gig_basics.gig_payment_type',  $request->payment);  
+        }
+        $src = Input::get('item');
+        if(Input::has('item') && !empty(Input::get('item'))){
+            $get_gigs =  $get_gigs->where(function($query) use ($src) {
+                $query->where('gig_basics.gig_title', 'LIKE', '%'. $src .'%')
+                ->orWhere('gig_basics.gig_search_tag', 'LIKE', '%'. $src .'%'); });
+        }
+
+        if(isset($request->delivery) && !empty($request->delivery)){
+            $get_gigs->whereBetween('gig_prices.delivery_time_p',  array(1, $request->delivery));  
+        }
+
+        if(isset($request->price) && !empty($request->price)){
+            $price = explode(',',  $request->price);
+
+            $get_gigs = $get_gigs->whereBetween('gig_prices.basic_p', [$price[0],$price[1]]); 
+        }
+
+
+        if(isset($request->gig_sort)){
+            $get_gigs = $get_gigs->orderBy('basic_p', $request->gig_sort);
+        }
+        
+        $get_gigs = $get_gigs->select('gig_basics.*', 'gig_prices.basic_p', 'gig_images.image_path', 'users.username', 'users.name', 'userinfos.user_image')
+            ->groupby('gig_basics.gig_id')->paginate(3);
+           
+        if(!isset($_GET['filter'])){
+            return view('frontend.search')->with(compact('get_gigs'));
+        }else{
+            echo view('frontend.gig-filter-data')->with(compact('get_gigs'));
+        }
+       
     }
 
 
@@ -119,7 +173,7 @@ class gighomeController extends Controller
             }
             Session::put('refferel_user_name', $_GET['ref']);  
         }
-
+        
         if($get_gig_info){
             $gig_id = $get_gig_info->gig_id;
           

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Manage orders')
+@section('title', 'Manage Themes')
 @section('css')
 
 

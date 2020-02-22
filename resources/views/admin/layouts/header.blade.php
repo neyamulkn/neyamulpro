@@ -140,7 +140,7 @@
 			<li class="dropdown-item interactive">
 				<a href="#">
                     <span class="sl-icon icon-tag"></span>
-                   Manage Marketplace 
+                   Marketplace categories
                     <!-- SVG ARROW -->
 					<svg class="svg-arrow">
 						<use xlink:href="#svg-arrow"></use>
@@ -171,12 +171,20 @@
 				<!-- INNER DROPDOWN -->
 			</li>
 
+			<li class="dropdown-item">
+				<a href="{{route('admin_manage_gigs', 'active')}}">
+                    <span class="sl-icon icon-star"></span>
+                    Manage Gigs
+                </a>
+                
+			</li>
+
 			<p class="side-menu-title">Workplace Section</p>
 
 			<li class="dropdown-item interactive">
 				<a href="#">
                     <span class="sl-icon icon-tag"></span>
-                   	Manage Workplace
+                   	Workplace categories
                     <!-- SVG ARROW -->
 					<svg class="svg-arrow">
 						<use xlink:href="#svg-arrow"></use>
@@ -209,13 +217,20 @@
 				</ul>
 				<!-- INNER DROPDOWN -->
 			</li>
+			<li class="dropdown-item">
+				<a href="{{route('admin_manage_gigs', 'active')}}">
+                    <span class="sl-icon icon-star"></span>
+                    Manage Gigs
+                </a>
+                
+			</li>
 
 			<p class="side-menu-title">Themeplace Section</p>
 
 			<li class="dropdown-item interactive">
 				<a href="#">
                     <span class="sl-icon icon-tag"></span>
-                    Themeplace 
+                    Themeplace categories
                     <!-- SVG ARROW -->
 					<svg class="svg-arrow">
 						<use xlink:href="#svg-arrow"></use>
@@ -253,7 +268,7 @@
 			<li class="dropdown-item">
 				<a href="{{route('admin_manage_theme', 'active')}}">
                     <span class="sl-icon icon-star"></span>
-                    Manage Theme
+                    Manage Themes
                 </a>
                 
 			</li>

@@ -85,12 +85,12 @@ h2{
 }
 
 </style>
+ <link rel="stylesheet" href="{{asset('chatbox')}}/css/style.css">
 
 @endsection
 
 @section('content')
-     <link rel="stylesheet" href="{{asset('chatbox')}}/css/style.css">
-     <title>Ready</title>
+    
      <style type="text/css">
         .card{
             box-shadow: none;
@@ -175,9 +175,9 @@ h2{
                                         <span class="online_icon"></span>
                                     </div>
                                     <div class="user_info">
-                                       
+                                        <a>
                                         {{$userinfo->username}}
-                                        
+                                        </a>
                                     </div>
                                 </div>
                             </li> 
@@ -195,9 +195,11 @@ h2{
             </div>
         </div>
     
+  @endsection  
+@section('js')
      <script src="{{asset('chatbox')}}/js/script.js"></script>
 
-    <script src="{{asset('js/custom.js')}}"></script>
+
      <script type="text/javascript">
 
         function myFunction() {
@@ -223,18 +225,17 @@ h2{
         }
      </script>
 
-<script type="text/javascript">
+<script>
+    
+
+    var username = '{{ (Request::route("username")) ?  Request::route("username") : ""}}';
+    
     $(document).ready(function(){
-
-        $(document).on('click', '.message a', function(e){
-        e.preventDefault();
-        });
+        if(username){
+            message(username);
+        }
     });
-        
-
-    // var username = '{{ (Request::route("username")) ?  Request::route("username") : "users"}}';
-    message('{{ Request::route("username")}}');
-
+  
     function message(username){
         var  link = '<?php echo URL::to("/dashboard/getmessages/");?>/'+username;
         $('.conversation-history').html('<div id="overlay" style="" ></div>');
@@ -257,9 +258,11 @@ h2{
         });
         
         //document.getElementById(username).style.backgroundColor = 'white';
-        history.pushState(null, null, username);
+        var path = "{{route('inbox')}}/"+username;
+        history.pushState(null, null, path);
 
     }
+
 
 
 </script>

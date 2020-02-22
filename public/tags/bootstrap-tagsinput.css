@@ -3,7 +3,7 @@
   border: 1px solid #ccc;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   display: inline-block;
-  padding: 4px 6px;
+  padding: 0px;
   color: #555;
   vertical-align: middle;
   border-radius: 4px;
@@ -16,7 +16,7 @@
   box-shadow: none;
   outline: none;
   background-color: transparent;
-  padding: 0 6px;
+  padding: 5px 6px;
   margin: 0;
   width: auto;
   max-width: inherit;
@@ -53,3 +53,18 @@
 .bootstrap-tagsinput .tag [data-role="remove"]:hover:active {
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
+
+
+.twitter-typeahead { display:initial !important; }
+.bootstrap-tagsinput {line-height:40px;display:block !important;}
+.bootstrap-tagsinput .tag {background:#09F;padding:5px;border-radius:4px; margin-left: 5px}
+.tt-hint {top:2px !important;}
+.tt-input{vertical-align:baseline !important;}
+.typeahead { border: 1px solid #CCCCCC;border-radius: 4px;padding: 8px 12px;width: 300px;font-size:1.5em;}
+.tt-menu { width:300px; }
+span.twitter-typeahead .tt-suggestion {padding: 10px 20px;  border-bottom:#CCC 1px solid;cursor:pointer;}
+span.twitter-typeahead .tt-suggestion:last-child { border-bottom:0px; }
+.demo-label {font-size:1.5em;color: #686868;font-weight: 500;}
+.bgcolor {max-width: 440px;height: 200px;background-color: #c3e8cb;padding: 40px 70px;border-radius:4px;margin:20px 0px;}
+.tt-menu{width: 100%;}
+.ttinput-group{overflow: hidden;}

@@ -7,7 +7,6 @@
 	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/owl.carousel.css') }}">
 	<link rel="stylesheet" href="{{ asset('allscript/css/index.css') }}">
 
-
 @endsection
 
 @section('content')
@@ -20,19 +19,14 @@
 
 			<!-- SEARCH WIDGET -->
 			<div class="search-widget">
-				<form class="search-widget-form">
-					<input type="text" name="category_name" placeholder="Search goods or services here...">
-					<label for="categories" class="select-block">
-						<select name="categories" id="categories">
-							<option value="0">All Categories</option>
-							<option value="1">PSD Templates</option>
-							<option value="2">Hero Images</option>
-							<option value="3">Shopify</option>
-							<option value="4">Icon Packs</option>
-							<option value="5">Graphics</option>
-							<option value="6">Flyers</option>
-							<option value="7">Backgrounds</option>
-							<option value="8">Social Covers</option>
+				<form action="#" class="search-widget-form" id="searchForm">
+					<input type="text" id="searchKey" required name="item" placeholder="Search goods or services here...">
+					<label for="platform" class="select-block">
+						<select required="" onchange="changePath(this.value)" name="platform" id="platform">
+							<option value="">Select Platform</option>
+							<option value="themeplace">Themeplace</option>
+							<option value="marketplace">Marketplace</option>
+							<option value="workplace">Workplace</option>
 						</select>
 						<!-- SVG ARROW -->
 						<svg class="svg-arrow">
@@ -393,5 +387,39 @@
 <!-- Home Alerts -->
 <script src="{{ asset('allscript/js/home-alerts.js') }}"></script>
 
+<script src="{{ asset('allscript/js/typeahead.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        $('#searchKey').typeahead({
+
+            source: function (query, result) {
+                $.ajax({
+                    url: '{{ route("search_keyword") }}',
+					data: 'q=' + query,            
+                    dataType: "json",
+                    type: "get",
+                    success: function (data) {
+						result($.map(data, function (item) {
+							return item;
+                        }));
+                    }
+                });
+            }
+        });
+    });
+
+    function changePath(platform){
+    	if(platform == 'themeplace'){
+    		$('#searchForm').attr('action', '{{route("theme_search")}}');
+    	}else if(platform == 'marketplace'){
+    		$('#searchForm').attr('action', '{{route("marketplace_search")}}');
+    	}else if(platform == 'workplace'){
+    		$('#searchForm').attr('action', '{{route("job_search")}}');
+    	}else{
+    		$('#searchForm').attr('action', '#');
+    	
+    	}
+    }
+</script>
 @endsection
 

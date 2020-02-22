@@ -16,9 +16,6 @@
     data-hotlancer-popup="off"
     data-hotlancer-type="marketplace">
  </script>
-
-
-
-
+<!---end affiliate adds -->
 </body>
 </html>

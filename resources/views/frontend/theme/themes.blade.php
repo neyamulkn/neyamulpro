@@ -8,124 +8,6 @@
 	<link rel="stylesheet" href="{{ asset('allscript/css/vendor/owl.carousel.css') }}">
 	<link rel="stylesheet" href="{{ asset('allscript/css/index.css') }}">
 	<style type="text/css">
-		
-.magnifier {
-    color: hsl(0, 0%, 100%);
-    background: hsl(0, 0%, 20%);
-    border: 1px solid hsl(0, 0%, 0%);
-    box-sizing: content-box;
-    box-sizing: initial;
-    position: absolute;
-    z-index: 9100;
-    padding: 0px 10px 7px;
-    text-align: left;
-  /*  display: none;*/
-}
-
-a:hover + .magnifier{
-	display: block;
-}
-.magnifier .size-limiter {
-    margin-top: 10px;
-    background: #565656;
-    overflow: hidden;
-}
-.size-limiter{    width: 100%;
-    height: 250px;}
-.magnifier strong {
-    padding-top: 7px;
-    font: 16px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: hsl(0, 0%, 100%);
-    font-weight: bold;
-    display: block;
-}
-.magnifier .info, .footer {
-    color: #686868;
-    font-size: 11px;
-    line-height: 18px;
-    overflow: hidden;
-    width: 100%;
-}
-.magnifier .author-category {
-    float: left;
-	color: #ccc;
-}
-.magnifier .price {
-    float: right;
-    margin-left: 20px;
-    font: 40px/25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    color: hsl(0, 0%, 100%);
-}
-.magnifier .footer {
-    display: -ms-flexbox;
-    display: flex;
-    color: hsl(0, 0%, 70%);
-}
-.magnifier .info, .footer {
-    color: #686868;
-    font-size: 11px;
-    line-height: 18px;
-    overflow: hidden;
-    width: 100%;
-}
-.magnifier .category {
-    width: 50%;
-	color: #ccc;
-    font-size: 10px;
-}
-.magnifier .gst-notice {
-    width: 50%;
-    text-align: right;
-}
-
-a.hideDisplay{
-  position: relative; /* This makes everything work.*/
-  /* Allows you to layer overlapping elements. */
-  z-index: 20; 
-  color: #000;
-  text-decoration: none
-}
-  
-a.hideDisplay:hover{
-  /* Allows you to layer overlapping elements. */
-  z-index: 30; 
-}
-
-a.hideDisplay span.showDisplayOnHover{
-  display: none
-}
-
-/* This will only display itself when the
- * user hovers the mouse over the anchor. */
-a.hideDisplay:hover span.showDisplayOnHover{ 
-  display: block;
-  position: absolute;
-  font-size: 18px;
-  
-  /* This sets the height of a line of text in the box. */
-  line-height: 25px;
-  
-  /* These position the box where it needs to go. */
-  top: -50px; 
-  right: -12px; 
-  
-  /* These adjust the size of the box when it appears. */
-  width: auto;
-  padding: 10px;
- 
-  
-  /* text color */
-  color: #000000;
-  text-align: left;
-}
-
-span.showBodyOfDisplayOnHover {
-  font-size: 16px; 
-  font-weight: normal;
-  color: #444;
-  line-height: 18px; 
-}
 
 body { 
   /* Background image */
@@ -217,6 +99,105 @@ h1 {
   color: #000000; 
 }
 
+/*---------tooltips-----*/
+.devcsstip {
+	display:none; /*--Hides by default--*/
+	position:absolute;
+	z-index:1000;
+}
+.devcss {
+    color: hsl(0, 0%, 100%);
+    background: hsl(0, 0%, 20%);
+    border: 1px solid hsl(0, 0%, 0%);
+    box-sizing: content-box;
+    box-sizing: initial;
+    z-index: 9100;
+    padding: 0px 10px 7px;
+    text-align: left;
+}
+.devcss .size-limiter {
+    margin-top: 10px;
+    background: #565656;
+    overflow: hidden;
+}
+.devcss strong {
+    padding-top: 7px;
+    font: 16px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: hsl(0, 0%, 100%);
+    font-weight: bold;
+    display: block;
+}
+.devcss .info, .footer {
+    color: #686868;
+    font-size: 11px;
+    line-height: 18px;
+    overflow: hidden;
+    width: 100%;
+}
+.devcss .footer {
+    display: -ms-flexbox;
+    display: flex;
+    color: hsl(0, 0%, 70%);
+}
+.devcss .info, .footer {
+    color: #686868;
+    font-size: 11px;
+    line-height: 18px;
+    overflow: hidden;
+    width: 100%;
+}
+.devcss .author-category {
+    float: left;
+}
+.devcss .price {
+    float: right;
+    margin-left: 20px;
+    font: 40px/40px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    color: hsl(0, 0%, 100%);
+}
+.devcss .price sup {
+    font-size: 23px;
+    top: 0;
+    vertical-align: 10px;
+}
+.devcss .category {
+    width: 50%;
+}
+.devcss .gst-notice {
+    width: 50%;
+    text-align: right;
+}
+/*End tooltips*/
+ .search-widget-form {
+    width: 91%;
+    margin: 15px auto 0;
+}
+
+.search_bar{
+	position: absolute;
+    top: 46px;
+    left: 82px;
+    margin: 0px auto;
+    width: 52%;
+    border:1px solid #ccc;
+    border-top: none;
+    background: #fafafa;
+    z-index: 999;
+    display: none;
+
+}
+.search_bar li{
+	
+	display: block;
+}
+.search_bar li a{
+	display: block;padding: 10px;	
+}
+.search_bar li:hover{
+	
+	background-color: #fff;
+}
 </style>
 @endsection
 
@@ -228,24 +209,33 @@ h1 {
 			<h3><span>46,129 WordPress Themes & Website Templates From $2</span></h3>
 			<h5>WordPress themes, web templates and more. Brought to you by the largest global community of creatives.</h5>
 
-			<form action="{{ route('theme_search') }}" class="search-widget-form">
-				<input type="text" value="" required name="item" placeholder="Search goods or services here...">
-				<label for="cat" class="select-block">
-					<select name="cat" id="cat">
-						<option value="">All Categories</option>
-						@foreach($theme_category as $show_category)
+			<div style="position: relative; width: 100%;" >
+			
+				<form action="{{ route('theme_search') }}" style="width: 86%;" class="search-widget-form" >
+					<input type="text" style="width: 60%;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" required onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
+					<label for="cat" class="select-block">
+						<select name="cat" id="cat">
+							<option  value="">All Categories</option>
+							@foreach($theme_category as $show_category)
 
-							<option {{ (isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url) ? 'selected' : ""}} value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
-						@endforeach
-					</select>
-					<!-- SVG ARROW -->
-					<svg class="svg-arrow">
-						<use xlink:href="#svg-arrow"></use>
-					</svg>
-					<!-- /SVG ARROW -->
-				</label>
-				<button class="button medium primary">Search Now!</button>
-			</form>
+								<option {{(isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url)? 'selected' : ''}} value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
+							@endforeach
+						</select>
+						<!-- SVG ARROW -->
+						<svg class="svg-arrow">
+							<use xlink:href="#svg-arrow"></use>
+						</svg>
+						<!-- /SVG ARROW -->
+					</label>
+					<button class="button medium primary">Search Now!</button>
+				</form>
+
+				<div class="search_bar" id="search_bar" >
+					<ul>
+						<span id="show_suggest_key"></span>
+					</ul>
+				</div>
+			</div>
 		</section>
 	</div>
 	<!-- /BANNER -->
@@ -259,10 +249,10 @@ h1 {
 			</div>
 			<div class="hometheme" style="overflow: visible;">
 				@foreach($top_seller as $show_seller)
-				<a class="hideDisplay" href="{{route('theme_detail', [$show_seller->theme_url])}}">
-						<img class="user-avatar medium" src="{{ asset('theme/images/'.$show_seller->main_image)}}" alt="">
-					  <span class="showDisplayOnHover">
-					    <div class="magnifier" style="width: 477px;overflow: hidden; position: absolute;z-index: 99999">
+				<a class="devcsstip_trigger" href="{{route('theme_detail', [$show_seller->theme_url])}}">
+					<img class="user-avatar medium" src="{{ asset('theme/images/'.$show_seller->main_image)}}" alt="">
+					  <span class="devcsstip">
+					    <div class="devcss" style="width: 477px;overflow: hidden; position: absolute;z-index: 99999">
 							<div class="size-limiter"><img alt="" src="{{ asset('theme/images/'.$show_seller->main_image)}}"></div><strong>  {{$show_seller->theme_name}}</strong>
 							<div class="info">
 								<div class="author-category">by <span class="author">{{$show_seller->username}}</span></div>
@@ -289,10 +279,10 @@ h1 {
 			<div class="hometheme theme_show_category "  style="overflow: visible;">
 				
 				@foreach($get_theme_info as $show_theme_info)
-					<a class="hideDisplay" href="{{route('theme_detail', [$show_theme_info->theme_url])}}">
+					<a class="devcsstip_trigger" href="{{route('theme_detail', [$show_theme_info->theme_url])}}">
 						<img class="user-avatar medium" src="{{ asset('theme/images/'.$show_theme_info->main_image)}}" alt="">
-					  <span class="showDisplayOnHover">
-					    <div class="magnifier" style="width: 477px;overflow: hidden; position: absolute;z-index: 99999">
+					  <span class="devcsstip">
+					    <div class="devcss">
 							<div class="size-limiter"><img alt="" src="{{ asset('theme/images/'.$show_theme_info->main_image)}}"></div><strong>  {{$show_theme_info->theme_name}}</strong>
 							<div class="info">
 								<div class="author-category">by <span class="author">{{$show_theme_info->username}}</span></div>
@@ -443,4 +433,70 @@ h1 {
 
 <!-- Home Alerts -->
 <script src="{{ asset('allscript')}}/js/home-alerts.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+  //Tooldevcsstips
+  $(".devcsstip_trigger").hover(function(){
+    devcsstip = $(this).find('.devcsstip');
+    devcsstip.show(); //Show tooldevcsstip
+  }, function() {
+    devcsstip.hide(); //Hide tooldevcsstip      
+  }).mousemove(function(e) {
+    var mousex = e.pageX + 20; //Get X coodrinates
+    var mousey = e.pageY + 20; //Get Y coordinates
+    var devcsstipWidth = devcsstip.width(); //Find width of tooldevcsstip
+    var devcsstipHeight = devcsstip.height(); //Find height of tooldevcsstip
+    
+    //Distance of element from the right edge of viewport
+    var devcsstipVisX = $(window).width() - (mousex + devcsstipWidth);
+    //Distance of element from the bottom of viewport
+    var devcsstipVisY = $(window).height() - (mousey + devcsstipHeight);
+      
+    if ( devcsstipVisX < 20 ) { //If tooldevcsstip exceeds the X coordinate of viewport
+      mousex = e.pageX - devcsstipWidth - 20;
+    } if ( devcsstipVisY < 20 ) { //If tooldevcsstip exceeds the Y coordinate of viewport
+      mousey = e.pageY - devcsstipHeight - 20;
+    } 
+    devcsstip.css({  top: mousey, left: mousex });
+  });
+});
+
+
+
+	function search_bar(src_key){
+		if(src_key != ''){
+			$.ajax({
+				method:'post',
+				url:'{{ route('suggest_keyword') }}',
+				data:{src_key:src_key, route:'theme_search', _token: '{{csrf_token()}}'},
+				datatype: "text",
+				success:function(data){
+					if(data !=null){
+						
+						document.getElementById('search_bar').style.display = 'block';
+						document.getElementById('show_suggest_key').innerHTML = data;
+					}else{
+						
+						document.getElementById('search_bar').style.display = 'none';
+						
+					}
+				}
+			});
+		}else{
+			document.getElementById('search_bar').style.display = 'none';
+		}
+	}
+
+	$( document.body ).click(function() {
+		if($('#search_bar').css('display') == 'block'){
+		    document.getElementById('search_bar').style.display = 'none';
+		}
+	});
+
+	function search_field(src){
+	 	document.getElementById('item').value = src;
+	 	document.getElementById('search_bar').style.display = 'none';
+	}
+</script>
 @endsection

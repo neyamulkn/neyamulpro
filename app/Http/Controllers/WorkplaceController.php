@@ -21,17 +21,15 @@ class WorkplaceController extends Controller
 
     }
 
-    public function job_post($post_id=null){
+    public function job_post($slug=null){
         $user_id = Auth::user()->id;
         $get_job = DB::table('jobs')
         ->join('workplace_category', 'jobs.category_id', '=', 'workplace_category.id')
         ->join('workplace_subcategory', 'jobs.subcategory_id', '=', 'workplace_subcategory.id')
-        ->where('job_id', $post_id)->where('user_id', $user_id)->first();
+        ->where('job_title_slug', $slug)->where('user_id', $user_id)->first();
 
     	$get_category = DB::table('workplace_category')->get();
-    	return view('backend.workplace.job1')->with(compact('get_category', 'get_job'));
-
-       
+    	return view('backend.workplace.job1')->with(compact('get_category', 'get_job'));  
     }
 
     public function get_subcategory($id)
@@ -50,29 +48,33 @@ class WorkplaceController extends Controller
 
     public function insert_job_post(Request $request){
         $user_id = Auth::user()->id;
+        $slug = $this->createSlug($request->post_title);
         $data = [
             'job_title' => $request->post_title,
-            'job_title_slug' => str_slug($request->post_title),
+            'job_title_slug' => $slug,
             'category_id' => $request->category_id,
             'user_id' => $user_id,
             'subcategory_id' => $request->subcategory,
         ];
 
-           $check_job = job::where('job_id', $request->post_id)->where('user_id', $user_id)->first();
-           Toastr::success('First Step Completed.');
-           if($check_job){
-                job::where('job_id', $request->post_id)->where('user_id', $user_id)->update($data);
-                return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/2');
-           }else{
-                $insertID = job::insertGetId($data);
-                return redirect('dashboard/workplace/job-post/'.$insertID.'/step/2');
-           }  
+       $check_job = job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
+      
+       if($check_job){
+            job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->update($data);
+            Toastr::success('Job update successfully.');
+            return redirect('dashboard/workplace/job-post/'.$check_job->job_title_slug.'/step/2')->with('get_job', $check_job);
+       }else{
+            $insert = job::create($data);
+            if($insert){ Toastr::success('First Step Completed.'); }else{ Toastr::error('Sorry job insert failed.'); }
+           
+            return redirect('dashboard/workplace/job-post/'.$slug.'/step/2')->with('get_job', $insert);
+        }  
     }
 
 
-    public function job_post_second($post_id){
+    public function job_post_second($slug){
         $user_id = Auth::user()->id;
-        $get_job = job::where('job_id', $post_id)->where('user_id', $user_id)->first();
+        $get_job = job::where('job_title_slug', $slug)->where('user_id', $user_id)->first();
 
         return view('backend.workplace.job2')->with(compact('get_job'));
     }
@@ -92,11 +94,11 @@ class WorkplaceController extends Controller
             
         ];
 
-        $check_job = job::where('job_id', $request->post_id)->where( 'user_id', $user_id)->first();
+        $check_job = job::where('job_title_slug', $request->slug)->where( 'user_id', $user_id)->first();
 
        if($check_job){
-            job::where('job_id', $request->post_id)->where('user_id', $user_id)->where('user_id', $user_id)->update($data);
-            return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/3');
+            job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->where('user_id', $user_id)->update($data);
+            return redirect('dashboard/workplace/job-post/'.$request->slug.'/step/3')->with('get_job', $check_job);
        }else{
             return back();
        }
@@ -104,9 +106,9 @@ class WorkplaceController extends Controller
 
 
 
-    public function job_post_third($post_id){
+    public function job_post_third($slug){
         $user_id = Auth::user()->id;
-        $get_job = job::where('job_id', $post_id)->where('user_id', $user_id)->first();
+        $get_job = job::where('job_title_slug', $slug)->where('user_id', $user_id)->first();
 
     	return view('backend.workplace.job3')->with(compact('get_job'));
     }
@@ -119,59 +121,56 @@ class WorkplaceController extends Controller
             
         ];
 
-        $check_job = DB::table('jobs')->where('job_id', $request->post_id)->where('user_id', $user_id)->first();
+        $check_job = DB::table('jobs')->where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
 
        if($check_job){
-            job::where('job_id', $request->post_id)->where('user_id', $user_id)->update($data);
-            return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/4');
+            job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->update($data);
+            return redirect('dashboard/workplace/job-post/'.$request->slug.'/step/4')->with('get_job', $check_job);
        }else{
             return back();
        }
     }
 
-    public function job_post_four($post_id){
+    public function job_post_four($slug){
     	$user_id = Auth::user()->id;
-        $get_job = job::where('job_id', $post_id)->where('user_id', $user_id)->first();
+        $get_job = job::where('job_title_slug', $slug)->where('user_id', $user_id)->first();
 
         $get_filters = DB::table('workplace_filters')->where('subcategory_id', $get_job->subcategory_id)->get();
 
-        return view('backend.workplace.job4')->with(compact('get_job','get_filters'));
+        return view('backend.workplace.job4')->with(compact('get_job','get_filters'))->with('get_job', $get_job);
     }
 
 
     public function insert_job_step_four(Request $request){
         $user_id = Auth::user()->id;
-
-        foreach ($request->filter_id as $key => $value) {
-           
-        
-           $subfilter_id = implode(',', $request->subfilter_id);
-         
+        $check_job = job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
+        if($check_job){
+            foreach ($request->filter_id as $key => $value) {
+                $subfilter_id = implode(',', $request->subfilter_id);
                 $data = [
-                    'job_id' => $request->post_id,
+                    'job_id' => $check_job->job_id,
                     'filter_id' => $value,
                     'subfilter_id' => $subfilter_id,
-                    
                 ];
+                $get_expertise = DB::table('job_expertise')->where('job_id', $check_job->job_id)->first();
+                if($get_expertise){
+                   $success =  DB::table('job_expertise')->where('job_id', $check_job->job_id)->update($data);  
+                }else{
+                    $success = DB::table('job_expertise')->insert($data);
+                }
+            }
 
-                $check_job = DB::table('job_expertise')->where('job_id', $request->post_id)->first();
-               if($check_job){
-                   $success =  DB::table('job_expertise')->where('job_id', $request->post_id)->update($data);
-                   
-               }else{
-                $success = DB::table('job_expertise')->insert($data);
-                   
-               }
+            job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->where('user_id', $user_id)->update(['search_tag' => $request->search_tag]);
         }
 
-        return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/5');
+        return redirect('dashboard/workplace/job-post/'.$request->slug.'/step/5')->with('get_job', $check_job);
        
     }
 
-    public function job_post_five($post_id){
+    public function job_post_five($slug){
 
         $user_id = Auth::user()->id;
-        $get_job = job::where('job_id', $post_id)->where('user_id', $user_id)->first();
+        $get_job = job::where('job_title_slug', $slug)->where('user_id', $user_id)->first();
 
         return view('backend.workplace.job5')->with(compact('get_job'));
     	
@@ -193,20 +192,20 @@ class WorkplaceController extends Controller
             
         ];
 
-        $check_job = DB::table('jobs')->where('job_id', $request->post_id)->where('user_id', $user_id)->first();
+        $check_job = DB::table('jobs')->where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
 
        if($check_job){
-            job::where('job_id', $request->post_id)->where('user_id', $user_id)->update($data);
-            return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/6');
+            job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->update($data);
+            return redirect('dashboard/workplace/job-post/'.$request->slug.'/step/6');
        }else{
             return back();
        }
     }   
 
-    public function job_post_six($post_id){
+    public function job_post_six($slug){
 
         $user_id = Auth::user()->id;
-        $get_job = job::where('job_id', $post_id)->where('user_id', $user_id)->first();
+        $get_job = job::where('job_title_slug', $slug)->where('user_id', $user_id)->first();
 
         return view('backend.workplace.job6')->with(compact('get_job'));
         
@@ -233,29 +232,29 @@ class WorkplaceController extends Controller
             
         ];
 
-        $check_job = DB::table('jobs')->where('job_id', $request->post_id)->where('user_id', $user_id)->first();
+        $check_job = DB::table('jobs')->where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
 
        if($check_job){
-             job::where('job_id', $request->post_id)->where('user_id', $user_id)->update($data);
-            return redirect('dashboard/workplace/job-post/'.$request->post_id.'/step/7');
+             job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->update($data);
+            return redirect('dashboard/workplace/job-post/'.$request->slug.'/step/7');
        }else{
             return back();
        }
     } 
 
-    public function job_post_seven($post_id){
+    public function job_post_seven($slug){
 
         $user_id = Auth::user()->id;
         
         $get_job = DB::table('jobs')
-                    ->join('workplace_category', 'jobs.category_id', '=' , 'workplace_category.id')
-                    ->join('workplace_subcategory', 'jobs.category_id', '=' , 'workplace_subcategory.id')
-                    ->select('jobs.*', 'workplace_category.category_name', 'workplace_subcategory.subcategory_name')
-                    ->where('job_id', $post_id)->where('user_id', $user_id)->first();
+        ->join('workplace_category', 'jobs.category_id', '=' , 'workplace_category.id')
+        ->join('workplace_subcategory', 'jobs.category_id', '=' , 'workplace_subcategory.id')
+        ->select('jobs.*', 'workplace_category.category_name', 'workplace_subcategory.subcategory_name')
+        ->where('job_title_slug', $slug)->where('user_id', $user_id)->first();
 
-            $get_filters = DB::table('job_expertise')
-                        ->join('workplace_filters', 'job_expertise.filter_id', 'workplace_filters.filter_id')
-                        ->where('job_expertise.job_id', $get_job->job_id)->get();
+        $get_filters = DB::table('job_expertise')
+        ->join('workplace_filters', 'job_expertise.filter_id', 'workplace_filters.filter_id')
+        ->where('job_expertise.job_id', $get_job->job_id)->get();
 
         return view('backend.workplace.job7')->with(compact('get_job','get_filters'));
         
@@ -282,7 +281,7 @@ class WorkplaceController extends Controller
         ->first();
 
         $exist_proposal = DB::table('job_proposals')
-        ->where('job_id', $get_job->job_id)
+        ->where('job_title_slug', $get_job->job_title_slug)
         ->where('freelancer_id', $user_id)
         ->first();
 
@@ -295,7 +294,7 @@ class WorkplaceController extends Controller
        
         $data = [
 
-        'job_id' => $request->job_id,
+        'job_title_slug' => $request->job_title_slug,
         'buyer_id' => $request->buyer_id,
         'freelancer_id' => $user_id,
         'proposal_budget' => $request->proposal_budget,
@@ -332,27 +331,27 @@ class WorkplaceController extends Controller
         return view('backend.workplace.job-list')->with(compact('get_jobs'));
     }
 
-    public function proposals_list($job_id){
+    public function proposals_list($job_title_slug){
         $buyer_id = Auth::user()->id;
         $get_proposals = DB::table('job_proposals')
-                    ->join('jobs', 'job_proposals.job_id', 'jobs.job_id')
+                    ->join('jobs', 'job_proposals.job_title_slug', 'jobs.job_title_slug')
                     ->join('users', 'job_proposals.freelancer_id', 'users.id')
                     ->leftjoin('userinfos', 'job_proposals.freelancer_id', 'userinfos.user_id')
                     ->select('job_proposals.*', 'jobs.job_title', 'jobs.job_title_slug', 'users.username','users.country', 'userinfos.user_title', 'userinfos.user_image')
-                    ->where('job_proposals.job_id', '=', $job_id)
+                    ->where('job_proposals.job_title_slug', '=', $job_title_slug)
                     ->where('job_proposals.buyer_id', '=', $buyer_id)
                     ->get();
                 return view('backend.workplace.proposal-list')->with(compact('get_proposals'));
     }
 
-    public function applicant_hire($job_id, $applicant_id){
+    public function applicant_hire($job_title_slug, $applicant_id){
         $user_id = Auth::user()->id;
         $get_applicant = DB::table('job_proposals')
-                    ->join('jobs', 'job_proposals.job_id', 'jobs.job_id')
+                    ->join('jobs', 'job_proposals.job_title_slug', 'jobs.job_title_slug')
                     ->join('users', 'job_proposals.freelancer_id', 'users.id')
                     ->join('userinfos', 'job_proposals.freelancer_id', 'userinfos.user_id')
                     ->select('job_proposals.*', 'jobs.job_title', 'jobs.job_title_slug', 'users.username', 'userinfos.user_title', 'userinfos.user_image')
-                    ->where('job_proposals.job_id', '=', $job_id)
+                    ->where('job_proposals.job_title_slug', '=', $job_title_slug)
                     ->where('job_proposals.freelancer_id', '=', $applicant_id)
                     ->first();
         return view('backend.workplace.applicant-hire')->with(compact('get_applicant'));
@@ -363,7 +362,7 @@ class WorkplaceController extends Controller
     {   
         $buyer_id = Auth::user()->id;
         $get_proposal = DB::table('job_proposals')
-                    ->join('jobs', 'job_proposals.job_id', 'jobs.job_id')
+                    ->join('jobs', 'job_proposals.job_title_slug', 'jobs.job_title_slug')
                     ->join('users', 'job_proposals.buyer_id', 'users.id')
                     ->select('job_proposals.*', 'users.username', 'jobs.job_title')
                     ->where('job_proposals.proposal_id', '=', $request->proposal_id)
@@ -396,7 +395,7 @@ class WorkplaceController extends Controller
 
                     $data = [
                         'order_id' => $order_id,
-                        'job_id' => $get_proposal->job_id,
+                        'job_title_slug' => $get_proposal->job_title_slug,
                         'proposal_id' => $get_proposal->proposal_id,
                         'freelancer_id' => $get_proposal->freelancer_id,
                         'buyer_id' =>  $get_proposal->buyer_id,
@@ -448,6 +447,24 @@ class WorkplaceController extends Controller
             Toastr::error('Sorry something is wrong try again.!');
             return back();
         } 
+    }
+
+
+    // create theme unique slug 
+    public function createSlug($slug)
+    {
+      $slug = str_slug($slug);
+      $check_slug = job::select('job_title_slug')->where('job_title_slug', 'like', $slug.'%')->get();
+
+      if (count($check_slug)>0){
+        //find slug until find not used.
+        for ($i = 1; $i <= count($check_slug); $i++) {
+            $newSlug = $slug.$i;
+            if (!$check_slug->contains('job_title_slug', $newSlug)) {
+              return $newSlug;
+            }
+        }
+      }else{ return $slug; }   
     }
 
 

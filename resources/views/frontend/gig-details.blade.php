@@ -394,7 +394,6 @@ h4.gigsfuq-item {
 					</div>
 					
 					<div class="clearfix"></div>
-						
 				</div>
 				<!-- SIDEBAR ITEM -->
 				<div class="sidebar-item product-info">
@@ -443,7 +442,7 @@ h4.gigsfuq-item {
 								<?php $gig_search_tag = explode(',', $get_gig_info->gig_search_tag); ?>
 
 								@foreach($gig_search_tag as $search_tag)
-									<a href="#"> {{ $search_tag }}</a>,
+									<a href="{{ url('marketplace/search?item='.$search_tag) }}"> {{ $search_tag }}</a>,
 								@endforeach
 							</p>
 						</div>

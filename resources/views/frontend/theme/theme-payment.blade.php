@@ -193,17 +193,17 @@ li.financial-institutes__logo {
 .theme-title{
 	width: 89%;
 	padding: 5px;
-white-space: nowrap;
+	white-space: nowrap;
 
-overflow: hidden;
+	overflow: hidden;
 
-word-break: unset;
+	word-break: unset;
 
-word-spacing: inherit;
+	word-spacing: inherit;
 
-text-overflow: ellipsis;
+	text-overflow: ellipsis;
 
-display: inline-block;
+	display: inline-block;
 }
 </style>
 @endsection
@@ -218,7 +218,6 @@ display: inline-block;
 					<h4>Order Summary</h4>
 					<hr class="line-separator">
 					<!-- CART OVERVIEW ITEM -->
-					
 					<?php $total = 0; $qty = 0; ?>
 						@foreach($get_theme_info as $show_themeinfo)
 							
@@ -273,7 +272,6 @@ display: inline-block;
 
 						<div class="payment-method__tabs is-hidden-phone">
 
-				
 							<button name="payment_key"onclick="paymentbtn('masterCard')"  value="buy_now::credit" aria-selected="false" class="payment-method__tab " data-google-analytics-payment-method="credit">
 								<div class="payment-method__tab-inner">
 								<div class="payment-method__title">

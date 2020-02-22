@@ -104,8 +104,8 @@
 		                                    <label for="sv" class="select-block v3">
 		                                        <select onchange="action_type(this.value, '{{$show_gig->gig_id}}')" name="sv" id="sv">
 		                                            <option value="0">select action</option>
-		                                            <option value="1">Edit</option>
-		                                            <option value="2">Delete</option>
+		                                            <option value="edit">Edit</option>
+		                                            <option value="delete">Delete</option>
 		                                        </select>
 		                                        <!-- SVG ARROW -->
 		                                        <svg class="svg-arrow">
@@ -159,9 +159,10 @@
 <script src="{{asset('/allscript')}}/js/dashboard-header.js"></script>
 
 <script type="text/javascript">
+
     function get_gigs(status){
     	document.getElementById('open').style.display = 'block';
-    	history.pushState('state/', '/manage-gigs/', status);
+    	
         var  link = '<?php echo URL::to("dashboard/manage-gigs/");?>/'+status+'?type=status';
       
         $.ajax({
@@ -176,21 +177,24 @@
     }
 
 function action_type(id, gig_id) {
-	if(id == 2){
+	if(id == 'delete'){
     	if (confirm("Are you sure delete it.?")) {
        
-            var  link = '<?php echo URL::to("dashboard/marketplace/gig/delete");?>/'+gig_id;
+            var  link = '{{route("gig_delete")}}';
             $.ajax({
             url:link,
-            method:"get",
-            
+            method:"post",
+            data:{
+            	gig_id: gig_id,
+            	_token: '{{csrf_token()}}'
+            },
             success:function(data){
                 if(data){
                     
                      $("#item"+gig_id).hide();
                     toastr.error(data);
                 }
-	            }
+	        }
 	        
 	        });
 	    }

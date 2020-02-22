@@ -15,14 +15,14 @@ class filterController extends Controller
 {
 
 	public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    public function show_filer_page(){
+  {
+    $this->middleware('auth');
+  }
+  public function show_filer_page(){
     	$get_filter_data = filter::get();
 
     	return view('admin.marketplace.filter')->with(compact('get_filter_data'));
-    }
+  }
 
 	public function insert_filter(Request $request){
 		$insertOrupdate = filter::where('filter_id', $request->id)->first();

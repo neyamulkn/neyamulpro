@@ -25,7 +25,7 @@
     top: 46px;
     left: 95px;
     margin: 0px auto;
-    width: 72%;
+    width: 73%;
     border:1px solid #ccc;
     border-top: none;
     background: #fafafa;
@@ -34,11 +34,11 @@
 
 }
 .search_bar li{
-	padding: 10px;	
+
 	display: block;
 }
 .search_bar li a{
-	display: block;
+	display: block;padding: 10px;	
 }
 .search_bar li:hover{
 	
@@ -51,8 +51,6 @@
 	background: url('{{ asset("image/loading.gif")}}') no-repeat center; 
 	height: 350px;
 }
-
-
 
 </style>
 
@@ -196,20 +194,21 @@
 										<p class="price small v2"><span>$</span>{{$show_theme_info->price_regular}}</p>
 										<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}" target="_blank" class="button mid tertiary half v2">Preview</a>
 										<input type="hidden" name="price" value="{{$show_theme_info->price_regular}}" id="price">
-										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')" class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i>
+
+										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')"  class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i>
 										</a>
 									</div>
 								</div>
 								<div class="theme4">
 									<ul >
+										<li class="prodlist-i-props"><b>Created</b> {!! Carbon\Carbon::parse($show_theme_info->created_at)->format('d M, Y') !!}</li>
 										<li class="prodlist-i-props"><b>Update</b> {!! Carbon\Carbon::parse($show_theme_info->updated_at)->format('d M, Y') !!}</li>
 										<li class="prodlist-i-props"><b>Sale </b><?php echo DB::table('theme_orders')->where('theme_id',  $show_theme_info->theme_id)->count(); ?></li>
-										<li class="prodlist-i-props"><b>Review</b> count</li>
-										<li class="prodlist-i-props"><b>Comment</b> count</li>
-										<li class="prodlist-i-props"><b>Favourite </b> count</li>
-										<li class="prodlist-i-props"><b>Author </b> count</li>
+										<li class="prodlist-i-props"><b>Review</b> {{$show_theme_info->total_review}}</li>
+										<li class="prodlist-i-props"><b>Author </b> {{$show_theme_info->username}}</li>
 									
-										<li class="prodlist-i-props"><b>Ex. License</b> None</li>
+										<li class="prodlist-i-props"><b>Ex. License</b> ${{$show_theme_info->price_extented}}</li>
+										<li class="prodlist-i-props"><b>View</b> {{$show_theme_info->view_counts}}</li>
 									</ul>
 								</div>
 							</div>
@@ -230,19 +229,20 @@
 
 			<!-- SIDEBAR -->
 			<div class="sidebar">
+				@if($get_subcategories)
 				<!-- DROPDOWN -->
 				<ul class="dropdown hover-effect tertiary">
 					@foreach($get_subcategories as $subcategory)
-					<li class="dropdown-item">
-						<a href="#">{{$subcategory->subcategory_name}}</a>
+					<li class="dropdown-item {{($subcategory->subcategory_url == Request::segment(4)) ? 'active' : ''}}">
+						<a href="{{route('theme_category', [Request::segment(3), $subcategory->subcategory_url])}}">{{$subcategory->subcategory_name}}</a>
 					</li>
 					@endforeach
 					
 				</ul>
 				<!-- /DROPDOWN -->
-
+				@endif
 				<!-- SIDEBAR ITEM -->
-				
+				@if(count($theme_subchild_category)>0)
 				<div class="sidebar-item">
 					<h4>Tags</h4>
 					<hr class="line-separator">
@@ -262,6 +262,7 @@
 						<!-- /CHECKBOX -->
 					</form>
 				</div>
+				@endif
 				
 				<!-- /SIDEBAR ITEM -->
 				<!-- SIDEBAR ITEM -->
@@ -279,7 +280,7 @@
 						->where('theme_features.feature_id', $get_filter->filter_id)
 						->select(
 							'theme_subfilters.*',
-							 DB::raw("count('theme_features.feature_name') AS total_gigs" ))
+							 DB::raw("count('theme_features.feature_name') AS totalTheme" ))
 						->groupBy('theme_features.feature_name')
 						->get(); ?>
 						@foreach($theme_subfilters as $theme_subfilter)
@@ -287,7 +288,7 @@
 							<label for="{{$theme_subfilter->id }}">
 								<span class="checkbox primary primary"><span></span></span>
 								{{$theme_subfilter->sub_filtername }}
-								<span class="quantity">{{$theme_subfilter->total_gigs }}</span>
+								<span class="quantity">{{$theme_subfilter->totalTheme }}</span>
 							</label>
 							@endforeach
 
@@ -345,7 +346,7 @@ $(document).ready(function(){
     	
     	$('.filter_data').html('<div id="loading" style="" ></div>');
         var tags = get_filter('platform');
-        var filter_type = get_filter('filter_type');
+        var filter_type = get_filter('theme_subfilter');
         var price = document.getElementById('price-range').value;
       
         if(page == null){var page = 1;}
@@ -364,6 +365,7 @@ $(document).ready(function(){
 				tags:tags,
 				category:category,
 				subcategory:subcategory,
+				filter_type:filter_type,
 				filter:'filter',
 				price:price,
 				//delivery:delivery,
@@ -433,6 +435,14 @@ function search_bar(src_key){
 	}
 
 
+	
+	$( document.body ).click(function() {
+		if($('#search_bar').css('display') == 'block'){
+		    document.getElementById('search_bar').style.display = 'none';
+		}
+	});
+
+
 	function add_to_cart(theme_id){
 		var price = $('#price').val();
 
@@ -445,7 +455,11 @@ function search_bar(src_key){
 				_token:"{{ csrf_token() }}"
 			},
 			success:function(data){
-				toastr.success(data);
+				if(data.status == 'success'){
+					toastr.success(data.msg);
+				}else{
+					toastr.error(data.msg);
+				}
 			}
 		});
 		

@@ -296,7 +296,7 @@ class themeController extends Controller
                 $get_theme_info = $get_theme_info->where('themes.status', $status);
             }
            
-            $get_theme_info = $get_theme_info->groupBy('themes.theme_id')->orderBy('themes.theme_id', 'DESC')->paginate(10);
+            $get_theme_info = $get_theme_info->groupBy('themes.theme_id')->orderBy('themes.theme_id', 'DESC')->paginate(4);
 
         //check request ajax or direact url $_get for pagination ajax call
         if(!isset($_GET['type'])){

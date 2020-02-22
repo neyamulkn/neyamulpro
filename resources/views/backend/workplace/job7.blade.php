@@ -1,4 +1,5 @@
 @extends('backend.layouts.master')
+@section('title', $get_job->job_title)
 
 
 @section('css')
@@ -50,8 +51,8 @@
             </div>
         <form  action="{{url('dashboard/workplace/job-post/insert/step_seven')}}" method="post">
                 {{csrf_field()}}
-            <input type="hidden" name="post_id" value="{{Request::segment(4)}}">
-                 
+            <input type="hidden" name="slug" value="{{$get_job->job_title_slug}}">
+               
             <div class="workr81">
                 <div class="workttsr">
                     <div class="workttse22">
@@ -114,6 +115,16 @@
                             </div>
                         @endforeach
                     </div>
+
+                    <b class="cattworks">Search Tags </b><hr/>
+                    <div class="container">
+                      <ul class="ks-cboxtags">
+                        @foreach(explode(',', $get_job->search_tag) as $search_tag)
+                            <li><label> {{$search_tag}} </label></li>
+                        @endforeach
+                      </ul>
+
+                    </div>
                     
                 </div><br/> 
 
@@ -152,7 +163,7 @@
 
 
                 <div class="downloadtheme5">
-                    <a href="{{url('dashboard/workplace/job-post/'.$get_job->job_id.'/step/6')}}" class="button mid tertiary half v3">Draf & Exit</a><br>
+                    <a href="{{url('dashboard/workplace/job-post/'.$get_job->job_title_slug.'/step/6')}}" class="button mid tertiary half v3">Draf & Exit</a><br>
                     <button type="submit" class="button mid secondary wicon half  v3">Submit & Review</button><br>
                 </div>
                 <div class="clearfix"></div>

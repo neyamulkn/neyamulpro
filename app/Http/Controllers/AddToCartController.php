@@ -14,7 +14,8 @@ class AddToCartController extends Controller
     public function theme_cart(Request $request)
     {
 
-        if ($request->session()->has('session_id')) {
+
+        if($request->session()->has('session_id')) {
             Session::get('session_id');
         }else{
            Session::put('session_id', Session::getId());
@@ -27,18 +28,32 @@ class AddToCartController extends Controller
             $user_id = Auth::user()->id;
         }
 
-        $data = [
-            'theme_id' => $request->theme_id,
-            'price' => $request->price,
-            'user_id' => $user_id,
-            'session_id' => $session_id
-        ];
-        $insert = DB::table('theme_add_to_cart')->insert($data);
-        if($insert){
-            echo "Item added to your cart successfully";
+       // check own theme
+        $check = DB::table('themes')->where('theme_id', $request->theme_id)->first();
+
+        if($check->user_id != $user_id){
+            $data = [
+                'theme_id' => $request->theme_id,
+                'price' => $request->price,
+                'user_id' => $user_id,
+                'session_id' => $session_id,
+                'created_at' => now(),
+            ];
+
+            DB::table('theme_add_to_cart')->insert($data);
+            $output = array(
+             'status' => 'success',
+             'msg'  => 'Item added to your cart successfully'
+            );
+      
         }else{
-             echo "Sorry item not added to cart successfully";
+            $output = array(
+             'status' => 'error',
+             'msg'  => 'Sorry can\'t added your own theme'
+            );
         }
+
+        return response()->json($output);
     }
 
     
@@ -51,6 +66,20 @@ class AddToCartController extends Controller
             $user_id = Auth::user()->id;
         }
 
+        $getCards = DB::table('theme_add_to_cart')
+        ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
+        ->where(function($query) use ($user_id, $session_id) {
+            $query->where('theme_add_to_cart.user_id', $user_id)
+            ->orWhere('session_id', $session_id);
+        })->get();
+
+        foreach ($getCards as $getCard) {
+           if($getCard->user_id == $user_id){
+                DB::table('theme_add_to_cart')->where('cart_id', $getCard->cart_id)->delete();
+           }
+        }
+
+    
         $get_themecart_info = DB::table('theme_add_to_cart')
         ->where('user_id', $user_id)
         ->orWhere('session_id', $session_id)

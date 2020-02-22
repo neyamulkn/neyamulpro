@@ -28,9 +28,7 @@ figure.user-avatar.small {
 .transaction-list-item {
     padding-left: 30px;
 }
-.post-tab .tab-header .tab-item{
-	width: 145px !important;
-}
+
 </style>
 @endsection
 

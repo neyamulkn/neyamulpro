@@ -178,12 +178,9 @@
 						<div class="jp_job_post_keyword_wrapper">
 							<ul>
 								<li><i class="fa fa-tags"></i>Keywords :</li>
-								<li><a href="#">ui designer,</a></li>
-								<li><a href="#">developer,</a></li>
-								<li><a href="#">senior</a></li>
-								<li><a href="#">it company,</a></li>
-								<li><a href="#">design,</a></li>
-								<li><a href="#">call center</a></li>
+								@foreach(explode(',', $show_job->search_tag) as $search_tag)
+		                            <li>{{$search_tag}}</li>
+		                        @endforeach
 							</ul>
 						</div>
 					   </div>
@@ -210,12 +207,12 @@
 
 
 <script type="text/javascript">
-		function search_bar(src_key){
-		
+	function search_bar(src_key){
+			
 		$.ajax({
 			method:'post',
 			url:'{{ route("suggest_keyword") }}',
-			data:{src_key:src_key, _token: '{{csrf_token()}}'},
+			data:{src_key:src_key, route: 'job_search', _token: '{{csrf_token()}}'},
 			datatype: "text",
 			success:function(data){
 				if(data !=null){
@@ -235,78 +232,86 @@
 	 	document.getElementById('item').value = src;
 	 	document.getElementById('search_bar').style.display = 'none';
 	}
-	$(document).ready(function(){
 
 
-	$(document).on('click', '.pagination a', function(e){
-	e.preventDefault();
-
-		var page = $(this).attr('href').split('page=')[1];
-
-		filter_data(page);
+	
+	$( document.body ).click(function() {
+		if($('#search_bar').css('display') == 'block'){
+		    document.getElementById('search_bar').style.display = 'none';
+		}
 	});
 
 
-	function filter_data(page)
-    {
-    	$('.filter_data').html('<div id="loading" style="" ></div>');
-        var tags = get_filter('platform');
-        var filter_type = get_filter('filter_type');
-        var payment = get_filter('payment');
-        var price = document.getElementById('price-range').value;
-        if(page == null){var page = 1;}
-        //var delivery = get_filter('delivery');
-		// var gig_sort = ($( "#gig_asc option:selected" ).val());
-		var category = "{{ Request::route('category') }}" ;
-		var subcategory = "{{ Request::route('subcategory') }}";
-		var src_item = "{{Request::input('item')}}";
-       	var  link = '<?php echo URL::to("workplace/category");?>/'+category+'/'+subcategory+'?item='+src_item+'&tags='+tags+'&filter_type='+filter_type+'&payment='+payment+'&page='+page+'&price='+price;
-		    history.pushState({id: 'workplace'}, category +' '+subcategory, link);
+	$(document).ready(function(){
+		$(document).on('click', '.pagination a', function(e){
+		e.preventDefault();
 
- 		$.ajax({
-            url:link,
-            method:"get",
-            data:{
-				tags:tags,
-				category:category,
-				subcategory:subcategory,
-				filter:'filter',
-				price:price,
-				//delivery:delivery,
-				
-			},
-            success:function(data){
-            	if(data){
-                	$('.filter_data').html(data);
-               }else{
-               		$('.filter_data').html('Not Found');
-               }
-            }
-        });
-    }
+			var page = $(this).attr('href').split('page=')[1];
 
-    function get_filter(class_name)
-    {
-        var filter = [];
-        $('.'+class_name+':checked').each(function(){
-            filter.push($(this).val());
-        });
-        return filter;
-    }
-    $('.common_selector').click(function(){
-		filter_data();
-    });
-
-    $('#gig_asc').on('change', function(){
-		filter_data();
- 	});
-
- 	$('.common_selector').click(function(){
-		filter_data();
-    });
+			filter_data(page);
+		});
 
 
-});
+		function filter_data(page)
+	    {
+	    	$('.filter_data').html('<div id="loading" style="" ></div>');
+	        var tags = get_filter('platform');
+	        var filter_type = get_filter('filter_type');
+	        var payment = get_filter('payment');
+	        var price = document.getElementById('price-range').value;
+	        if(page == null){var page = 1;}
+	        //var delivery = get_filter('delivery');
+			// var gig_sort = ($( "#gig_asc option:selected" ).val());
+			var category = "{{ Request::route('category') }}" ;
+			var subcategory = "{{ Request::route('subcategory') }}";
+			var src_item = "{{Request::input('item')}}";
+	       	var  link = '<?php echo URL::to("workplace/category");?>/'+category+'/'+subcategory+'?item='+src_item+'&tags='+tags+'&filter_type='+filter_type+'&payment='+payment+'&page='+page+'&price='+price;
+			    history.pushState({id: 'workplace'}, category +' '+subcategory, link);
+
+	 		$.ajax({
+	            url:link,
+	            method:"get",
+	            data:{
+					tags:tags,
+					category:category,
+					subcategory:subcategory,
+					filter:'filter',
+					price:price,
+					//delivery:delivery,
+					
+				},
+	            success:function(data){
+	            	if(data){
+	                	$('.filter_data').html(data);
+	               }else{
+	               		$('.filter_data').html('Not Found');
+	               }
+	            }
+	        });
+	    }
+
+	    function get_filter(class_name)
+	    {
+	        var filter = [];
+	        $('.'+class_name+':checked').each(function(){
+	            filter.push($(this).val());
+	        });
+	        return filter;
+	    }
+	    $('.common_selector').click(function(){
+			filter_data();
+	    });
+
+	    $('#gig_asc').on('change', function(){
+			filter_data();
+	 	});
+
+	 	$('.common_selector').click(function(){
+			filter_data();
+	    });
+
+
+	});
 
 </script>
 @endsection

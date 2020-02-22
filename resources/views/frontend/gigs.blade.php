@@ -5,7 +5,36 @@
     <link rel="stylesheet" href="{{ asset('allscript/css/vendor/simple-line-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('allscript/css/vendor/tooltipster.css') }}">
     <link rel="stylesheet" href="{{ asset('allscript/css/vendor/owl.carousel.css') }}">
+    <style type="text/css">
+        .search-widget-form {
+    width: 91%;
+    margin: 15px auto 0;
+}
 
+.search_bar{
+    position: absolute;
+    top: 46px;
+    left: 80px;
+    margin: 0px auto;
+    width: 69%;
+    border:1px solid #ccc;
+    border-top: none;
+    background: #fafafa;
+    z-index: 999;
+    display: none;
+}
+.search_bar li{
+    
+    display: block;
+}
+.search_bar li a{
+    display: block;padding: 10px;   
+}
+.search_bar li:hover{
+    
+    background-color: #fff;
+}
+    </style>
 @endsection
 
 @section('content')
@@ -15,23 +44,20 @@
             <h5>Register now and start </h5>
             <h1><span>Gig Find Search</span></h1>
 
-            <form class="search-widget-form">
-                <input type="text" name="category_name" placeholder="Search goods or services here...">
-                <label for="categories" class="select-block">
-                    <select name="categories" id="categories">
-                        <option value="0">All Categories</option>
-                        @foreach($get_category as $show_category)
-                            <option value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
-                        @endforeach
-                    </select>
-                    <!-- SVG ARROW -->
-                    <svg class="svg-arrow">
-                        <use xlink:href="#svg-arrow"></use>
-                    </svg>
-                    <!-- /SVG ARROW -->
-                </label>
-                <button class="button medium primary">Search Now!</button>
-            </form>
+            <div style="position: relative; width: 100%;" >
+            
+                <form action="{{ route('theme_search') }}" style="width: 86%;" class="search-widget-form" >
+                    <input type="text" style="width: 80%;margin-right: 5px;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" required onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
+                   
+                    <button class="button medium primary">Search Now!</button>
+                </form>
+
+                <div class="search_bar" id="search_bar" >
+                    <ul>
+                        <span id="show_suggest_key"></span>
+                    </ul>
+                </div>
+            </div>
         </section>
     </div>
     <!-- PRODUCT SIDESHOW -->
@@ -53,7 +79,6 @@
                 ->limit(8)
                 ->inRandomOrder()
                 ->get();
-
             ?>
             @if(count($get_gigs)>0)
             <!-- PRODUCT SHOWCASE -->
@@ -237,4 +262,43 @@
 
 <!-- Home Alerts -->
 <script src="{{ asset('allscript')}}/js/home-alerts.js"></script>
+
+<script type="text/javascript">
+    
+
+    function search_bar(src_key){
+        if(src_key != ''){
+            $.ajax({
+                method:'post',
+                url:'{{ route("gigs_suggest_keyword") }}',
+                data:{src_key:src_key, page:'search', _token: '{{csrf_token()}}'},
+                datatype: "text",
+                success:function(data){
+                    if(data !=null){
+                        
+                        document.getElementById('search_bar').style.display = 'block';
+                        document.getElementById('show_suggest_key').innerHTML = data;
+                    }else{
+                        
+                        document.getElementById('search_bar').style.display = 'none';
+                        
+                    }
+                }
+            });
+        }else{
+            document.getElementById('search_bar').style.display = 'none';
+        }
+    }
+
+    $( document.body ).click(function() {
+        if($('#search_bar').css('display') == 'block'){
+            document.getElementById('search_bar').style.display = 'none';
+        }
+    });
+
+    function search_field(src){
+        document.getElementById('item').value = src;
+        document.getElementById('search_bar').style.display = 'none';
+    }
+</script>
 @endsection

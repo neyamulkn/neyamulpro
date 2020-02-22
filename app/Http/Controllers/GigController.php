@@ -107,7 +107,6 @@ class GigController extends Controller
 
     public function insert_gig(Request $request)
     {
-
         $get_id = Auth::user()->id;
         $filter_id = '';
 
@@ -117,13 +116,6 @@ class GigController extends Controller
             $filter_id = implode(',', $request->filter_id);
         }
 
-        $gig_search_tag = $request->gig_search_tag;
-
-        if(!empty($gig_search_tag)){
-            $gig_search_tag = implode(',', $gig_search_tag);
-        }
-
-
         $alldata = [
             'gig_title'=> $request->gig_title,
             'gig_url'=> $gig_url,
@@ -132,7 +124,7 @@ class GigController extends Controller
             'gig_subcategory'=> $request->subcategory,
             'gig_metadata'=> $filter_id,
             'gig_payment_type'=> $request->gig_payment_type,
-            'gig_search_tag'=> $gig_search_tag,
+            'gig_search_tag'=> strtolower($request->gig_search_tag),
             'gig_user_id'=> $get_id,
             'gig_status' => 'draft'
         ];
@@ -439,93 +431,36 @@ class GigController extends Controller
 
 
         if(!isset($_GET['type'])){
+            if(Auth::user()->role_id == env('ADMIN')){
+                return view('admin.marketplace.manage')->with(compact('get_gigs')); 
+            }
             return view('backend.gig-view')->with(compact('get_gigs'));
         }else{
-            $output = '';
             if(count($get_gigs)>0){
-                $output .= '
-                <table class="responsive-table-input-matrix">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>IMG</th>
-                        <th>GIG Title </th>
-                        <th>IMPRESSIONS</th>
-                        <th>CLICKS</th>
-                        <th>VIEWS</th>
-                        <th>ORDERS</th>
-                        <th>CANCELLATIONS</th>
-                        <th>Action</th>
-                        
-                    </tr>
-                    </thead>
-                    <tbody>';
-                    foreach($get_gigs as $show_gig){
-
-                        $output .='
-                            <tr class="tbgig" id="item'.$show_gig->gig_id.'">
-                                <td><input type="checkbox"></td>
-                                <td class="gig-pict-45">
-                                    <span class="gig-pict-45">
-                                        <a href="#"><img src="'.asset('gigimages/'.$show_gig->image_path).'" alt="" ></a>
-                                    </span>
-                                </td>
-                                <td class="title js-toggle-gig-stats ">
-                                    <div class="ellipsis1">
-                                        <a class="ellipsis" target="_blank" href="'.url('marketplace/'.$show_gig->gig_url).'">'.$show_gig->gig_title .'</a>
-                                    </div>
-                                </td>
-                                <td>'.$show_gig->gig_impress .' <i class="fa fa-long-arrow-up green"></i></td>
-                                <td>'.$show_gig->gig_click .' <i class="fa fa-long-arrow-up green"></i></td>
-                                <td>'.$show_gig->gig_view .' <i class="fa fa-long-arrow-up green"></i></td>
-                                <td>'.$show_gig->gig_impress .' <i class="fa fa-long-arrow-up green"></i></td>
-                                <td>'.$show_gig->gig_impress .' <i class="fa fa-long-arrow-down red"></i></td>
-                                <td>
-                                    <label for="sv" class="select-block v3">
-                                        <select onchange="action_type(this.value,'.$show_gig->gig_id.' )" name="sv" id="sv">
-                                            <option value="0">select action</option>
-                                            <option value="1">Edit</option>
-                                            <option value="2">Delete</option>
-                                        </select>
-                                        <!-- SVG ARROW -->
-                                        <svg class="svg-arrow">
-                                            <use xlink:href="#svg-arrow"></use>
-                                        </svg>
-                                        <!-- /SVG ARROW -->
-                                    </label>
-                                </td>
-                            </tr>';
-                        }
-                    $output .='
-                    </tbody>
-                </table>
-                <div class="page primary paginations">
-                    '.$get_gigs->links().'
-                </div>';
-                echo $output;
+                echo view('backend.marketplace.gigByStatus')->with(compact('get_gigs'));
             }else{ echo 'No '.$status. ' gigs found.'; }
         }
     }
 
-    public function gig_delete($id)
+    public function gig_delete(Request $request)
     {
         $user_id = Auth::user()->id;
-        $delete = gig_basic::where('gig_id', $id)->where('gig_user_id', $user_id)->delete();
+        $delete = gig_basic::where('gig_id', $request->gig_id)->where('gig_user_id', $user_id)->delete();
         if($delete){
             try{
-                $get_image_path = gig_image::where('gig_id', $id)->get();
+                $get_image_path = gig_image::where('gig_id', $request->gig_id)->get();
                 foreach ($get_image_path as $image_name) {
                     $image_path = public_path('gigimages/'.$image_name->image_path );
                     if(file_exists($image_path)){
                         @unlink($image_path);
                     }
                 }
-                gig_image::where('gig_id', $id)->delete();
-                gig_requirement::where('gig_id', $id)->delete();
-                gig_metadata_filter::where('gig_id', $id)->delete();
-                gig_feature::where('gig_id', $id)->delete();
-                question_answer::where('gig_id', $id)->delete();
-                DB::table('gigs_view')->where('gig_id', $id)->delete();
+                gig_image::where('gig_id', $request->gig_id)->delete();
+                gig_requirement::where('gig_id', $request->gig_id)->delete();
+                gig_metadata_filter::where('gig_id', $request->gig_id)->delete();
+                gig_feature::where('gig_id', $request->gig_id)->delete();
+                question_answer::where('gig_id', $request->gig_id)->delete();
+                DB::table('gigs_view')->where('gig_id', $request->gig_id)->delete();
 
                 echo 'Gig deleted successfully.';
             }catch(\Exception $e){

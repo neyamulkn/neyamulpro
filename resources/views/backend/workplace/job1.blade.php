@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Post a Job')
+@section('title', ($get_job) ? $get_job->job_title : 'Post a Job')
 
 @section('css')
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/hl-work.css">
@@ -62,7 +62,7 @@
 				<div class="workttse222">
 					<b class="workttsw">Enter the name of your job post</b>
 					<!-- this for update -->
-					<input type="hidden" name="post_id" value="{{Request::segment(4)}}">
+					<input type="hidden" name="slug" value="{{($get_job) ? $get_job->job_title_slug : '' }}">
 					
 					<textarea type="text" name="post_title" class="workttsweditor">@if($get_job) {{$get_job->job_title}} @endif</textarea>
 					<b class="workttsw">Here are some good examples:</b>

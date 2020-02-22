@@ -226,25 +226,9 @@ code {
 
 <!-- tags -->
    <link href="{{asset('tags')}}/typeahead.css"  rel="stylesheet" />
-    <link href="{{asset('tags')}}/bootstrap-tagsinput.css" rel="stylesheet">
-    <style>
- 
-    .twitter-typeahead { display:initial !important; }
-    .bootstrap-tagsinput {line-height:40px;display:block !important;}
-    .bootstrap-tagsinput .tag {background:#09F;padding:5px;border-radius:4px;}
-    .tt-hint {top:2px !important;}
-    .tt-input{vertical-align:baseline !important;}
-    .typeahead { border: 1px solid #CCCCCC;border-radius: 4px;padding: 8px 12px;width: 300px;font-size:1.5em;}
-    .tt-menu { width:300px; }
-    span.twitter-typeahead .tt-suggestion {padding: 10px 20px;  border-bottom:#CCC 1px solid;cursor:pointer;}
-    span.twitter-typeahead .tt-suggestion:last-child { border-bottom:0px; }
-    .demo-label {font-size:1.5em;color: #686868;font-weight: 500;}
-    .bgcolor {max-width: 440px;height: 200px;background-color: #c3e8cb;padding: 40px 70px;border-radius:4px;margin:20px 0px;}
-    .tt-menu{width: 100%;}
-    .ttinput-group{overflow: hidden;}
-    </style>
-<!--end tags -->
+   <link href="{{asset('tags')}}/bootstrap-tagsinput.css" rel="stylesheet">
 
+<!--end tags -->
 
 @endsection
 
@@ -283,7 +267,7 @@ code {
 								<label for="uploadFile" class="button dark-light">Choose File...</label>
 								<p><span id="success">
 									@if($get_theme->main_file != null)
-									<input type="hidden" form="main_form" name="main_file" value="{{$get_theme->main_file}}"><a  title="Download file" href="{{$get_theme->main_file}}" download=""><i class="fa fa-paperclip" aria-hidden="true"></i> {{$get_theme->main_file}}</a>@else
+									<input type="hidden" form="main_form" name="main_file" value="{{$get_theme->main_file}}"><a  title="Download file" href="{{asset('theme/zipfile/'.$get_theme->main_file)}}" download><i class="fa fa-paperclip" aria-hidden="true"></i> {{$get_theme->main_file}}</a>@else
 	             					Max file size 2gb 
 	             					@endif
 	             				</span> 
@@ -329,7 +313,7 @@ code {
 							<p ><span id="success-image">
 								@if($get_theme->main_image != null)
 									<input type="hidden" form="main_form" name="main_image" value="{{$get_theme->main_image}}"> 
-	             					<a title="view image" href="{{ asset('theme/images/'.$get_theme->main_image)}}" target="_blank"> <img src="{{ asset('theme/images/'.$get_theme->main_image)}}" width="90" height="50"> </a>
+	             					<a title="view image" href="{{ asset('theme/images/'.$get_theme->main_image)}}" download> <img src="{{ asset('theme/images/'.$get_theme->main_image)}}" width="90" height="50"> </a>
 	             				@else
 	             					Max file size 2mb
 	             				@endif
@@ -569,14 +553,14 @@ code {
 				<div class="clearfix"></div>
 
 				<div class="ttinput-group">
-					  <label class="ttinput-groupt" for="name">Search Tags</label>
-						<div class="inputs">
-							<label class="select-block va">
-							<input type="text" value="{{$get_theme->search_tag}}" style="border:none !important;" name="search_tag" value="" id="tags-input" data-role="tagsinput" />
-							</label>
-							<small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</a></small>
-						</div>
+				  	<label class="ttinput-groupt" for="name">Search Tags</label>
+					<div class="inputs">
+						<label class="select-block va">
+						<input type="text" value="{{$get_theme->search_tag}}" style="border:none !important;" name="search_tag" id="tags-input" data-role="tagsinput" />
+						</label>
+						<small class="ttinput-group">Does this layout stretch when resized horizontally (liquid)? Or does it stay the same (fixed)?</small>
 					</div>
+				</div>
 
 				<div class="clearfix"></div>
 				<div class="box-stacked-radius-top">

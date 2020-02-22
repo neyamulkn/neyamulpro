@@ -1091,7 +1091,7 @@ header, .menu-bar, .banner, #services,
   	PRODUCT PREVIEW
 ---------------------*/
 .product-preview-image {
-  width: 258px;
+  width: 263px;
   height: 150px; }
   .product-preview-image.large {
     width: 836px;
@@ -1158,7 +1158,9 @@ header, .menu-bar, .banner, #services,
   position: relative; }
 
   .price.tiny {
-    font-size: 1em; }
+    font-size: 1em; display: block;
+text-align: right;
+}
     .price.tiny span {
       font-size: 0.5625em; }
   .price.medium {
@@ -1252,7 +1254,7 @@ header, .menu-bar, .banner, #services,
       .dropdown.notifications .dropdown-item .subject {
         font-size: 0.6875em; }
       .dropdown.notifications .dropdown-item .timestamp {
-        font-size: 0.625em; }
+        font-size: 0.825em; }
       .dropdown.notifications .dropdown-item .notification-type {
         color: #888;
         font-size: 19px;
@@ -1603,14 +1605,14 @@ header, .menu-bar, .banner, #services,
   width: 234px; }
 
 .column4-wrap .column {
-  width: 270px; }
+  width: 285px; }
   .column4-wrap .column:nth-child(4n+4) {
     margin-right: 0; }
 
 .column3-4-wrap {
   width: 870px; }
   .column3-4-wrap .column {
-    width: 270px; }
+    width: 280px; }
     .column3-4-wrap .column:nth-child(3n+3) {
       margin-right: 0; }
 
@@ -1935,7 +1937,7 @@ header {
       left: -6px; }
     header .account-information .account-settings-quickview .dropdown {
       right: 0; }
-    header .account-information .icon-present, header .account-information .icon-envelope, header .account-information .icon-settings {
+    header .account-information .icon-present, header .account-information .icon-envelope, header .account-information .icon-bell, header .account-information .icon-settings {
       font-size: 22px; }
     header .account-information .icon-heart {
       top: 1px;
@@ -1946,7 +1948,7 @@ header {
         top: 9px; }
     header .account-information .icon-envelope {
       top: 1px; }
-      header .account-information .icon-envelope .svg-arrow {
+      header .account-information .icon-envelope .svg-arrow ,  header .account-information .icon-bell .svg-arrow  {
         top: 6px;
         right: -12px; }
     header .account-information .icon-settings .svg-arrow {
@@ -2850,7 +2852,7 @@ header {
     position: absolute;
     top: 5px;
     left: 5px;
-    width: 258px;
+    width: 263px;
     height: 150px; 
     overflow: hidden;
   }
@@ -3404,16 +3406,7 @@ header {
 
 .page {
   overflow: hidden; }
-  .page .page-item {
-    float: left;
-    width: 30px;
-    height: 30px;
-    margin-right: 6px;
-    border-radius: 2px;
-    background-color: #535d5f;
-    cursor: pointer; }
-    .page .page-item:hover {
-      background-color: #647072; }
+
     .page .page-item p {
       color: #fff;
       font-size: 0.75em;
@@ -3811,7 +3804,7 @@ header {
     .post-tab .tab-header.tertiary .tab-item.selected > p {
       border-top-color: #e61852; }
     .post-tab .tab-header .tab-item {
-      float: left;
+      display: inline-block;
       height: 60px;
       border-right: 1px solid #ebebeb;
       cursor: pointer; }

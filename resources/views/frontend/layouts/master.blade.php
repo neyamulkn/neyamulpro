@@ -102,7 +102,7 @@
 			<!-- LOGO -->
 			<a href="{{ url('/') }}">
 				<figure class="logo">
-					<img src="{{ asset('allscript/images/logo.png') }}" alt="logo">
+					<img src="{{ asset('allscript/images/logos.png') }}" alt="logo">
 				</figure>
 			</a>
 			<!-- /LOGO -->
@@ -149,11 +149,7 @@
 
 					<!-- USER INFORMATION -->
 					<p class="user-name">{{ Auth::user()->name}}</p>
-					<!-- SVG ARROW -->
-					<svg class="svg-arrow">
-						<use xlink:href="#svg-arrow"></use>
-					</svg>
-					<!-- /SVG ARROW -->
+					
 					<p class="user-money">${{ Auth::user()->wallet}}</p>
 					<!-- /USER INFORMATION -->
 
@@ -164,7 +160,7 @@
 							<a href="{{route('profile_view', Auth::user()->username)}}">Profile Page</a>
 						</li>
 						<li class="dropdown-item">
-							<a href="{{url('dashboard/profile/setting')}}">Account Settings</a>
+							<a href="{{ route('dashboard') }}"> Dashboard </a>
 						</li>
 						<li class="dropdown-item">
 							<a href="{{route('theme_downloads', Auth::user()->username)}}">Downloads Theme</a>
@@ -207,7 +203,7 @@
 					@endif
 
 					<div class="account-email-quickview">
-						<span class="icon-envelope">
+						<span class="icon-bell">
 							<!-- SVG ARROW -->
 							<svg class="svg-arrow">
 								<use xlink:href="#svg-arrow"></use>
@@ -335,18 +331,18 @@
 		<p class="side-menu-title">Your Account</p>
 		<!-- /SIDE MENU TITLE -->
 		<ul class="dropdown dark hover-effect">
-			<!-- DROPDOWN ITEM -->
-			<li class="dropdown-item">
-				<a href="{{url('workplace')}}">Workplace</a>
-			</li>
+			
 			<!-- /DROPDOWN ITEM -->
+			<li class="dropdown-item">
+				<a href="{{url('themeplace')}}" class="interesting-link">Themeplace</a>
+			</li>
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
 				<a href="{{url('marketplace')}}" class="interesting-link">Marketplace</a>
 			</li>
-			
+			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="{{url('themeplace')}}" class="interesting-link">Themeplace</a>
+				<a href="{{url('workplace')}}">Workplace</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
 			
@@ -389,23 +385,25 @@
 		</div>
 		<!-- DROPDOWN -->
 		<ul class="dropdown dark hover-effect">
-			<!-- DROPDOWN ITEM -->
-			<li class="dropdown-item">
-				<a href="{{url('workplace')}}">Workplace</a>
-			</li>
-			<!-- /DROPDOWN ITEM -->
-
-			<!-- DROPDOWN ITEM -->
-			<li class="dropdown-item">
-				<a href="{{url('marketplace')}}">Marketplace</a>
-			</li>
-			<!-- /DROPDOWN ITEM -->
 
 			<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
 				<a href="{{url('themeplace')}}">Themeplace</a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
+			
+			<!-- DROPDOWN ITEM -->
+			<li class="dropdown-item">
+				<a href="{{url('marketplace')}}">Marketplace</a>
+			</li>
+			<!-- /DROPDOWN ITEM -->
+			<!-- DROPDOWN ITEM -->
+			<li class="dropdown-item">
+				<a href="{{url('workplace')}}">Workplace</a>
+			</li>
+			<!-- /DROPDOWN ITEM -->
+
+			
 		</ul>
 		<!-- /DROPDOWN -->
 
@@ -456,6 +454,12 @@
 				<ul class="main-menu manu2 top-highlight">
 						
 					<!-- MENU ITEM -->
+					<li class="menu-item {{(Request::segment(1) == 'themeplace') ? 'manu-highlight' : null }}">
+						<a href="{{url('themeplace')}}">Themeplace</a>
+					</li>
+					<!-- /MENU ITEM -->
+
+					<!-- MENU ITEM -->
 					<li class="menu-item {{(Request::segment(1) == 'marketplace') ? 'manu-highlight' : null }}" >
 						<a href="{{url('marketplace')}}">Marketplace</a>
 					</li>
@@ -466,24 +470,13 @@
 					</li>
 					<!-- /MENU ITEM -->
 
-					<!-- MENU ITEM -->
-					<li class="menu-item {{(Request::segment(1) == 'themeplace') ? 'manu-highlight' : null }}">
-						<a href="{{url('themeplace')}}">Themeplace</a>
-					</li>
-					<!-- /MENU ITEM -->
-
-					<!-- MENU ITEM -->
-					<li class="menu-item">
-						<a href="services.html">SEO Room</a>
-					</li>
-					<!-- /MENU ITEM -->
 				</ul>
 			</nav>
 			
-			<form class="search-form">
+			<!-- <form class="search-form">
 				<input type="text" class="rounded" name="search" id="search_products" placeholder="Search products here...">
 				<input type="image" src="{{asset('image/search-icon.png')}}" alt="search-icon">
-			</form>
+			</form> -->
 		</div>
 	</div>
 	<!--- category menu -->
@@ -496,7 +489,7 @@
 	<script src="{{ asset('/allscript/js/vendor/jquery-3.1.0.min.js') }}"></script>
 	<script src="{{ asset('/allscript/js/vendor/toastr.js') }}"></script>
 
-	 {!! Toastr::message() !!}
+	{!! Toastr::message() !!}
 	 
 	@yield('js')
 
