@@ -83,7 +83,7 @@ class gighomeController extends Controller
         $get_gigs = $get_gigs->paginate(3);
 
         if(!isset($_GET['filter'])){
-            return view('frontend.search')->with(compact('get_gigs', 'get_filters'));
+            return view('frontend.gigs-categories')->with(compact('get_gigs', 'get_filters'));
         }else{
             echo view('frontend.gig-filter-data')->with(compact('get_gigs'));
         }
@@ -101,7 +101,7 @@ class gighomeController extends Controller
     }
 
     public function search_gigs(Request $request){
-       
+        $get_category = DB::table('gig_home_category')->get();
        $get_gigs = DB::table('gig_basics')
             ->leftJoin('gig_prices', 'gig_basics.gig_id', '=', 'gig_prices.gig_id')
             ->leftJoin('gig_images', 'gig_basics.gig_id', '=', 'gig_images.gig_id')
@@ -118,6 +118,10 @@ class gighomeController extends Controller
             $get_gigs =  $get_gigs->where(function($query) use ($src) {
                 $query->where('gig_basics.gig_title', 'LIKE', '%'. $src .'%')
                 ->orWhere('gig_basics.gig_search_tag', 'LIKE', '%'. $src .'%'); });
+        }
+
+        if(Input::has('cat') && !empty(Input::get('cat'))){
+            $get_gigs =  $get_gigs->where('gig_home_category.category_url', Input::get('cat'));
         }
 
         if(isset($request->delivery) && !empty($request->delivery)){
@@ -139,7 +143,7 @@ class gighomeController extends Controller
             ->groupby('gig_basics.gig_id')->paginate(3);
            
         if(!isset($_GET['filter'])){
-            return view('frontend.search')->with(compact('get_gigs'));
+            return view('frontend.search')->with(compact('get_gigs','get_category'));
         }else{
             echo view('frontend.gig-filter-data')->with(compact('get_gigs'));
         }
@@ -151,41 +155,29 @@ class gighomeController extends Controller
     public function gig_details($gig_url){
 
         
-        $get_gig_info = gig_basic::where('gig_url', $gig_url)
+        $get_gig_info = gig_basic::with('metadata_filters')->where('gig_url', $gig_url)
         ->leftJoin('gig_home_category','gig_basics.category_name', 'gig_home_category.id')
         ->leftJoin('gig_subcategories','gig_basics.gig_subcategory', 'gig_subcategories.id')
-        ->first();
-        $get_user_info = user::where('id', $get_gig_info->gig_user_id)->first();
-        // refferel_user_name
-        if(isset($_GET['ref']) && !Session::has('refferel_user_name')){
+        ->where('gig_basics.gig_status', 'active')->first();
 
-            $get_ads = DB::table('affiliate_ads')->where('ref_username', $_GET['ref'])->first();
-           
-            if($get_ads){
-                DB::table('affiliate_ads')->where('ref_username', $_GET['ref'])->increment('total_view');
-            }else{
-                $data = [
-                    'ref_username' => $_GET['ref'],
-                    'platform_type' => 'marketplace',
-                    'total_view' => 1
-                ];
-                DB::table('affiliate_ads')->insert($data); 
-            }
-            Session::put('refferel_user_name', $_GET['ref']);  
-        }
-        
         if($get_gig_info){
+            $get_user_info = user::where('id', $get_gig_info->gig_user_id)->first();
+            // refferel_user_name
+            if(isset($_GET['ref']) && !Session::has('refferel_user_name')){
+
+                $get_ads = DB::table('affiliate_ads')->where('ref_username', $_GET['ref'])->first();
+               
+                if($get_ads){
+                   $get_ads->increment('total_view');
+                }
+                Session::put('refferel_user_name', $_GET['ref']);  
+            }
+            
+        
             $gig_id = $get_gig_info->gig_id;
           
-            // if exist gig view table
-            $get_info = DB::table('gigs_view')->where('gig_id', $gig_id)->first();
-            if($get_info){ DB::table('gigs_view')->where('gig_id', $gig_id)->update([
-                    'gig_impress' => $get_info->gig_impress+1,
-                    'gig_click' => $get_info->gig_click+1,
-                    'gig_view' => $get_info->gig_view+1,
-                ]);
-            }
-            else{  DB::table('gigs_view')->insert(['gig_id' => $gig_id, 'gig_impress' => 1] );  }
+          
+            $get_gig_info->increment('gig_view');
 
             $get_gig_price = gig_price::where('gig_id', $gig_id)->first();
             $get_gig_feature = gig_feature::where('gig_id', $gig_id)->get();
@@ -197,6 +189,14 @@ class gighomeController extends Controller
 
             $get_gig_image = gig_image::where('gig_id', $gig_id)->get();
 
+            $get_another_gig = gig_basic::
+            join('gig_prices','gig_basics.gig_id', 'gig_prices.gig_id')
+            ->join('gig_subcategories','gig_basics.gig_subcategory', 'gig_subcategories.id')
+            ->where('gig_user_id', $get_gig_info->gig_user_id)
+            ->where('gig_basics.gig_id', '!=', $get_gig_info->gig_id)
+            ->where('gig_status', 'active')->limit(6)
+            ->select('gig_basics.*', 'gig_subcategories.subcategory_name', 'gig_prices.basic_p')->get(); 
+
             $alldata = [
                 'get_user_info' => $get_user_info,
                 'get_gig_info' => $get_gig_info,
@@ -205,12 +205,13 @@ class gighomeController extends Controller
                 'get_gig_feature' => $get_gig_feature,
                 'get_question_answer' => $get_question_answer,
                 'get_feedback' => $get_feedback,
+                'get_another_gig' => $get_another_gig,
             ];
             return view('frontend.gig-details')->with($alldata);
            
 
         }else{
-            return redirect('/');
+            return back();
         }
         
     }

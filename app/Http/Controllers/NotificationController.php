@@ -18,4 +18,10 @@ class NotificationController extends Controller
 		}
 		
 	}
+
+	public function readNotify($id)
+    {
+        $user_id = Auth::user()->id;
+        Notification::where('forUser', $user_id)->where('id', $id)->update(['read' => 1]);
+    }
 }

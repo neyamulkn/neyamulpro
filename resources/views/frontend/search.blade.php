@@ -58,9 +58,26 @@
         <div class="section">
             <div  style="width: 100%; margin-bottom: 15px; position: relative; padding: 10px 0 0px !important;">
                 <form action=""  class="search-widget-form"  style="width: 100%;" >
-                    <input type="text" autocomplete="off" onkeyup="getsearch_bar(this.value)" style="width: 85%;border-radius:0px !important;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" id="item" placeholder="Search goods or services here...">
-                    
-                    <button class="button medium tertiary">Search Now!</button>
+                     <div class="col-md-10 col-xs-10">
+                    <input type="text" autocomplete="off" onkeyup="getsearch_bar(this.value)" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" id="item" placeholder="Search goods or services here...">
+                    <label for="cat" class="select-block">
+                        <select name="cat" id="cat">
+                            <option  value="">All Categories</option>
+                            @foreach($get_category as $show_category)
+
+                                <option {{(isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url)? 'selected' : ''}} value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
+                            @endforeach
+                        </select>
+                        <!-- SVG ARROW -->
+                        <svg class="svg-arrow">
+                            <use xlink:href="#svg-arrow"></use>
+                        </svg>
+                        <!-- /SVG ARROW -->
+                    </label>
+                </div>
+                 <div class="col-md-2 col-xs-2">
+                    <button class="button medium primary">Search</button>
+                </div>
                 </form>
                 <div class="search_bar" id="search_bar" >
                     <ul>
@@ -98,7 +115,7 @@
                 <div class="product-showcase">
                     <!-- PRODUCT LIST -->
                     <div class="product-list grid column3-4-wrap">
-
+                @if(count($get_gigs)>0)
                     @foreach($get_gigs as $show_gig)
                         <!-- PRODUCT ITEM -->
                         <div class="product-item column">
@@ -217,9 +234,12 @@
                         </div>
                         <!-- /PRODUCT ITEM -->
                     @endforeach
+                @else
+                <h1 style="color:#000;">No record found.!</h1>
+                @endif        
                     </div>
                    <!-- /gig LIST -->
-                            
+ 
                 </div>
 
                 <!-- /gig SHOWCASE -->
@@ -263,7 +283,7 @@
                             
                         <!-- /CHECKBOX -->
                     
-                </div>
+                </div>  
 
                 <div class="sidebar-item">
                     <h4>Delivery Time</h4>
@@ -342,17 +362,18 @@ $(document).on('click', '.pagination a', function(e){
         var payment = get_filter('payment');
         if(page == null){var page = 1;}
         var gig_sort = null;
+        var cat = "{{  Request::input('cat')  }}";
         var delivery = get_filter('delivery');
         var gig_sort = $("#gig_asc :selected").val();
         var src_item = "{{Request::input('item')}}";
-        var  link = '<?php echo route("marketplace_search");?>?item='+src_item+'&payment='+payment+'&delivery='+delivery+'&sort='+gig_sort+'&price='+price+'&page='+page;
+        var  link = '<?php echo route("marketplace_search");?>?item='+src_item+'&cat='+cat+'&payment='+payment+'&delivery='+delivery+'&sort='+gig_sort+'&price='+price+'&page='+page;
             history.pushState({id: 'Marketplace'}, 'search', link);
 
         $.ajax({
             url:link,
             method:"get",
             data:{
-                item:item,
+                item:src_item,
                 sort:gig_sort,
                 payment:payment,
                 price:price,

@@ -5,8 +5,7 @@
 <link rel="stylesheet" href="{{asset('/allscript')}}/css/c.css">
 <link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
 
-
-	<style>
+<style>
 .select-block.va {
     width: 78%;
 }
@@ -313,7 +312,7 @@ code {
 							<p ><span id="success-image">
 								@if($get_theme->main_image != null)
 									<input type="hidden" form="main_form" name="main_image" value="{{$get_theme->main_image}}"> 
-	             					<a title="view image" href="{{ asset('theme/images/'.$get_theme->main_image)}}" download> <img src="{{ asset('theme/images/'.$get_theme->main_image)}}" width="90" height="50"> </a>
+	             					<a title="view image" href="{{ asset('theme/images/'.$get_theme->main_image)}}" download> <img src="{{ asset('theme/images/thumb/'.$get_theme->main_image)}}" width="90" height="50"> </a>
 	             				@else
 	             					Max file size 2mb
 	             				@endif
@@ -480,15 +479,20 @@ code {
 						<div class="clearfix"></div>
 					@endif
 
+					
+
 					@if($show_filter->type == 'select' )
+						<!-- here make array for seperate select field -->
+						<?php $filter_name = str_replace(' ', '_', $show_filter->filter_name); ?>
+						<input type="hidden" name="selectbox[{{$show_filter->filter_id}}]" value="{{$filter_name}}">
 						<div class="clearfix"></div>
 						<div class="ttinput-group">
 						  <label class="ttinput-groupt">{{ $show_filter->filter_name}}</label>
 						  <div class="inputs">
 						  	<?php $get_subfilters = DB::table('theme_subfilters')->where('filter_id', $show_filter->filter_id)->orderBy('theme_subfilters.id')->get();
 							?>
-
-							<select multiple="multiple" name="select[{{$show_filter->filter_id}}]" id="hhhfgfd">
+							<!-- here filter name making field name -->
+							<select multiple="multiple" name="{{$filter_name}}[]" id="hhhfgfd">
 								@foreach($get_subfilters as $show_subfilter)
 									<option {{(in_array($show_subfilter->id, $theme_features)) ? 'selected' : ''}} value="{{$show_subfilter->id}}">{{$show_subfilter->sub_filtername}}</option>
 								@endforeach

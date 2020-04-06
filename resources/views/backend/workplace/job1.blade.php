@@ -64,14 +64,7 @@
 					<!-- this for update -->
 					<input type="hidden" name="slug" value="{{($get_job) ? $get_job->job_title_slug : '' }}">
 					
-					<textarea type="text" name="post_title" class="workttsweditor">@if($get_job) {{$get_job->job_title}} @endif</textarea>
-					<b class="workttsw">Here are some good examples:</b>
-					<br>
-					<div class="hhbottomg">
-						<p class="hhbottom"> Developer needed for creating a responsive WordPress Theme </p>
-						<p class="hhbottom"> CAD designer to create a 3D model of a residential building </p>
-						<p class="hhbottom"> Need a design for a new company logo </p>
-					</div>
+					<textarea required="" type="text" name="job_title" class="workttsweditor">@if($get_job) {{$get_job->job_title}} @endif</textarea>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -80,9 +73,9 @@
 				<div class="input-container half v2">
 					<label for="sv" class="select-block">
 						<select name="category_id" id="category_id" required="">
-							@if(!$get_job) <option value="">Select category</option> @endif
+							<option value="">Select category</option>
 						@foreach($get_category as $show_category)
-							<option  @if($get_job) @if($get_job->category_id == $show_category->id) selected  @endif @endif value="{{$show_category->id}}">{{$show_category->category_name}}</option>
+							<option  @if($get_job && $get_job->category_id == $show_category->id) selected  @endif value="{{$show_category->id}}">{{$show_category->category_name}}</option>
 							
 						@endforeach
 						</select>
@@ -95,10 +88,9 @@
 				</div>
 				<div class="input-container half v2">
 					<label for="sv" class="select-block">
-						<select name="subcategory" id="subcategory" required="">
+						<select name="subcategory_id" id="subcategory" required="">
 							
 							 @if($get_job)
-							 	
 							 	<option value="{{$get_job->subcategory_id}}">{{$get_job->subcategory_name}}</option>
 							 @else
 							 	<option value="">select category first</option>
@@ -114,8 +106,7 @@
 				</div>
 				
 			</div>
-			<div class="downloadtheme5">
-				<a href="#" class="button mid tertiary half v3">Exit</a><br>
+			<div class="downloadtheme5"><br>
 				<button type="submit" class="button mid secondary wicon half  v3">Next</button><br>
 			</div>
 			<div class="clearfix"></div>

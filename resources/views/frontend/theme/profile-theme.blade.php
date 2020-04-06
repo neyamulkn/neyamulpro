@@ -127,8 +127,8 @@
 							<!-- THEME ITEM -->
 							<div class="theme1">
 								<div class="theme2">
-									<a href="#" class="Template">
-										<img class="themeimg" src="{{asset('theme/images').'/'.$show_theme_info->main_image }}" >
+									<a href="{{route('theme_detail', $show_theme_info->theme_url)}}" class="Template">
+										<img class="themeimg" src="{{asset('theme/images/thumb').'/'.$show_theme_info->main_image }}" >
 									</a>
 									<div class="author-data v2">
 										<!-- USER RATING -->
@@ -149,30 +149,24 @@
 											<!-- META ITEM -->
 											<div class="meta-item">
 												<span class="icon-bubble"></span>
-												<p>12</p>
+												<p>{{count($show_theme_info->comments)}}</p>
 											</div>
 											<!-- /META ITEM -->
 
 											<!-- META ITEM -->
 											<div class="meta-item">
 												<span class="icon-eye"></span>
-												<p>210</p>
+												<p>{{$show_theme_info->view_counts}}</p>
 											</div>
 											<!-- /META ITEM -->
 
-											<!-- META ITEM -->
-											<div class="meta-item">
-												<span class="icon-heart"></span>
-												<p>105</p>
-											</div>
-											<!-- /META ITEM -->
 										</div>
 										<!-- /METADATA -->
 									</div>
 								</div>
 								<div class="theme3">
 									<div class="themett">
-										<a href="{{url('themeplace/'.$show_theme_info->theme_url)}}">{{$show_theme_info->theme_name}}</a>
+										<a href="{{route('theme_detail', $show_theme_info->theme_url)}}">{{$show_theme_info->theme_name}}</a>
 									</div>
 									<a href="shop-gridview-v1.html">
 										<p class="category tertiary v2">{{$show_theme_info->category_name}} / {{$show_theme_info->subcategory_name}}</p>
@@ -182,7 +176,7 @@
 									</p>
 									<div class="bottomtheme">
 										<p class="price small v2"><span>$</span>{{$show_theme_info->price_regular}}</p>
-										<a href="{{url('themeplace/'.$show_theme_info->theme_url)}}" target="_blank" class="button mid tertiary half v2">Preview</a>
+										<a href="{{route('theme_detail', $show_theme_info->theme_url)}}" target="_blank" class="button mid tertiary half v2">Preview</a>
 										<input type="hidden" name="price" value="{{$show_theme_info->price_regular}}" id="price">
 										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')" class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i>
 										</a>
@@ -190,14 +184,14 @@
 								</div>
 								<div class="theme4">
 									<ul >
+										<li class="prodlist-i-props"><b>Created</b> {!! Carbon\Carbon::parse($show_theme_info->created_at)->format('d M, Y') !!}</li>
 										<li class="prodlist-i-props"><b>Update</b> {!! Carbon\Carbon::parse($show_theme_info->updated_at)->format('d M, Y') !!}</li>
-										<li class="prodlist-i-props"><b>Sale </b><?php echo DB::table('theme_orders')->where('theme_id',  $show_theme_info->theme_id)->count(); ?></li>
-										<li class="prodlist-i-props"><b>Review</b> count</li>
-										<li class="prodlist-i-props"><b>Comment</b> count</li>
-										<li class="prodlist-i-props"><b>Favourite </b> count</li>
-										<li class="prodlist-i-props"><b>Author </b> count</li>
+										<li class="prodlist-i-props"><b>Sale </b>{{count($show_theme_info->orders)}}</li>
+										<li class="prodlist-i-props"><b>Review</b> {{count($show_theme_info->theme_review)}}</li>
+										<li class="prodlist-i-props"><b>Author </b> {{$show_theme_info->username}}</li>
 									
-										<li class="prodlist-i-props"><b>Ex. License</b> None</li>
+										<li class="prodlist-i-props"><b>Ex. License</b> ${{$show_theme_info->price_extented}}</li>
+										<li class="prodlist-i-props"><b>View</b> {{$show_theme_info->view_counts}}</li>
 									</ul>
 								</div>
 							</div>
@@ -210,7 +204,7 @@
 				</div>
 				<!-- /PRODUCT SHOWCASE -->
 				
-                @else <h2 style="text-transform: capitalize; color: #000;"> {{Request::route('username')}} Have No Jobs </h2> @endif
+                @else <h2 style="text-transform: capitalize; color: #000;"> {{Request::route('username')}} Have No Themes </h2> @endif
 			</div>
 			<!-- CONTENT -->
 
@@ -220,17 +214,28 @@
 @endsection
 
 @section('js')
-<!-- XM Pie Chart -->
-<script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
-<!-- XM LineFill -->
-<script src="{{asset('/allscript')}}/js/vendor/jquery.xmlinefill.min.js"></script>
-<script src="{{asset('/allscript')}}/js/vendor/jquery.chart.min.js"></script>
-<!-- bxSlider -->
-<script src="{{asset('/allscript')}}/js/vendor/jquery.bxslider.min.js"></script>
-<!-- Side Menu -->
+<script type="text/javascript">
+	function add_to_cart(theme_id){
+		var price = $('#price').val();
+		$.ajax({
+			method:'post',
+			url:'{{  URL::to("/themeplace/cart/") }}',
+			data:{
+				theme_id:theme_id,
+				price:price,
+				_token:"{{  csrf_token()  }}"
+			},
+			success:function(data){
+				if(data.status == 'success'){
+					toastr.success(data.msg);
+				}else{
+					toastr.error(data.msg);
+				}
+			}
+		});
 
-<!-- Dashboard Header -->
-<script src="{{asset('/allscript')}}/js/dashboard-header.js"></script>
-<!-- Dashboard Statistics -->
-<script src="{{asset('/allscript')}}/js/dashboard-statistics.js"></script>
+	}
+</script>
+
+
 @endsection

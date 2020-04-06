@@ -38,14 +38,19 @@ figure.user-avatar.small {
 @section('content')
 	
        <div class="dashboard-content">
+       	<div class="headline simple primary">
+				<h4>Theme Lists</h4>
+				<a href="{{route('upload_theme')}}" class="button primary">Add New Theme</a>
+			</div>
             <div class="post-tab xmtab" style="display: block;">
 
             	<?php 
             	$user_id = Auth::user()->id;
-            	$active = $draft = $pending = $reject = 0;
+            	$active = $draft = $paused = $pending = $reject = 0;
             	foreach($get_status as $count_status){
             		if($count_status->status == 'active'){ $active +=1 ; }
             		if($count_status->status == 'draft'){ $draft +=1 ; }
+            		if($count_status->status == 'paused'){ $paused +=1 ; }
             		if($count_status->status == 'pending'){ $pending +=1 ; }
             		if($count_status->status == 'reject'){ $reject +=1 ; }
             	}
@@ -56,7 +61,7 @@ figure.user-avatar.small {
             		$status = 'active';
             	}
             	
-            	$all = $active+$draft +$pending+$reject;
+            	$all = $active+$draft+$paused +$pending+$reject;
 
             	?>
 				<!-- TAB HEADER -->
@@ -67,6 +72,9 @@ figure.user-avatar.small {
 					</div>
 					<div class="tab-item {{($status == 'draft')? 'selected': ''}}" onclick="get_themebyStatus('draft')">
 						<p class="text-header">DRAFT ({{$draft}})</p>
+					</div>
+					<div class="tab-item {{($status == 'paused')? 'selected': ''}}" onclick="get_themebyStatus('paused')">
+						<p class="text-header">PAUSED ({{$paused}})</p>
 					</div>
 					<div class="tab-item {{($status == 'pending')? 'selected': ''}}" onclick="get_themebyStatus('pending')">
 						<p class="text-header" >PENDING ({{$pending}})</p>
@@ -93,8 +101,8 @@ figure.user-avatar.small {
 					                    <tr>
 					                        <th>Image</th>
 					                        <th>Item</th>
-					                        <th>Total Sell</th>
 					                        <th>Price</th>
+					                        <th>Total Sell</th>
 					                        <th>Earnings</th>
 					                        <th>Status</th>
 					                        <th>Action</th>
@@ -107,7 +115,7 @@ figure.user-avatar.small {
 				                               
 				                                <td class="gig-pict-45">
 				                                    <span class="gig-pict-45">
-				                                        <a href="#"><img src="{{asset('theme/images/'.$view_theme->main_image)}}" alt="" ></a>
+				                                        <a href="#"><img src="{{asset('theme/images/thumb/'.$view_theme->main_image)}}" alt="" ></a>
 				                                    </span>
 				                                </td>
 				                                <td class="title js-toggle-gig-stats ">
@@ -115,9 +123,9 @@ figure.user-avatar.small {
 				                                        <a class="ellipsis" target="_blank" href="{{route('theme_detail', $view_theme->theme_url)}}">{{$view_theme->theme_name}}</a>
 				                                    </div>
 				                                </td>
-				                                <td>{{$view_theme->total_sell}}</td>
 				                                <td>${{$view_theme->price_regular}}</td>
-				                                <td>${{($view_theme->total_earn)? $view_theme->total_earn : 0}}</td>
+				                                <td>{{$view_theme->total_sell}}</td>
+				                                <td>${{($view_theme->total_earn) ? $view_theme->total_earn : 0}}</td>
 				                                <td>{{$view_theme->status}}</td>
 				                               
 				                                <td>
@@ -125,6 +133,12 @@ figure.user-avatar.small {
 				                                        <select onchange="action_type(this.value,'{{$view_theme->theme_url}}', '{{$view_theme->theme_id}}')"  name="sv" id="sv">
 				                                            <option value="0">select action</option>
 				                                            <option value="edit">Edit</option>
+				                                            @if($view_theme->status == 'paused')
+									                        <option value="active">Active</option>
+									                        @endif
+									                        @if($view_theme->status == 'active')
+									                        <option value="paused">Paused</option>
+									                        @endif
 				                                            <option value="delete">Delete</option>
 				                                        </select>
 				                                        <!-- SVG ARROW -->
@@ -219,38 +233,64 @@ figure.user-avatar.small {
 
 
 <script type="text/javascript">
-	function action_type(type, theme_url=null, theme_id=null) {
-	if(type == 'delete'){
-    	if (confirm("Are you sure delete it.?")) {
-       
-            var  link = '{{route("delete_theme")}}';
-            $.ajax({
-            url:link,
-            method:"post",
-            data:{
-            	theme_id: theme_id,
-            	_token: '{{csrf_token()}}'
-            },
-            success:function(data){
-                if(data){
-                    $("#item"+theme_id).hide();
-                    toastr.error(data);
-                }else{
-                	toastr.error(data);
-                }
-	           }
-	        
-	        });
-	    }
-	    return false;
+
+
+function action_type(type, theme_url=null, theme_id=null) {
+		if(type == 'paused' || type == 'active'){
+	    	if (confirm("Are you sure "+type+" it.?")) {
+		       
+	            var  link = '{{route("themeStatusCng")}}';
+	            $.ajax({
+	            url:link,
+	            method:"get",
+	            data:{
+	            	theme_id: theme_id,status:type
+	            },
+	            success:function(data){
+	                if(data){
+	                    $("#item"+theme_id).hide();
+	                    toastr.success(data);
+	                }else{
+	                	toastr.error('Sorry something is wrong');
+	                }
+		           }
+		        
+		        });
+		    }
+		    return false;
+		}
+		else if(type == 'delete'){
+	    	if (confirm("Are you sure delete it.?")) {
+	       
+	            var  link = '{{route("delete_theme")}}';
+	            $.ajax({
+	            url:link,
+	            method:"post",
+	            data:{
+	            	theme_id: theme_id,
+	            	_token: '{{csrf_token()}}'
+	            },
+	            success:function(data){
+	                if(data){
+	                    $("#item"+theme_id).hide();
+	                    toastr.error(data);
+	                }else{
+	                	toastr.error(data);
+	                }
+		           }
+		        
+		        });
+		    }
+		    return false;
+		}
+		
+		else if(type == 'edit'){
+			window.location.replace('{{url("dashboard/themeplace/upload")}}/'+theme_url);
+		}else{
+			return false;
+		}
 	}
-	if(type == 'edit'){
-	
-		window.location.replace('{{url("dashboard/themeplace/upload")}}/'+theme_url);
-	}
-   
-        
-} 
+
 
 
 

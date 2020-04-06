@@ -45,7 +45,7 @@
     margin-left: 20px;
 }
 .payment-method__tab1 {
-    float: left;
+   
     width: 25%;
     border-top: 6px solid #00d7b3;
     border-bottom-color: transparent !important;
@@ -59,8 +59,8 @@
     margin: 20px;
 }
 .payment-method__tab {
-    float: left;
-    width: 25%;
+   
+   
     background-color: #eee;
     text-align: center;
     padding: 6px 12px;
@@ -198,7 +198,7 @@ li.financial-institutes__logo {
 					<div class="item-preview" style="height:75px">
 								
 							<figure class="product-preview-image small liquid" style="width:75px">
-								<img src="{{ asset('gigimages/'.session::get('image_path'))}}" alt="">
+								<img src="{{ asset('gigimages/'.Session::get('image_path'))}}" alt="">
 							</figure>
 								
 								<p class="text-header small">I will {{session::get('gig_title')}}</p>
@@ -231,20 +231,7 @@ li.financial-institutes__logo {
 				</div>
 			</div>
 			<!-- /SIDEBAR -->
-			<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-			  <input type="hidden" name="cmd" value="_xclick">
-			  <input type="hidden" name="business" value="neyamul@buyer.com">
-			  <input type="hidden" name="item_name" value="{{Session::get('package_name')}}">
-			  <input type="hidden" name="item_number" value="{{Session::get('gig_order_id')}}">
-			  <input type="hidden" name="quantity" value="{{Session::get('item_quantity')}}">
-			  <input type="hidden" name="amount" value="{{Session::get('subtotal')}}">
-			  <input type="hidden" name="tax" value="2">
-			  <input type="hidden" name="currency_code" value="USD">
-			  <input type="hidden" name="return" value="{{url('order/payment/success')}}">
-			  <input type="hidden" name="cancel_return" value="{{url('order/payment/cancel')}}">
-			  <input type="image" style="display: none" id="submit_btn" name="submit"
-			    value="Place Order">
-			</form>	
+			
 			<!-- CONTENT -->
 			<div class="content left">
 				
@@ -284,7 +271,7 @@ li.financial-institutes__logo {
 							  </div>
 							</button>
 
-							<button name="payment_key" onclick="paymentbtn('hotlancer')" value="buy_now::paypal" aria-selected="false">
+							<button name="payment_key" style="padding: 0px 0px 10px;margin-top: -7px" class="payment-method__tab " onclick="paymentbtn('hotlancer')" value="buy_now::paypal" aria-selected="false">
 								<div class="payment-method__tab-inner">
 								<div class="payment-method__title 1">
 									<h4 class="t-heading -size-xs h-m0">HOTlancer Credit</h4>
@@ -406,7 +393,10 @@ function stripeTokenHandler(token) {
 					</div>
 					
 					<div id="paypal" style="display: none;" class="form-box-item not-padded">
-						
+						<form action="{{route('paymentPaypal')}}" method="post">
+							@csrf
+							<input type="submit" name="platform" value="marketplace" style="display: none" id="submit_btn" >
+						</form>	
 						<div class="media h-mt2">
 							<div class="media__item -align-center">
 							  <p class="t-body h-m0">PayPal accepts</p>
@@ -441,7 +431,6 @@ function stripeTokenHandler(token) {
 
 						  </div>
 						  <div class="secure-checkout-button__container">
-
 							<label for="submit_btn" class="button mid primary">Checkout with PayPal</label></a>
 						  </div>
 						</div>

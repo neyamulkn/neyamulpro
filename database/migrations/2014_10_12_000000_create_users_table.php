@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->integer('hourly_rate')->nullable();
             $table->double('wallet', 8,2)->default(0);
             $table->string('country', 15);
-            $table->enum('status', ['Active', 'DeActive', 'Pending', 'Close','warning']);
+            $table->enum('status', ['pending', 'active', 'reject', 'deActive', 'close', 'warning']);
             $table->rememberToken();
             $table->timestamps();
         });

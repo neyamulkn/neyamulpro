@@ -142,7 +142,7 @@ li.financial-institutes__logo {
 }
 
 .cart .cart-header-product, .cart .cart-item-product {
-    width: 535px !important;
+    width: 70% !important;
 }
 
 .cart .cart-item {
@@ -165,16 +165,8 @@ li.financial-institutes__logo {
 			<!-- SIDEBAR -->
 			<form action="{{route('gigOrderPayment')}}" method="post">
 				
-					{{csrf_field()}}
-					<input type="hidden" name="gig_id" value="{{$get_gigs->gig_id}}">
-
-					<input type="hidden" name="gig_title" value="{{$get_gigs->gig_title}}">
-					<input type="hidden" name="image_path" value="{{$get_gigs->image_path}}">
-					<input type="hidden" name="package_name" value="{{$get_cart->package_name}}">
-					<input type="hidden" name="delivery_time" value="{{$package['delivery_time']}}">
-					<input type="hidden" name="subtotal" value="{{$package['price']}}">
-					<input type="hidden" name="seller_id" value="{{$get_gigs->user_id}}">
-					<input type="hidden" name="total" value="">
+			{{csrf_field()}}
+					
 			<div class="sidebar right">
 				<div class="form-box-item not-padded">
 					<h4>Order Summary</h4>
@@ -221,10 +213,6 @@ li.financial-institutes__logo {
 							<p class="text-header small">Price</p>
 						</div>
 
-						<div class="cart-item-actions">
-							<p class="text-header small">Action</p>
-						</div>
-						
 					</div>
 					<!-- /CART HEADER -->
 
@@ -261,16 +249,7 @@ li.financial-institutes__logo {
 							<p id="price" class="price"><span>$</span>{{$package['price']}}</p>
 						</div>
 						<!-- /CART ITEM PRICE -->
-						<!-- CART ITEM ACTIONS -->
-						<div class="cart-item-actions">
-							<a href="{{url('delete/add_to_cart/'.$get_cart->cart_id)}}" onclick ="return confirm('Are you sure delete it.')" class="button dark-light rmv">
-								<!-- SVG PLUS -->
-								<svg class="svg-plus">
-									<use xlink:href="#svg-plus"></use>	
-								</svg>
-								<!-- /SVG PLUS -->
-							</a>
-						</div>
+						
 					</div>
 					<!-- /CART ITEM -->
 					<div style="padding: 10px 25px;">

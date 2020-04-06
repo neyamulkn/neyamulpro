@@ -42,7 +42,9 @@
 <script src="{{asset('/allscript')}}/js/dashboard-header.js"></script>
 <script src="{{asset('/allscript')}}/js/bootstrap.min.js"></script>
 <script src="{{ asset('/allscript/js/vendor/toastr.js') }}"></script>
-
+<!-- This is data table -->
+<script src="{{asset('/allscript')}}/datatables/js/jquery.dataTables.min.js"></script>
+    
 {!! Toastr::message() !!}
 
 
@@ -55,6 +57,13 @@
   })
 
 </script>
+
+
+    <script>
+        $(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
 
 <script type="text/javascript">
     function readURL(input) {

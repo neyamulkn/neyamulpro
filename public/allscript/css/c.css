@@ -131,10 +131,7 @@ select#hhhfgfd {
 input[type="radio"], input[type="checkbox"] {
     display: -webkit-inline-box;
 }
-label.select-block {
-    float: left;
-    width: 78%;
-}
+
 h3.t-heading.-size-s {
     text-align: left;
     padding-bottom: 10px;
@@ -242,6 +239,7 @@ span.order-price {
 h1.ordertitle {
     font-size: 26px;
     line-height: 26px;
+    margin: initial;
     overflow: hidden;
     float: left;
     position: relative;
@@ -941,6 +939,8 @@ textarea.gig-title-text {
     -webkit-font-smoothing: antialiased;
     color: #ddd;
     margin: 22px 0 0 7px;
+    top: 0;
+    left: 0;
 }
 .gig-edit-tags-desc {
     text-align: right;
@@ -1002,7 +1002,7 @@ label > .radio, label > .checkbox {
 	}
 	.theme1 {
 		background-color: white;
-		height: 366px;
+		
 		box-shadow: 0 0 16px #ccc;
 	}
 	img.themeimg {
@@ -1076,7 +1076,7 @@ label > .radio, label > .checkbox {
 	}
 	.theme1 {
 		background-color: white;
-		height: 199px;
+		
 		box-shadow: 0 0 16px #ccc;
 	}
 	.theme3 {
@@ -1094,7 +1094,7 @@ label > .radio, label > .checkbox {
 	}
 		p.price.small.v2 {
 		float: left;
-		margin: 5px 5px 0 0;
+		margin: 15px 5px 0 0;
 	}
 	.hireabout1 {
 		float: left;
@@ -1111,7 +1111,7 @@ label > .radio, label > .checkbox {
 @media screen and (max-width: 370px) {
 	.theme1 {
 		background-color: white;
-		height: 197px;
+		
 		box-shadow: 0 0 16px #ccc;
 	}
 }

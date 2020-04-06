@@ -243,7 +243,7 @@ span.icon-arrow-right.small {
 .comment-list .line-separator{
 	margin-top: 3px !important;
 }
-
+ 
 </style>
 @endsection
 @section('menu')
@@ -266,7 +266,7 @@ span.icon-arrow-right.small {
 
 					<input type="hidden" name="theme_id" value="{!! $get_theme_detail->theme_id !!}">
 					<!-- CHECKBOX -->
-					<input type="radio" id="regular-license" value="price_regular" name="regular_license" form="aux_form" checked="">
+					<input type="radio" id="regular-license" value="regular" name="license" form="aux_form" checked="">
 					<label class="b-label linked-check" for="regular-license">
 						<span class="checkbox tertiary"><span></span></span>
 						Regular License
@@ -275,18 +275,16 @@ span.icon-arrow-right.small {
 					<p class="license-text" data-license="regular-license" style="display: block;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
 
 					<!-- CHECKBOX -->
-					<input type="radio" id="extended-license" value="price_extented" name="extended_license" form="aux_form">
+					<input type="radio" id="extended-license" value="extented" name="license" form="aux_form">
 					<label class="b-label linked-check" for="extended-license">
 						<span class="checkbox tertiary"><span></span></span>
 						Extended License
 					</label>
 					<!-- /CHECKBOX -->
 					
-					
-						<input type="hidden" name="price" value="{!! $get_theme_detail->price_regular !!}" id="price">
-						<p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
-						<button type="submit" name="purchase" value="purchase" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
-					
+					<input type="hidden" name="price" value="{!! $get_theme_detail->price_regular !!}" id="price">
+					<p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
+					<button type="submit" name="purchase" value="purchase" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
 					
 				</form>
 
@@ -384,24 +382,20 @@ span.icon-arrow-right.small {
 					</div>
 					<!-- /BADGE LIST -->
 					<div class="clearfix"></div>
-					<a href="{!! url($get_theme_detail->username) !!}" class="button mid dark spaced">Go to <span class="tertiary">Profile Page</span></a>
+					<a href="{!! route('profile_view', $get_theme_detail->username) !!}" class="button mid dark spaced">Go to <span class="tertiary">Profile Page</span></a>
 					
 				</div>
 				<!-- /SIDEBAR ITEM -->
 				<div class="sidebar-item void buttons">
-					<a href="#" class="button big dark purchase">
-						<span >{!! $total_sale->total_sale !!} </span>
-						<span class="tertiary"> Sales</span>
+					<a class="button big dark tertiary">
+						{!! $total_sale->total_sale !!} 
+						 Sales
 					</a>
-					<a href="{{url()->current()}}/comments" class="button big tertiary wcart">
-						<span class="icon-present"></span>
+					<a href="{{url()->current()}}/comments" class="button big tertiary">
+						
 						{{$get_theme_comment->total()}} Comments
 					</a>
-					<a href="#" class="button big secondary wfav">
-						<span class="icon-heart"></span>
-						<span class="fav-count">652</span>
-						Add to Favourites
-					</a>
+				
 				</div>
 				<div class="sidebar-item author-reputation short">
 					<!-- PIE CHART -->
@@ -591,7 +585,7 @@ span.icon-arrow-right.small {
 									<p class="text-header">{!! $get_theme_feature->filter_name !!}:</p>
 									<p>
 										@foreach($get_features as $feature)
-											{!! $feature->sub_filtername !!}
+											{!! $feature->sub_filtername !!},
 										@endforeach
 									</p>
 								</div>
@@ -612,7 +606,7 @@ span.icon-arrow-right.small {
 							<p class="tags tertiary" style="border:none;">
 								<?php $tag_array = explode(',', $get_theme_detail->search_tag); ?>
 								@foreach($tag_array as $tag)
-									<a href="{{ url('themeplaces/search?item='.$tag) }}">{!! $tag !!}</a>,
+									<a href="{{ url('themeplace/search?item='.$tag) }}">{!! $tag !!}</a>,
 								@endforeach
 							</p>
 						</div>
@@ -790,9 +784,9 @@ span.icon-arrow-right.small {
 									<div class="comment">
 										<p class="text-header">{{$show_comment->username}}</p>
 										<!-- PIN -->
-										<span class="pin greyed">Purchased</span>
+										<span class="pin greyed">{{($show_comment->user_id == $get_theme_detail->user_id) ? 'AUTHOR' : 'PURCHASED'}}</span>
 										<!-- /PIN -->
-										<p class="timestamp">{!! \Carbon\Carbon::parse($show_comment->created_at)->format('M d, Y') !!}</p>
+										<p class="timestamp">{!! \Carbon\Carbon::parse($show_comment->created_at)->diffForHumans() !!}, {!! \Carbon\Carbon::parse($show_comment->created_at)->format(' d M, Y') !!}</p>
 										<a style="cursor: pointer;" onclick="reply_field('{{$show_comment->com_id}}')" class="report">Reply</a>
 										<p>{{$show_comment->comment}}</p>
 									</div>
@@ -817,11 +811,11 @@ span.icon-arrow-right.small {
 												</a>
 												<div style="margin-left: 60px;">
 													<!-- /USER AVATAR -->
-													<p class="text-header">{{($show_reply->user_id == $get_theme_detail->user_id) ? 'AUTHOR' : 'PURCHASED'}}</p>
+													<p class="text-header">{{$show_reply->username}}</p>
 													<!-- PIN -->
-													<span class="pin greyed">Purchased</span>
+													<span class="pin greyed">{{($show_reply->user_id == $get_theme_detail->user_id) ? 'AUTHOR' : 'PURCHASED'}}</span>
 													
-													<a class="report">{{ \Carbon\Carbon::parse($show_reply->created_at)->format('M d, Y') }}</a>
+													<a class="report">{!! \Carbon\Carbon::parse($show_reply->created_at)->diffForHumans() !!}, {!! \Carbon\Carbon::parse($show_reply->created_at)->format(' d M, Y') !!}</a>
 													<p>{{$show_reply->reply_msg}}</p>
 												</div>
 											</div>
@@ -882,7 +876,7 @@ span.icon-arrow-right.small {
 				
 				@if(count($get_another_theme)>0)
 					<div class="headline tertiary">
-						<h4>Related Courses</h4>
+						<h4>More themes</h4>
 					</div>
 					<div class="product-list grid column4-wrap">
 
@@ -892,7 +886,7 @@ span.icon-arrow-right.small {
 								<div class="product-preview-actions">
 									<!-- PRODUCT PREVIEW IMAGE -->
 									<figure class="product-preview-image">
-										<img src="{!! asset('theme/images/'.$another_theme->main_image) !!}" alt="theme-image">
+										<img src="{!! asset('theme/images/thumb/'.$another_theme->main_image) !!}" alt="theme-image">
 									</figure>
 									<!-- /PRODUCT PREVIEW IMAGE -->
 
@@ -905,7 +899,7 @@ span.icon-arrow-right.small {
 													<span class="icon-tag"></span>
 												</div>
 											</a>
-											<a href="{!! url('themeplace/item/'.$another_theme->theme_url) !!}">
+											<a href="{!! route('theme_detail', $another_theme->theme_url) !!}">
 												<p>Go to Item</p>
 											</a>
 										</div>
@@ -930,7 +924,7 @@ span.icon-arrow-right.small {
 
 								<!-- PRODUCT INFO -->
 								<div class="product-info">
-									<a href="item-v1.html">
+									<a href="{{ route('theme_detail', $another_theme->theme_url)}}">
 										<p class="wrap-text">{!! $another_theme->theme_name !!}</p>
 									</a>
 
@@ -941,12 +935,12 @@ span.icon-arrow-right.small {
 
 								<!-- USER RATING -->
 								<div class="user-rating">
-									<a href="author-profile.html">
+									<a href="#">
 										<figure class="user-avatar small">
 											<img src="{!! asset('image').'/'.$another_theme->user_image  !!}" alt="user-avatar">
 										</figure>
 									</a>
-									<a href="author-profile.html">
+									<a href="#">
 										<p class="text-header tiny">{!! $another_theme->username !!}</p>
 									</a>
 
@@ -954,13 +948,14 @@ span.icon-arrow-right.small {
 										$theme_reviews = DB::table('theme_reviews')->where('theme_id',  $another_theme->theme_id)
 						                ->select(DB::raw('count(*) as count_reviews'), DB::raw('sum(ratting_star) as sum_star'))
 						                ->first();
+						               
+						                $count_reviews = ($theme_reviews->count_reviews)  ? $theme_reviews->count_reviews : 1;
+						                $sum_star = $theme_reviews->sum_star;
 									 ?>
 
-									@if($theme_reviews->count_reviews>0)
-										<ul class="rating tooltip tooltipstered">
+										<ul class="rating ">
 											 @for($i=1; $i<=5; $i++)
-											<li class="rating-item {!!  ($i<=$theme_reviews->sum_star / $theme_reviews->count_reviews) ? ' ' : 'empty'  !!}">
-
+											<li class="rating-item @if($i <= ($sum_star / $count_reviews)) @else empty @endif">
 												<svg class="svg-star">
 													<use xlink:href="#svg-star"></use>
 												</svg>
@@ -968,7 +963,7 @@ span.icon-arrow-right.small {
 											</li>
 											@endfor
 										</ul>
-									@endif
+									
 
 								</div>
 
@@ -1022,10 +1017,9 @@ span.icon-arrow-right.small {
 
 	function add_to_cart(theme_id){
 		var price = $('#price').val();
-
 		$.ajax({
 			method:'post',
-			url:'{{  URL::to("/themeplace/cart/") }}',
+			url:"{{route('theme_cart')}}",
 			data:{
 				theme_id:theme_id,
 				price:price,
@@ -1123,20 +1117,7 @@ function myFunction() {
  	document.getElementById('reply_form'+id).innerHTML = '@csrf <textarea name="reply_msg" required placeholder="Write your comment here..."></textarea><button style="float: right;">Reply</button>';
  }
 
-
-
-
-
-
 </script>
-
-
-
-
-
-
-
-
 
 @endsection
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class gig_price extends Model
 {
+
 	protected $fillable = [
 		'gig_id',
 		'catetory_id',
@@ -37,4 +38,8 @@ class gig_price extends Model
    ];
 
    public $timestamps = false;
+
+    public function gig_feature(){
+       return $this->hasMany(gig_feature::class, 'gig_id', 'gig_id');
+    } 
 }

@@ -10,4 +10,5 @@ class gig_metadata_filter extends Model
     	'gig_id',
     	'metadata_id'
     ];
+
 }

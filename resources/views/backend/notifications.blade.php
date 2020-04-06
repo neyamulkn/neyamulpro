@@ -81,17 +81,6 @@
 		</div>
 		<!-- /PROFILE NOTIFICATIONS -->
 
-		<!-- PAGER -->
-		<div class="pager-wrap">
-			<div class="pager primary">
-				<div class="pager-item"><p>1</p></div>
-				<div class="pager-item active"><p>2</p></div>
-				<div class="pager-item"><p>3</p></div>
-				<div class="pager-item"><p>...</p></div>
-				<div class="pager-item"><p>17</p></div>
-			</div>
-		</div>
-		<!-- /PAGER -->
     </div>
     <!-- DASHBOARD CONTENT -->
 @endsection

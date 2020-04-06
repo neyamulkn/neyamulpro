@@ -26,9 +26,11 @@ class WorkplaceController extends Controller
         $get_job = DB::table('jobs')
         ->join('workplace_category', 'jobs.category_id', '=', 'workplace_category.id')
         ->join('workplace_subcategory', 'jobs.subcategory_id', '=', 'workplace_subcategory.id')
-        ->where('job_title_slug', $slug)->where('user_id', $user_id)->first();
-
+        ->where('job_title_slug', $slug)->where('user_id', $user_id)
+        ->select('jobs.*', 'workplace_category.id', 'workplace_category.category_name', 'workplace_subcategory.subcategory_name')->first();
+        
     	$get_category = DB::table('workplace_category')->get();
+
     	return view('backend.workplace.job1')->with(compact('get_category', 'get_job'));  
     }
 
@@ -47,14 +49,20 @@ class WorkplaceController extends Controller
     }
 
     public function insert_job_post(Request $request){
+
+        $request->validate([
+            'job_title' => 'required',
+            'category_id' => 'required',
+            'subcategory_id' => 'required',
+        ]);
         $user_id = Auth::user()->id;
-        $slug = $this->createSlug($request->post_title);
+        $slug = $this->createSlug($request->job_title);
         $data = [
-            'job_title' => $request->post_title,
-            'job_title_slug' => $slug,
+            'job_title' => $request->job_title,
+            'job_title_slug' => ($request->slug) ? $request->slug : $slug,
             'category_id' => $request->category_id,
             'user_id' => $user_id,
-            'subcategory_id' => $request->subcategory,
+            'subcategory_id' => $request->subcategory_id,
         ];
 
        $check_job = job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
@@ -62,8 +70,10 @@ class WorkplaceController extends Controller
        if($check_job){
             job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->update($data);
             Toastr::success('Job update successfully.');
-            return redirect('dashboard/workplace/job-post/'.$check_job->job_title_slug.'/step/2')->with('get_job', $check_job);
+            return redirect('dashboard/workplace/job-post/'.$request->slug.'/step/2')->with('get_job', $check_job);
        }else{
+            // add status 
+            $data = array_merge($data, ['status' => 'draft']);
             $insert = job::create($data);
             if($insert){ Toastr::success('First Step Completed.'); }else{ Toastr::error('Sorry job insert failed.'); }
            
@@ -75,33 +85,48 @@ class WorkplaceController extends Controller
     public function job_post_second($slug){
         $user_id = Auth::user()->id;
         $get_job = job::where('job_title_slug', $slug)->where('user_id', $user_id)->first();
-
-        return view('backend.workplace.job2')->with(compact('get_job'));
+       
+        if($get_job){
+            return view('backend.workplace.job2')->with(compact('get_job'));
+        }else{
+            return back();
+        }
     }
 
     public function insert_job_step_second(Request $request){
+
+        $request->validate([
+            'job_dsc' => 'required',
+        ]);
         $user_id = Auth::user()->id;
         $image_name = null;
         if($request->hasFile('file')){
             $image = $request->file('file');
             $image_name = time().rand('123456', '999999').".".$image->getClientOriginalExtension();
-            $image_path = public_path('images/workplace/'.$image_name );
-            Image::make($image)->save($image_path);
-        }
-        $data = [
+            $image->move(public_path('images/workplace/'), $image_name);
+
+            $data = [
             'job_dsc' => $request->job_dsc,
             'file' => $image_name,
+            ];
+        }else{
+            $data = [ 'job_dsc' => $request->job_dsc];
+        }
+       
+        $check_job = job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
+
+        if($check_job){
+            $update = job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->update($data);
+            $source_image = public_path('images/workplace/'.$check_job->file);
+
+            if($request->hasFile('file') && file_exists($source_image)){ //If it exits, delete it from folder
+                @unlink($source_image);
+            }
             
-        ];
-
-        $check_job = job::where('job_title_slug', $request->slug)->where( 'user_id', $user_id)->first();
-
-       if($check_job){
-            job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->where('user_id', $user_id)->update($data);
             return redirect('dashboard/workplace/job-post/'.$request->slug.'/step/3')->with('get_job', $check_job);
-       }else{
+        }else{
             return back();
-       }
+        }
     }
 
 
@@ -115,10 +140,12 @@ class WorkplaceController extends Controller
 
 
     public function insert_job_step_third(Request $request){
+        $request->validate([
+            'project_type' => 'required',
+        ]);
         $user_id = Auth::user()->id;
         $data = [
             'project_type' => $request->project_type,
-            
         ];
 
         $check_job = DB::table('jobs')->where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
@@ -144,7 +171,7 @@ class WorkplaceController extends Controller
     public function insert_job_step_four(Request $request){
         $user_id = Auth::user()->id;
         $check_job = job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
-        if($check_job){
+        if($check_job && $request->filter_id){
             foreach ($request->filter_id as $key => $value) {
                 $subfilter_id = implode(',', $request->subfilter_id);
                 $data = [
@@ -226,16 +253,14 @@ class WorkplaceController extends Controller
             'price_type' => $request->price_type,
             'budget' => $request->budget,
             'experience' => $request->experience,
-            'project_time' => $request->project_time,
             'day_hours' => $day_hours,
-           
-            
+            'status' => 'pending' 
         ];
 
         $check_job = DB::table('jobs')->where('job_title_slug', $request->slug)->where('user_id', $user_id)->first();
 
        if($check_job){
-             job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->update($data);
+            job::where('job_title_slug', $request->slug)->where('user_id', $user_id)->update($data);
             return redirect('dashboard/workplace/job-post/'.$request->slug.'/step/7');
        }else{
             return back();
@@ -273,148 +298,119 @@ class WorkplaceController extends Controller
        }
     }
 
-    public function submit_proposal($job_url){
+   
+    public function job_list($status='active'){
         $user_id = Auth::user()->id;
-        $get_job = DB::table('jobs')
-        ->join('users', 'jobs.user_id', '=', 'users.id')
-        ->where('jobs.job_title_slug', $job_url)
-        ->first();
+        $get_jobs = job::with(['jobOrder', 'job_proposals']);
+        // check Whether admin 
+        if(Auth::user()->role_id != env('ADMIN')){
+            $get_jobs = $get_jobs->where('user_id' , '=', $user_id)->with('user');
+        }
+        // check status Whether  all
+        if($status != 'all'){ $get_jobs = $get_jobs->where('status' , '=', $status); }
 
-        $exist_proposal = DB::table('job_proposals')
-        ->where('job_title_slug', $get_job->job_title_slug)
-        ->where('freelancer_id', $user_id)
-        ->first();
+        $get_jobs = $get_jobs->where('status', '!=', 'delete')->orderBy('job_id', 'DESC')->paginate(10);
 
-
-        return view('backend.workplace.job-proposal')->with(compact('get_job', 'exist_proposal'));
-    } 
-
-    public function insert_proposal(Request $request){
-        $user_id = Auth::user()->id;
+        //check ajax request  
+        if(isset($_GET['ajaxRequest'])){
+            if(count($get_jobs)>0){
+                echo view('backend.workplace.jobByStatus')->with(compact('get_jobs'));
+            }else{ echo '<h3>No '.$status. ' job found.</h3>'; }
+            
+        }else{ //if isset type then 
+            if(Auth::user()->role_id == env('ADMIN')){
+                return view('admin.workplace.job-list')->with(compact('get_jobs')); 
+            }
+            return view('backend.workplace.job-list')->with(compact('get_jobs'));
+        }
        
-        $data = [
+    }
 
-        'job_title_slug' => $request->job_title_slug,
-        'buyer_id' => $request->buyer_id,
-        'freelancer_id' => $user_id,
-        'proposal_budget' => $request->proposal_budget,
-        'work_duration' => $request->work_duration,
-        'proposal_dsc' => $request->proposal_dsc,
-        'proposal_file' => $request->proposal_file,
-        ];
-
-        $exist_proposal = DB::table('job_proposals')
-        ->where('proposal_id', $request->proposal_id)
-        ->where('freelancer_id', $user_id)
-        ->first();
-
-        if($exist_proposal){
-             $success = job_proposal::where('proposal_id', $request->proposal_id)
-                        ->where('freelancer_id', $user_id)->update($data);
-        }else{
-            $success = job_proposal::create($data);
+    public function job_status(Request $request){ 
+        $user_id = Auth::user()->id;
+        $find_job = job::where('job_id', $request->job_id);
+        if(Auth::user()->role_id != env('ADMIN')){
+            $find_job = $find_job->where('user_id' , $user_id);
         }
-        if($success){
-            Toastr::success('Thanks your job proposal successfully submited.');
-            return back();
+        $find_job =$find_job->first();
+
+        if($find_job->update(['status' => $request->status])){
+            echo 'Job' .$request->status.' successfully ';
         }else{
-            Toastr::error('Sorry something is wrong your job proposal not successfully submited');
-            return back();
+            return false;
         }
+        
         
     }
 
-    public function job_list(){
-        $user_id = Auth::user()->id;
-        $get_jobs = DB::table('jobs')->where('user_id', '=', $user_id)->get();
-
-        return view('backend.workplace.job-list')->with(compact('get_jobs'));
-    }
-
-    public function proposals_list($job_title_slug){
-        $buyer_id = Auth::user()->id;
-        $get_proposals = DB::table('job_proposals')
-                    ->join('jobs', 'job_proposals.job_title_slug', 'jobs.job_title_slug')
-                    ->join('users', 'job_proposals.freelancer_id', 'users.id')
-                    ->leftjoin('userinfos', 'job_proposals.freelancer_id', 'userinfos.user_id')
-                    ->select('job_proposals.*', 'jobs.job_title', 'jobs.job_title_slug', 'users.username','users.country', 'userinfos.user_title', 'userinfos.user_image')
-                    ->where('job_proposals.job_title_slug', '=', $job_title_slug)
-                    ->where('job_proposals.buyer_id', '=', $buyer_id)
-                    ->get();
-                return view('backend.workplace.proposal-list')->with(compact('get_proposals'));
-    }
-
-    public function applicant_hire($job_title_slug, $applicant_id){
-        $user_id = Auth::user()->id;
-        $get_applicant = DB::table('job_proposals')
-                    ->join('jobs', 'job_proposals.job_title_slug', 'jobs.job_title_slug')
-                    ->join('users', 'job_proposals.freelancer_id', 'users.id')
-                    ->join('userinfos', 'job_proposals.freelancer_id', 'userinfos.user_id')
-                    ->select('job_proposals.*', 'jobs.job_title', 'jobs.job_title_slug', 'users.username', 'userinfos.user_title', 'userinfos.user_image')
-                    ->where('job_proposals.job_title_slug', '=', $job_title_slug)
-                    ->where('job_proposals.freelancer_id', '=', $applicant_id)
-                    ->first();
-        return view('backend.workplace.applicant-hire')->with(compact('get_applicant'));
-    }
-
-
+    
     public function payment_stripe(Request $request)
     {   
+
         $buyer_id = Auth::user()->id;
         $get_proposal = DB::table('job_proposals')
-                    ->join('jobs', 'job_proposals.job_title_slug', 'jobs.job_title_slug')
-                    ->join('users', 'job_proposals.buyer_id', 'users.id')
-                    ->select('job_proposals.*', 'users.username', 'jobs.job_title')
-                    ->where('job_proposals.proposal_id', '=', $request->proposal_id)
-                    ->where('job_proposals.buyer_id', '=', $buyer_id)
-                    ->first();
+            ->join('jobs', 'job_proposals.job_title_slug', 'jobs.job_title_slug')
+            ->join('users', 'job_proposals.buyer_id', 'users.id')
+            ->select('job_proposals.*', 'users.username', 'jobs.job_title')
+            ->where('job_proposals.proposal_id', '=', $request->proposal_id)
+            ->where('job_proposals.buyer_id', '=', $buyer_id)
+            ->first();
 
-            if($get_proposal){
+        if($get_proposal){
 
 
-               \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-                $payment_success = \Stripe\Charge::create ([
-                        "amount" => $get_proposal->proposal_budget,
-                        "currency" => "USD",
-                        "source" => $request->stripeToken,
-                        "description" => $get_proposal->job_title,
-                        'statement_descriptor' => $get_proposal->username,
-                ]);
-                if($payment_success){
+           \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+            $payment_success = \Stripe\Charge::create ([
+                    "amount" => $get_proposal->proposal_budget,
+                    "currency" => "USD",
+                    "source" => $request->stripeToken,
+                    "description" => $get_proposal->job_title,
+                    'statement_descriptor' => $get_proposal->username,
+            ]);
+            if($payment_success){
 
-                    $order_number = 'ID'. date('ymd'). $get_proposal->buyer_id ; //make order id buyer wise
-                    // get last order id
-                    $get_last_order = DB::table('job_orders')->orderBy('order_id',"desc")->where('buyer_id', $get_proposal->buyer_id)->limit(1)->first();
+                $order_number = 'ID'. date('ymd'). $get_proposal->buyer_id ; //make order id buyer wise
+                // get last order id
+                $get_last_order = DB::table('job_orders')->orderBy('order_id',"desc")->where('buyer_id', $get_proposal->buyer_id)->limit(1)->first();
 
-                    if ($get_last_order) {
-                        $number = substr($get_last_order->order_id, -4) + 1;
-                        $order_id = ($order_number  . $number);
-                    } else {
-                        $order_id = $order_number  . '1001';
-                    }
-
-                    $data = [
-                        'order_id' => $order_id,
-                        'job_title_slug' => $get_proposal->job_title_slug,
-                        'proposal_id' => $get_proposal->proposal_id,
-                        'freelancer_id' => $get_proposal->freelancer_id,
-                        'buyer_id' =>  $get_proposal->buyer_id,
-                        'proposal_budget' => $get_proposal->proposal_budget,
-                        'payment_method' => 'card',
-                        'transection_id' =>  $request->stripeToken,
-                        'status' => 'active',
-                    ];
-                    
-                    job_order::create($data);
-                    Toastr::success('Payment successful.');
-                    return redirect('dashboard/workplace/work-description/'.$order_id);
+                if ($get_last_order) {
+                    $number = substr($get_last_order->order_id, -4) + 1;
+                    $order_id = ($order_number  . $number);
+                } else {
+                    $order_id = $order_number  . '1001';
                 }
+
+                $ref_user = null;
+                if(Session::has('refferel_user_name')){
+                    if(Session::get('refferel_user_name') != $username){
+                     $ref_user = Session::get('refferel_user_name');
+                    }
+                }
+
+
+                $data = [
+                    'order_id' => $order_id,
+                    'job_id' => session::get('hire_job_id'),
+                    'ref_user' => $ref_user,
+                    'proposal_id' => $get_proposal->proposal_id,
+                    'freelancer_id' => $get_proposal->freelancer_id,
+                    'buyer_id' =>  $get_proposal->buyer_id,
+                    'proposal_budget' => $get_proposal->proposal_budget,
+                    'payment_method' => 'card',
+                    'transection_id' =>  $request->stripeToken,
+                    'status' => 'active',
+                ];
                 
-            }else{
-                Toastr::error('Sorry something is wrong try again.!');
-                return back();
-            }    
-       
+                job_order::create($data);
+                Toastr::success('Payment successful.');
+                return redirect('dashboard/workplace/work-description/'.$order_id);
+            }
+            
+        }else{
+            Toastr::error('Sorry something is wrong try again.!');
+            return back();
+        }    
+           
     }
 
     public function work_description($order_id){
@@ -450,7 +446,7 @@ class WorkplaceController extends Controller
     }
 
 
-    // create theme unique slug 
+    // create job unique slug 
     public function createSlug($slug)
     {
       $slug = str_slug($slug);

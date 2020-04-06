@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Following;
 use Illuminate\Http\Request;
-
+use Auth;
 class FollowingController extends Controller
 {
 
@@ -16,8 +16,18 @@ class FollowingController extends Controller
 
     public function store(Request $request)
     {
-       Following::create(['follower_id' => $user_id, 'following_id' => $request->following_id]);
-       echo "Following success";
+        $user_id = Auth::user()->id;
+        $find = Following::where('follower_id', $user_id)->where('following_id', $request->following_id)->first();
+
+        if(!$find){
+            $data = ['follower_id' => $user_id, 'following_id' => $request->following_id];
+
+            Following::create($data);
+            echo "Following success";
+        }else{
+            $find->delete();
+            echo "Unfollow success";
+        }
     }
 
     /**

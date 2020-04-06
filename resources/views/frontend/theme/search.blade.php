@@ -13,25 +13,37 @@
 	label:last-child {
     text-align: initial !important;
 }
+.author-mobile{
+	display: none;
+}
+
+@media screen and (max-width: 900px)  {
+	.author-mobile{
+		display: block !important;
+	}
+	a.user-rating.v1{padding-left: 0px !important;}
+
+}
+
+
 .prodlist-i-txt{height: 105px;
     overflow: hidden;}
  .search-widget-form {
-    width: 91%;
+    width: 86%;
     margin: 15px auto 0;
+    overflow: initial !important;
 }
 
 .search_bar{
 	position: absolute;
-    top: 46px;
-    left:95px;
+    top: 50px;
+    left: 15px;
     margin: 0px auto;
-    width: 52%;
     border:1px solid #ccc;
     border-top: none;
     background: #fafafa;
     z-index: 999;
     display: none;
-
 }
 .search_bar li{
 
@@ -55,10 +67,13 @@
 
 @section('content')
 
-	<div style="position: relative; width: 100%;" >
-		@if(Request::segment(2)== 'search')
-			<form action="{{ route('theme_search') }}" style="width: 86%;" class="search-widget-form" >
-				<input type="text" style="width: 61%;" value="{{$_GET['item']}}" required="" onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
+	
+	
+	<form action="{{ route('theme_search') }}"  class="search-widget-form" >
+		<div class="row">
+			<div class="col-xs-10 col-md-11" style="position: relative;">
+					
+				<input type="text" value="{{$_GET['item']}}" required="" onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
 				<label for="cat" class="select-block">
 					<select name="cat" id="cat">
 						<option  value="">All Categories</option>
@@ -73,153 +88,25 @@
 					</svg>
 					<!-- /SVG ARROW -->
 				</label>
-				<button class="button medium primary">Search Now!</button>
-			</form>
-			@endif
-
-		<div class="search_bar" id="search_bar" >
-			<ul>
-				<span id="show_suggest_key"></span>
-			</ul>
+				<div class="search_bar" id="search_bar" >
+					<ul>
+						<span id="show_suggest_key"></span>
+					</ul>
+				</div>
+			</div>
+			<div class="col-xs-2 col-md-1">
+				<button class="button medium tertiary">Search</button>
+			</div>
 		</div>
+	</form>
+			
 	</div>
 	<!-- SECTION -->
 	<div class="section-wrap">
 		<div class="section">
-			<!-- CONTENT -->
-			<div class="content filter_data">
-				<!-- HEADLINE -->
-				<div class="headline tertiary">
-					<h4>{{$get_theme_info->total()}} Products Found</h4>
-					<form id="shop_filter_form" name="shop_filter_form">
-						<label for="price_sort" class="select-block">
-							<select name="price_sort"  id="price_sort">
-								<option value="ASC" selected="selected" >Price (Low to High)</option>
-								<option value="DESC">Price (High to Low)</option>
-							</select>
-							<!-- SVG ARROW -->
-							<svg class="svg-arrow">
-								<use xlink:href="#svg-arrow"></use>
-							</svg>
-							<!-- /SVG ARROW -->
-						</label>
-						<label for="per-page" class="select-block">
-							<select name="per-page" id="per-page">
-								<option value="15">15 Items Per Page</option>
-								<option value="30">30 Items Per Page</option>
-							</select>
-							<!-- SVG ARROW -->
-							<svg class="svg-arrow">
-								<use xlink:href="#svg-arrow"></use>
-							</svg>
-							<!-- /SVG ARROW -->
-						</label>
-					</form>
-					<div class="clearfix"></div>
-				</div>
-				<!-- /HEADLINE -->
-
-				<!-- PRODUCT SHOWCASE -->
-				<div class="product-showcase">
-					<!-- PRODUCT LIST -->
-					<div class="product-list grid column3-4-wrap">
-
-						@foreach($get_theme_info as $show_theme_info)
-							<!-- THEME ITEM -->
-							<div class="theme1">
-								<div class="theme2">
-									<a href="{{ route('theme_detail', $show_theme_info->theme_url) }}" class="Template">
-										<img class="themeimg" src="{{asset('theme/images').'/'.$show_theme_info->main_image }}" >
-									</a>
-									<div class="author-data v2">
-										<!-- USER RATING -->
-										<div class="user-rating v2">
-											<a class="user-rating v1" href="{{ route('profile_view', [$show_theme_info->username]) }}">
-												<figure class="user-avatar small">
-													<img src="<?php echo asset('/image/'.$show_theme_info->user_image); ?>" alt="user-avatar">
-												</figure>
-											</a>
-											<a class="user-rating v4" href="{{ route('profile_view', [$show_theme_info->username]) }}">
-												<p class="text-header tiny">{{$show_theme_info->name}}</p>
-											</a>
-										</div>
-										<!-- /USER RATING -->
-
-										<!-- METADATA -->
-										<div class="metadata">
-											<!-- META ITEM -->
-											<div class="meta-item">
-												<span class="icon-bubble"></span>
-												<p>12</p>
-											</div>
-											<!-- /META ITEM -->
-
-											<!-- META ITEM -->
-											<div class="meta-item">
-												<span class="icon-eye"></span>
-												<p>210</p>
-											</div>
-											<!-- /META ITEM -->
-
-											<!-- META ITEM -->
-											<div class="meta-item">
-												<span class="icon-heart"></span>
-												<p>105</p>
-											</div>
-											<!-- /META ITEM -->
-										</div>
-										<!-- /METADATA -->
-									</div>
-								</div>
-								<div class="theme3">
-									<div class="themett">
-										<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}">{{$show_theme_info->theme_name}}</a>
-									</div>
-									<a>
-										<p class="category tertiary v2">{{$show_theme_info->category_name}} / {{$show_theme_info->subcategory_name}}</p>
-									</a>
-									<p class="prodlist-i-txt">
-										{{$show_theme_info->summary}}
-									</p>
-									<div class="bottomtheme">
-										<p class="price small v2"><span>$</span>{{$show_theme_info->price_regular}}</p>
-										<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}" target="_blank" class="button mid tertiary half v2">Preview</a>
-										<input type="hidden" name="price" value="{{$show_theme_info->price_regular}}" id="price">
-
-										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')"  class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i>
-										</a>
-									</div>
-								</div>
-								<div class="theme4">
-									<ul >
-										<li class="prodlist-i-props"><b>Created</b> {!! Carbon\Carbon::parse($show_theme_info->created_at)->format('d M, Y') !!}</li>
-										<li class="prodlist-i-props"><b>Update</b> {!! Carbon\Carbon::parse($show_theme_info->updated_at)->format('d M, Y') !!}</li>
-										<li class="prodlist-i-props"><b>Sale </b><?php echo DB::table('theme_orders')->where('theme_id',  $show_theme_info->theme_id)->count(); ?></li>
-										<li class="prodlist-i-props"><b>Review</b> {{$show_theme_info->total_review}}</li>
-										<li class="prodlist-i-props"><b>Author </b> {{$show_theme_info->username}}</li>
-									
-										<li class="prodlist-i-props"><b>Ex. License</b> ${{$show_theme_info->price_extented}}</li>
-										<li class="prodlist-i-props"><b>View</b> {{$show_theme_info->view_counts}}</li>
-									</ul>
-								</div>
-							</div>
-						@endforeach
-
-					</div>
-					<div class="page primary paginations">
-	                   {{$get_theme_info->links()}}
-	                </div>
-				</div>
-				<!-- /PRODUCT SHOWCASE -->
-				
-				<div class="clearfix"></div>
-
-				
-			</div>
-			<!-- CONTENT -->
 
 			<!-- SIDEBAR -->
-			<div class="sidebar">
+			<div class="sidebar left">
 				@if($theme_category)
 				<ul class="dropdown hover-effect tertiary">
 					<li class="dropdown-item @if(!Request::get('cat')) active @endif">
@@ -257,8 +144,8 @@
 				
 				<!-- /SIDEBAR ITEM -->
 				<!-- SIDEBAR ITEM -->
-			@if($get_filters)
-			@foreach($get_filters as $get_filter)
+				@if($get_filters)
+				@foreach($get_filters as $get_filter)
 
 
 				<div class="sidebar-item">
@@ -296,11 +183,181 @@
 					<h4>Price Range</h4>
 					<hr class="line-separator spaced">
 					<input type="hidden" id="price-range"  class="price-range-slider tertiary" value="@if(Request::get('price')) {{Request::get('price')}} @else 700 @endif" form="shop_search_form">
-					<a form="shop_search_form" id="price_btn" class="button mid tertiary common_selector">Update your Search</a>
+					<a form="shop_search_form" id="price_btn" class="button mid tertiary common_selector">Search</a>
 				</div>
 				<!-- /SIDEBAR ITEM -->
 			</div>
 			<!-- /SIDEBAR -->
+			<!-- CONTENT -->
+			<div class="content filter_data right">
+				<!-- HEADLINE -->
+				<div class="headline tertiary">
+					<h4>{{$get_theme_info->total()}} Products Found</h4>
+					<form id="shop_filter_form" name="shop_filter_form">
+						<label for="price_sort" class="select-block">
+							<select name="price_sort"  id="price_sort">
+								<option value="ASC" >Price (Low to High)</option>
+								<option value="DESC">Price (High to Low)</option>
+							</select>
+							<!-- SVG ARROW -->
+							<svg class="svg-arrow">
+								<use xlink:href="#svg-arrow"></use>
+							</svg>
+							<!-- /SVG ARROW -->
+						</label>
+					</form>
+					<div class="clearfix"></div>
+				</div>
+				<!-- /HEADLINE -->
+
+				<!-- PRODUCT SHOWCASE -->
+				<div class="product-showcase">
+					<!-- PRODUCT LIST -->
+					<div class="product-list grid ">
+
+						@foreach($get_theme_info as $show_theme_info)
+							<!-- THEME ITEM -->
+							<div class="theme1">
+								<div class="theme2">
+									<a href="{{ route('theme_detail', $show_theme_info->theme_url) }}" class="Template">
+										<img class="themeimg" src="{{asset('theme/images/thumb').'/'.$show_theme_info->main_image }}" >
+									</a>
+									<div class="author-data v2">
+										<!-- USER RATING -->
+										<div class="user-rating v2">
+											<a class="user-rating v1" href="{{ route('profile_view', [$show_theme_info->username]) }}">
+												<figure class="user-avatar small">
+													<img src="<?php echo asset('image/'.$show_theme_info->user_image); ?>" alt="user-avatar">
+												</figure>
+											</a>
+											<a class="user-rating v4" href="{{ route('profile_view', [$show_theme_info->username]) }}">
+												<p class="text-header tiny">{{$show_theme_info->name}}</p>
+											</a>
+
+										</div>
+										<!-- /USER RATING -->
+
+										<!-- METADATA -->
+										<div class="metadata">
+											<!-- META ITEM -->
+											<div class="meta-item">
+												<span class="icon-bubble"></span>
+												<p>{{count($show_theme_info->comments)}}</p>
+											</div>
+											<!-- /META ITEM -->
+
+											<!-- META ITEM -->
+											<div class="meta-item">
+												<span class="icon-eye"></span>
+												<p>{{$show_theme_info->view_counts}}</p>
+											</div>
+											<!-- /META ITEM -->
+											<?php $ratting = array_sum(array_column($show_theme_info->theme_review->toArray(), 'ratting_star')) / (count($show_theme_info->theme_review)>0 ? count($show_theme_info->theme_review) : 1) ?>
+											<ul class="rating ">
+											 @for($i=1; $i<=5; $i++)
+												<li class="rating-item @if($i <= $ratting) @else empty @endif">
+													<svg class="svg-star">
+														<use xlink:href="#svg-star"></use>
+													</svg>
+
+												</li>
+												@endfor
+												<li><span>$</span>{{$show_theme_info->price_regular}}</li>
+											</ul>
+
+										</div>
+										<!-- /METADATA -->
+
+									</div>
+								</div>
+								<div class="theme3">
+									<div class="themett">
+										<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}">{{$show_theme_info->theme_name}}</a>
+									</div>
+									<a>
+										<p class="category tertiary v2">{{$show_theme_info->category_name}} / {{$show_theme_info->subcategory_name}}</p>
+									</a>
+									<p class="prodlist-i-txt">
+										{{$show_theme_info->summary}}
+									</p>
+									<div class="bottomtheme">
+										
+										<a href="{{ route('theme_detail',$show_theme_info->theme_url) }}" target="_blank" class="button mid tertiary half v2">Preview</a>
+										<input type="hidden" name="price" value="{{$show_theme_info->price_regular}}" id="price">
+
+										<a onclick="add_to_cart('{{$show_theme_info->theme_id}}')"  class="button mid secondary wicon half v2"><i class="fa fa-shopping-cart"></i>
+										</a>
+									</div>
+									<div class="author-data v2 author-mobile">
+										<!-- USER RATING -->
+										<div class="user-rating v2">
+											<a class="user-rating v1" href="{{ route('profile_view', [$show_theme_info->username]) }}">
+												<figure class="user-avatar small">
+													<img src="<?php echo asset('image/'.$show_theme_info->user_image); ?>" alt="user-avatar">
+												</figure>
+											</a>
+											<a class="user-rating v4" href="{{ route('profile_view', [$show_theme_info->username]) }}">
+												<p class="text-header tiny">{{$show_theme_info->name}}</p>
+											</a>
+											<span style="float: right;" class="price small v2"><span>$</span>{{$show_theme_info->price_regular}}</span>
+										</div>
+										<!-- /USER RATING -->
+
+										<!-- METADATA -->
+										<div class="metadata">
+											<!-- META ITEM -->
+											<div class="meta-item">
+												<span class="icon-bubble"></span>
+												<p>{{count($show_theme_info->comments)}}</p>
+											</div>
+											<!-- /META ITEM -->
+
+											<!-- META ITEM -->
+											<div class="meta-item">
+												<span class="icon-eye"></span>
+												<p>{{$show_theme_info->view_counts}}</p>
+											</div>
+											<!-- /META ITEM -->
+											<ul class="rating ">
+											 @for($i=1; $i<=5; $i++)
+												<li class="rating-item @if($i <= $ratting) @else empty @endif">
+													<svg class="svg-star">
+														<use xlink:href="#svg-star"></use>
+													</svg>
+
+												</li>
+											@endfor
+											</ul>
+
+										</div>
+										<!-- /METADATA -->
+									</div>
+								</div>
+								<div class="theme4">
+									<ul>
+										<li class="prodlist-i-props"><b>Created</b> {!! Carbon\Carbon::parse($show_theme_info->created_at)->format('d M, Y') !!}</li>
+										<li class="prodlist-i-props"><b>Update</b> {!! Carbon\Carbon::parse($show_theme_info->updated_at)->format('d M, Y') !!}</li>
+										<li class="prodlist-i-props"><b>Sale </b>{{count($show_theme_info->orders)}}</li>
+										<li class="prodlist-i-props"><b>Review</b> {{count($show_theme_info->theme_review)}}</li>
+										<li class="prodlist-i-props"><b>Author </b> {{$show_theme_info->username}}</li>
+									
+										<li class="prodlist-i-props"><b>Ex. License</b> ${{$show_theme_info->price_extented}}</li>
+										<li class="prodlist-i-props"><b>View</b> {{$show_theme_info->view_counts}}</li>
+									</ul>
+								</div>
+							</div>
+						@endforeach
+
+					</div>
+					<div class="page primary paginations">
+	                   {{$get_theme_info->links()}}
+	                </div>
+				</div>
+				<!-- /PRODUCT SHOWCASE -->
+				
+				<div class="clearfix"></div></div>
+			<!-- CONTENT -->
+
 		</div>
 	</div>
 	<!-- /SECTION -->
@@ -344,20 +401,18 @@ $(document).ready(function(){
       	var cat = "{{  Request::input('cat')  }}";
         if(page == null){var page = 1;}
         //var delivery = get_filter('delivery');
-		var price_sort = ($( "#price_sort option:selected" ).val());
-		var category = "{{ Request::route('category') }}" ;
-		var subcategory = "{{ Request::route('subcategory') }}";
+		var price_sort = $( "#price_sort option:selected" ).val();
+		
 		var src_item = "{{Request::input('item')}}";
        	var  link = '<?php echo URL::to("themeplace/search");?>'+'?item='+src_item+'&cat='+cat+'&tags='+tags+'&filter_type='+filter_type+'&page='+page+'&price='+price;
-		    history.pushState({id: 'Marketplace'}, category +' '+subcategory, link);
+		    history.pushState(null, null, link);
 
  		$.ajax({
             url:link,
             method:"get",
             data:{
 				tags:tags,
-				category:category,
-				subcategory:subcategory,
+				cat:cat,
 				filter_type:filter_type,
 				filter:'filter',
 				price:price,

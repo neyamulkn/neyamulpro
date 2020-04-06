@@ -10,6 +10,11 @@
 form.search-form.v2 {
     padding: 10px;
 }
+
+.about{
+        padding: 11px;
+    font-size: 19px;
+}
 .search-form input[type="image"] {
     position: absolute;
     top: 9px !important;

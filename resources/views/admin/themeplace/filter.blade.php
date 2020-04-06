@@ -2,7 +2,6 @@
 @section('title', 'Filter insert')
 
 
-
 @section('content')
         <!-- DASHBOARD CONTENT -->
         <div class="dashboard-content">
@@ -12,7 +11,7 @@
 				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Filter</button>
             </div>
             <!-- /HEADLINE  -->
-          	<table class="table table-bordered">
+          	<table  id="myTable" class="table table-bordered table-striped">
 			    <thead>
 			      <tr>
 			        <th>Serial</th>
@@ -69,14 +68,14 @@
 					<div class="input-container">
 						<div class="input-container">
 							<label class="rl-label">Filter Name</label>
-							<input name="filter_name" value="" type="text" id="" placeholder="Enter filter name...">
+							<input required name="filter_name" value="" type="text" id="" placeholder="Enter filter name...">
 						</div>
 		        	</div>
 
 		        	<div class="input-container">
 						<label for="Category" class="rl-label required">Category </label>
 						<label for="Category" class="select-block">
-							<select name="category_id[]" id="Category" multiple="multiple" style="width:100%" class="select2">
+							<select required="" name="category_id[]" id="Category" multiple="multiple" style="width:100%" class="select2">
 								<option value="">Select Category</option>
 								<?php
 									$get_category = DB::table('theme_category')->get();
@@ -130,10 +129,82 @@
 	    	</div>
 		</div>
 	</div>
-	<!-- End location model---->
+	<!-- End add model---->
+
+
+<!-- edit modal --->  
+<div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+    	<form action="{{route('theme_filter')}}" data-parsley-validate method="post" id="profile_info">
+	      <!-- Modal content-->
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          
+	          <h4 class="modal-title">Update Filter</h4>
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        </div>
+	        <div class="modal-body form-box-item">
+				{{ csrf_field() }}
+				<div id="edit_form"></div>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	           <button type="submit" class="btn btn-sm btn-success">Update</button>
+	        </div>
+	      </div>
+	    </form>
+    </div>
+  </div>  
 @endsection
 
 @section('js')
 
 <script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	
+<script type="text/javascript">
+		
+	function edit(id){
+		  
+	        var  link = '{{ URL::to("admin/themeplace/filter/edit") }}/'+id;
+	        $.ajax({
+	            url:link,
+	            method:"get",
+	            
+	            success:function(data){
+	                if(data){
+	                     $("#edit_form").html(data);
+	                }
+	            }
+	        });
+	    }
+
+	function deleteItem(id) {
+    	if (confirm("Are you sure delete it.?")) {
+       
+            var  link = '<?php echo URL::to("admin/themeplace/filter/delete");?>/'+id;
+            $.ajax({
+            url:link,
+            method:"get",
+            
+            success:function(data){
+                if(data){
+                    
+                     $("#item"+id).hide();
+                    toastr.error(data);
+	                }
+	            }
+	        
+	        });
+	    }
+	    return false;        
+  	} 
+	</script>
+
+		<!-- This is data table -->
+    <script src="{{asset('/allscript')}}/datatables/js/jquery.dataTables.min.js"></script>
+    
+    <script>
+        $(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
 @endsection

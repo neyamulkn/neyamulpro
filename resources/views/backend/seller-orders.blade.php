@@ -72,17 +72,18 @@ figure.user-avatar.small {
 
             	?>
             	<div class="tab-header primary">
-		
+		  
 					<!-- TAB ITEM -->
-					<div class="tab-item selected" onclick="get_order('priority')">
+                    <div class="tab-item selected"  onclick="get_order('active')">
+                        <p class="text-header">ACTIVE ({{$active}})</p>
+                    </div>
+                    
+					<div class="tab-item " onclick="get_order('priority')">
 						<p class="text-header" >PRIORITY ({{$priority}})</p>
 					</div>
 					
 					<div class="tab-item"  onclick="get_order('new')">
 						<p class="text-header">NEW ({{$new}})</p>
-					</div>
-					<div class="tab-item"  onclick="get_order('active')">
-						<p class="text-header">ACTIVE ({{$active}})</p>
 					</div>
 					
 					<div class="tab-item"  onclick="get_order('late')">
@@ -167,7 +168,7 @@ figure.user-avatar.small {
     function get_order(status){
 
     	document.getElementById('open').style.display = 'block';
-    	history.pushState('state/', '/buyer_order/', status);
+    	history.pushState({}, null, '{{route("manage_gig_order")}}/'+status);
         var  link = '<?php echo URL::to("dashboard/manage/get_seller_orders/");?>/'+status;
        
         $.ajax({

@@ -100,8 +100,7 @@
 <div class="col-md-4 chat">
     <div class="card mb-sm-3 mb-md-0 contacts_card">
         <div class="card-header">
-            <div class="about" style="padding: 10px;">
-                
+            <div class="about" >
                 About
             </div>
         </div>

@@ -265,13 +265,16 @@ li.financial-institutes__logo {
                             <div class="item-preview">
                                 <a href="{{route('theme_detail',$show_theme->theme_url)}}">
                                     <figure class="product-preview-image small liquid">
-                                        <img src="{{ asset('theme/images/'.$show_theme->main_image)}}" alt="">
+                                        <img src="{{ asset('theme/images/thumb/'.$show_theme->main_image)}}" alt="">
                                     </figure>
                                 </a>
                                 <a href="{{route('theme_detail',$show_theme->theme_url)}}"><p class="text-header small">{{$show_theme->theme_name}}</p></a>
-                                <a href=""><p class="text-header small" style="color: #888;font-weight:400">Item by {{$show_theme->username}}</p></a>
-                                
-                                <p class="text-header small"><span class="primary">Regular Lichance: </span></p>
+                                <p class="text-header small " style="font-weight:400">
+                                    <i class="fa fa-user"></i> 
+                                    <a class="primary" href="{{route('profile_view', $show_theme->username)}}">Item by {{$show_theme->username}}</a> 
+                                    <span class="fa fa-clock-o"> {{Carbon\Carbon::parse($show_theme->created_at)->format('d M, Y')}}</span>
+                                </p>
+                                <p class="small license-text">Price: ${{$show_theme->total_price}} <span >{{$show_theme->lichance_name}} Lichance </span></p>
                             </div>
                             <!-- /ITEM PREVIEW -->
                         </div>

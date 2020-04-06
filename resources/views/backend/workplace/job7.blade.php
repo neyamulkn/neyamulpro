@@ -60,7 +60,7 @@
                         <span> Step 7 of 7 </span>
                     </div>
                     <div class="cattwork">
-                        <b class="cattworks">Title</b><hr/>
+                       <b class="cattworks">Job details </b><hr/>
 
 
                         <b class="cattworks">Job title</b><br>
@@ -87,9 +87,6 @@
                 </div>
 
                 <br/> <div class="cattwork">
-                    <b class="cattworks">Job details </b><hr/>
-
-
                     <b class="cattworks">Type of Project </b><br>
                     
                     <p>{{$get_job->project_type }}</p>
@@ -150,8 +147,12 @@
                     </span>
 
                     <span style="float: left; margin-right: 15%;">
-                        <b class="cattworks"> @if($get_job->price_type == 'fixed') Project End Day @endif @if($get_job->price_type == 'monthly') Everyday Work Hours @endif</b><br>
-                        <p>{{$get_job->day_hours}} @if($get_job->price_type == 'fixed') days @endif @if($get_job->price_type == 'monthly') Hours @endif </p>
+                        <b class="cattworks"> 
+                        @if($get_job->price_type == 'fixed') Project End Day @endif 
+                        @if($get_job->price_type == 'monthly') Everyday Work Hours @endif</b><br>
+                        <p>{{$get_job->day_hours}} 
+                            @if($get_job->price_type == 'fixed') days @endif 
+                            @if($get_job->price_type == 'monthly') Hours @endif </p>
                     </span>
 
                     <span style="float: left; margin-right: 15%;">

@@ -2,8 +2,6 @@
 
 @section('title', 'Manage gigs')
 @section('css')
-
-  
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/tooltipster.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/c.css">
 @endsection
@@ -19,22 +17,20 @@
 			<!-- TAB HEADER -->
 
 			<?php 
-			$user_id = Auth::user()->id;
 			$get_status = DB::table('gig_basics')
-            ->select('gig_status as status')
-            ->where('gig_user_id' , '=', $user_id)
-            ->get();
-        	$all = $active = $draft = $pending = $denied = $paused = 0;
+            ->select('gig_status as status')->get();
+
+        	$all = $active = $draft = $pending = $reject = $paused = 0;
         	foreach($get_status as $show_status){
   
         		if($show_status->status == 'active'){ $active +=1 ; }
         		if($show_status->status == 'pending'){ $pending +=1 ; }
         		if($show_status->status == 'draft'){ $draft +=1 ; }
-        		if($show_status->status == 'denied'){ $denied +=1 ; }
+        		if($show_status->status == 'reject'){ $reject +=1 ; }
         		if($show_status->status == 'paused'){ $paused +=1 ; }
         	}
 
-        	$all = $active+$pending +$draft+ $denied+ $paused;
+        	$all = $active+$pending +$draft+ $reject+ $paused;
 
         	?>
 			<div class="tab-header primary">
@@ -48,8 +44,8 @@
 				<div class="tab-item {{(Request::route('status') == 'draft') ? 'selected': ''}}"  onclick="get_gigs('draft')">
 					<p class="text-header">DRAFT({{$draft}})</p>
 				</div>
-				<div class="tab-item {{(Request::route('status') == 'denied') ? 'selected': ''}}"  onclick="get_gigs('denied')">
-					<p class="text-header">DENIED({{$denied}})</p>
+				<div class="tab-item {{(Request::route('status') == 'reject') ? 'selected': ''}}"  onclick="get_gigs('reject')">
+					<p class="text-header">REJECT({{$reject}})</p>
 				</div>
 				<div class="tab-item {{(Request::route('status') == 'paused') ? 'selected': ''}}"  onclick="get_gigs('paused')">
 					<p class="text-header">PAUSED({{$paused}})</p>
@@ -72,13 +68,15 @@
 		                    <thead>
 		                    <tr>
 		                        <th>IMG</th>
-		                        <th>GIG Title </th>
-		                        <th>IMPRESSIONS</th>
-		                        <th>CLICKS</th>
-		                        <th>VIEWS</th>
-		                        <th>ORDERS</th>
-		                        <th>CANCELLATIONS</th>
-		                        <th>Action</th>
+						        <th>GIG Title </th>
+						        <th>AUTHOR</th>
+						        <th>DATE</th>
+						        <th>IMPRESSIONS</th>
+						        <th>CLICKS</th>
+						        <th>VIEWS</th>
+						        <th>ORDERS</th>
+						        <th>CANCELLATIONS</th>
+						        <th>Action</th>
 		                    </tr>
 		                    </thead>
 		                    <tbody>
@@ -87,7 +85,7 @@
 		                            <tr class="tbgig" id="item{{$show_gig->gig_id}}">
 		                                <td class="gig-pict-45">
 		                                    <span class="gig-pict-45">
-		                                        <a href="#"><img src="{{asset('gigimages/'.$show_gig->image_path)}}" alt="" ></a>
+		                                        <a href="#"><img src="{{ asset('gigimages/'. ($show_gig->get_image ? $show_gig->get_image->image_path : '' ) ) }}" alt="" ></a>
 		                                    </span>
 		                                </td>
 		                                <td class="title js-toggle-gig-stats ">
@@ -95,19 +93,26 @@
 		                                        <a class="ellipsis" target="_blank" href="{{url('marketplace/'.$show_gig->gig_url)}}">{{$show_gig->gig_title }}</a>
 		                                    </div>
 		                                </td>
-		                                <td>{{$show_gig->gig_impress }} <i class="fa fa-long-arrow-up green"></i></td>
-		                                <td>{{$show_gig->gig_click }} <i class="fa fa-long-arrow-up green"></i></td>
-		                                <td>{{$show_gig->gig_view }} <i class="fa fa-long-arrow-up green"></i></td>
-		                                <td>{{$show_gig->gig_impress }} <i class="fa fa-long-arrow-up green"></i></td>
-		                                <td>{{$show_gig->gig_impress }} <i class="fa fa-long-arrow-down red"></i></td>
+		                                <td><a href="{{route('profile_view', $show_gig->get_user->username)}}" target="_blank" >{{$show_gig->get_user->name }}</a></td>
+		                                <td>{{ Carbon\Carbon::parse($show_gig->created_at)->format('d M, Y') }}</td>
+		                                <td>{{ $show_gig->gig_impress }} <i class="fa fa-long-arrow-up green"></i></td>
+						                <td>{{ $show_gig->gig_click }} <i class="fa fa-long-arrow-up green"></i></td>
+						              	<td>{{$show_gig->gig_view }} </td>
+		                                <td>{{ count($show_gig->gigOrder) }}</td>
+		                               	<td>0 %</td>
 		                                <td>
 		                                    <label for="sv" class="select-block v3">
 		                                        <select onchange="action_type(this.value, '{{$show_gig->gig_id}}')" name="sv" id="sv">
 		                                            <option value="0">select action</option>
-		                                            @if(Auth::user()->role_id == env('ADMIN')){
+		                                            @if(Auth::user()->role_id == env('ADMIN'))
 						                            <option value="active">Approve</option>
 						                            <option value="reject">Reject</option>
-						                           	@else
+						                            @if($show_gig->status == 'paused')
+							                        <option value="active">Active</option>
+							                        @endif
+							                        @if($show_gig->status == 'active')
+							                        <option value="paused">Paused</option>
+							                        @endif
 		                                            <option value="delete">Delete</option>
 		                                            @endif
 		                                        </select>
@@ -122,9 +127,9 @@
 		                    	@endforeach
 		                    </tbody>
 	                	</table>
-	                		<div class="page primary paginations">
-				                {{ $get_gigs->links()}}
-				            </div>
+                		<div class="page primary paginations">
+			                {{ $get_gigs->links()}}
+			            </div>
 	            		@else No gigs found @endif
 					</div>
 				</div>
@@ -166,7 +171,7 @@
 
     function get_gigs(status){
     	document.getElementById('open').style.display = 'block';
-    	
+    	history.pushState({}, null, status);
         var  link = '{{route("admin_manage_gigs")}}/'+status+'?type=status';
       
         $.ajax({
@@ -182,7 +187,7 @@
 
 function action_type(type, gig_id=null) {
 
-	if(type == 'active' || type == 'reject'){
+	if(type == 'active' || type == 'paused' || type == 'reject'){
 		if (confirm("Are you sure "+type+" it.?")) {
        
             var  link = '{{route("gigApproveOrReject")}}';

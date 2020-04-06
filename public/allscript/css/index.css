@@ -234,18 +234,17 @@
   }
 }
 .banner.v2 p {
-    text-align: left !important;
+   
     width: initial;
     font-weight: bold;
 }
 .banner.v2 h1 {
-    text-align: left;
+    
     margin-top: 10px;
 }
-.banner.v2 h2 {
-    text-align: left;
-}
+
 .banner.v2 {
+    text-align: center;
     min-height: 450px !important;
 }
 .btn-primary {

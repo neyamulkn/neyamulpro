@@ -2,7 +2,7 @@
 <?php 
 $session_id = 0;
 $session_id =  Session::get('session_id');
-$get_cart_info = DB::table('theme_add_to_cart')->orWhere('user_id', $get_id)->orWhere('session_id', $session_id)->get();?>	
+$get_cart_info = DB::table('theme_add_to_cart')->orWhere('user_id', Auth::user()->id)->orWhere('session_id', $session_id)->get();?>	
 					
 <div class="account-cart-quickview">
 	<span class="icon-present">

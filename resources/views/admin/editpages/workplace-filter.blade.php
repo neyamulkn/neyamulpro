@@ -27,18 +27,18 @@
 <div class="input-container">
     <label for="Category" class="rl-label required">Filter type </label>
     <div class="col-md-4">
-        <input type="radio" {{($get_data->type == 'radio') ? 'checked' : '' }} id="Radio" name="type" value="radio">
-        <label for="Radio">
+        <input type="radio" {{($get_data->type == 'radio') ? 'checked' : '' }} id="editRadio" name="type" value="radio">
+        <label for="editRadio">
             <span class="checkbox primary primary"></span>
             Radio
         </label>
-        <input type="radio"  {{($get_data->type == 'select') ? 'checked' : '' }} id="Select" name="type" value="select">
-        <label for="Select">
+        <input type="radio"  {{($get_data->type == 'select') ? 'checked' : '' }} id="editSelect" name="type" value="select">
+        <label for="editSelect">
             <span class="checkbox primary primary"></span>
             Select
         </label>
-        <input type="radio"  {{($get_data->type == 'dropdown') ? 'checked' : '' }} id="Dropdown" name="type" value="dropdown">
-        <label for="Dropdown">
+        <input type="radio"  {{($get_data->type == 'dropdown') ? 'checked' : '' }} id="editDropdown" name="type" value="dropdown">
+        <label for="editDropdown">
             <span class="checkbox primary primary"></span>
             Dropdown
         </label>

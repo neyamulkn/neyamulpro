@@ -112,7 +112,7 @@ label{
 				<!-- FORM POPUP -->
 				<div id="promo-popup" class="form-popup promo air-card">
 					
-				<!-- FORM POPUP CONTENT -->
+				
 				<!-- FORM POPUP CONTENT -->
 					<div class="form-popup-content">
 						<div class="form-popup-headline secondary">
@@ -122,7 +122,7 @@ label{
 						<!-- LINE SEPARATOR -->
 						<hr class="line-separator">
 						<!-- /LINE SEPARATOR -->				
-                <form method="POST" action="{{ route('register') }}" data-parsley-validate id="register-form" novalidate="novalidate">
+                	<form method="POST" action="{{ route('register') }}" data-parsley-validate id="register-form" novalidate="novalidate">
                         @csrf
 							<div class="control-feedback">
                                 						

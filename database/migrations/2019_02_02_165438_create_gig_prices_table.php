@@ -14,6 +14,7 @@ class CreateGigPricesTable extends Migration
     public function up()
     {
         Schema::create('gig_prices', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('gig_id')->unsigned();
             $table->integer('catetory_id');
             $table->string('basic_title');

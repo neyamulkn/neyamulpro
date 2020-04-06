@@ -1,4 +1,4 @@
-<link href="http://localhost:8000/affiliate.css" rel="stylesheet">
+<link href="{{asset('affiliate.css')}}" rel="stylesheet">
 <div class="herahorlancer">
     <div style="margin:8px 5px;text-align: left;font-weight: bold;color: black;"><a style="color: black;" href="#">affiliateByHOTLancer</a></div>
     @foreach($get_jobs as $show_job)

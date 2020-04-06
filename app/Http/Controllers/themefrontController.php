@@ -34,6 +34,7 @@ class themefrontController extends Controller
                 ->leftJoin('users', 'themes.user_id', 'users.id')
                 ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
                 ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
+                ->where('themes.status', 'active')
                 ->select('themes.*', 'theme_category.category_name', 'users.name', 'users.id', 'users.username', 'theme_subcategory.subcategory_name')
                 ->groupBy('themes.theme_id')->limit(20)->get();
 
@@ -67,15 +68,14 @@ class themefrontController extends Controller
 
 
 
-        $get_theme_info = DB::table('themes')
+        $get_theme_info = theme::with(['orders', 'theme_review', 'comments'])
             ->leftJoin('users', 'themes.user_id', 'users.id')
             ->leftJoin('userinfos', 'themes.user_id', '=', 'userinfos.user_id')
             ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
             ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
             ->leftJoin('theme_filters', 'themes.category_id', 'theme_filters.category_id')
             ->leftJoin('theme_features', 'themes.theme_id', '=', 'theme_features.theme_id')
-            ->leftJoin('theme_reviews', 'themes.theme_id', '=', 'theme_reviews.theme_id')
-            ->select('themes.*', 'theme_category.category_name', 'users.name', 'userinfos.user_image', 'users.id', 'users.username', 'theme_subcategory.subcategory_name', DB::raw('count(*) as total_review'))
+            ->select('themes.*', 'theme_category.category_name', 'users.name', 'userinfos.user_image', 'users.id', 'users.username', 'theme_subcategory.subcategory_name')
             ->where('theme_category.category_url', $request->category)
             ->where('theme_subcategory.subcategory_url',  $request->subcategory)
             ->where('themes.status', 'active')
@@ -173,16 +173,15 @@ class themefrontController extends Controller
 
 
 
-        $get_theme_info = DB::table('themes')
+        $get_theme_info =  $get_theme_info = theme::with(['orders', 'theme_review', 'comments'])
             ->leftJoin('users', 'themes.user_id', 'users.id')
             ->leftJoin('userinfos', 'themes.user_id', '=', 'userinfos.user_id')
             ->leftJoin('theme_category', 'themes.category_id', 'theme_category.id')
             ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.id')
             ->leftJoin('theme_filters', 'themes.category_id', 'theme_filters.category_id')
             ->leftJoin('theme_features', 'themes.theme_id', '=', 'theme_features.theme_id')
-            ->leftJoin('theme_reviews', 'themes.theme_id', '=', 'theme_reviews.theme_id')
-            ->select('themes.*', 'theme_category.category_name', 'users.name', 'userinfos.user_image', 'users.id', 'users.username', 'theme_subcategory.subcategory_name', DB::raw('count(*) as total_review'))
-            
+            ->select('themes.*', 'theme_category.category_name', 'users.name', 'userinfos.user_image', 'users.id', 'users.username', 'theme_subcategory.subcategory_name')
+          
             ->where('themes.status', 'active')
             ->groupBy('themes.theme_id');
 
@@ -222,11 +221,10 @@ class themefrontController extends Controller
                 $filer_type = implode(',', $request->filer_type);
 
             }
-
             $get_theme_info = $get_theme_info->whereIn('theme_features.feature_id', [$filer_type]);
         }
      
-        $data['get_theme_info'] = $get_theme_info->paginate(4);
+        $data['get_theme_info'] = $get_theme_info->paginate(2);
 
         if(!isset($_GET['filter'])){
             return view('frontend.theme.search')->with($data);
@@ -273,7 +271,7 @@ class themefrontController extends Controller
             ->join('users', 'themes.user_id', 'users.id')
             ->leftJoin('userinfos', 'themes.user_id', 'userinfos.user_id')
             ->select('themes.theme_name', 'themes.theme_id', 'themes.main_image', 'themes.theme_url', 'themes.theme_name', 'themes.search_tag','themes.price_regular', 'users.username', 'userinfos.user_image')
-            ->where('themes.user_id', $get_theme_detail->user_id)->limit(6)->get();
+            ->where('themes.user_id', $get_theme_detail->user_id)->where('theme_id', '!=', $get_theme_detail->theme_id)->limit(6)->get();
         
            // refferel_user_name
             if(isset($_GET['ref'])){
@@ -289,7 +287,7 @@ class themefrontController extends Controller
             }
 
             $get_theme_features = DB::table('theme_features')->leftJoin('theme_filters', 'theme_features.feature_id', 'theme_filters.filter_id')
-            ->where('theme_id', $get_theme_detail->theme_id)->get();
+            ->where('theme_id', $get_theme_detail->theme_id)->groupBy('feature_id')->orderBy('feature_type', 'ASC')->get();
 
              $total_sale = themeOrder::where('theme_id',  $get_theme_detail->theme_id)
             ->select(DB::raw('count(*) as total_sale'))
@@ -306,10 +304,9 @@ class themefrontController extends Controller
             $get_theme_reviews = DB::table('theme_reviews')
             ->join('users', 'theme_reviews.buyer_id', 'users.id')
             ->leftJoin('userinfos', 'theme_reviews.buyer_id', 'userinfos.user_id')
-            ->where('theme_id',  $get_theme_detail->theme_id)
-            //->select(DB::raw('count(*) as total_review'), DB::raw('sum(ratting_star) as total_ratting'))
-            ->get();
-
+            ->where('theme_reviews.theme_id',  $get_theme_detail->theme_id)
+            ->groupBy('review_id')->select('theme_reviews.*', 'users.username')->get();
+          
             return view('frontend.theme.theme-details')->with(compact('get_theme_features', 'get_theme_detail', 'theme_additiona_images', 'get_theme_reviews','total_sale', 'get_theme_comment', 'get_another_theme'));
         }else{
             return redirect('/');
@@ -371,7 +368,7 @@ class themefrontController extends Controller
         $buyer_id = Auth::user()->id;
 
         $get_theme = DB::table('theme_orders')
-            ->select('theme_orders.*', 'users.*', 'themes.*', 'theme_reviews.ratting_star')
+           
             ->leftJoin('themes', 'theme_orders.theme_id', 'themes.theme_id')
             ->join('users', 'themes.user_id', 'users.id')
             ->leftJoin('theme_reviews', 'theme_orders.order_id', '=', 'theme_reviews.order_id')
@@ -382,6 +379,7 @@ class themefrontController extends Controller
             ->where('theme_orders.buyer_id', $buyer_id)
             ->groupBy('theme_orders.order_id')
             ->orderBy('theme_orders.id', 'DESC')
+            ->select('theme_orders.*', 'users.username', 'themes.theme_name', 'themes.theme_url', 'themes.main_file',  'themes.main_image', 'theme_reviews.ratting_star')
             ->get();
         return view('frontend/theme/theme-download')->with(compact('get_theme'));
     }

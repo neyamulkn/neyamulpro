@@ -13,8 +13,8 @@
 
 .search_bar{
     position: absolute;
-    top: 46px;
-    left: 80px;
+    top: 50px;
+    left: 58px;
     margin: 0px auto;
     width: 69%;
     border:1px solid #ccc;
@@ -40,16 +40,33 @@
 @section('content')
     <!-- /MAIN MENU -->
     <div class="banner-wrap">
-        <section class="banner banner-v2">
+        <section class="banner banner-v2 v3">
             <h5>Register now and start </h5>
             <h1><span>Gig Find Search</span></h1>
 
             <div style="position: relative; width: 100%;" >
             
-                <form action="{{ route('theme_search') }}" style="width: 86%;" class="search-widget-form" >
-                    <input type="text" style="width: 80%;margin-right: 5px;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" required onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
-                   
-                    <button class="button medium primary">Search Now!</button>
+                <form action="{{ route('marketplace_search') }}" class="search-widget-form" >
+                    <div class="col-md-10 col-xs-8">
+                    <input type="text"  value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" required onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
+                    <label for="cat" class="select-block">
+                        <select name="cat" id="cat">
+                            <option  value="">All Categories</option>
+                            @foreach($get_category as $show_category)
+
+                                <option {{(isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url)? 'selected' : ''}} value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
+                            @endforeach
+                        </select>
+                        <!-- SVG ARROW -->
+                        <svg class="svg-arrow">
+                            <use xlink:href="#svg-arrow"></use>
+                        </svg>
+                        <!-- /SVG ARROW -->
+                    </label>
+                </div>
+                 <div class="col-md-2 col-xs-4">
+                    <button class="button medium primary">Search</button>
+                </div>
                 </form>
 
                 <div class="search_bar" id="search_bar" >

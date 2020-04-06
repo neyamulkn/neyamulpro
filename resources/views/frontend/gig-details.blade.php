@@ -125,7 +125,7 @@ h4.gigsfuq-item {
 }
 
 .post-tab .tab-header .tab-item {
-    width: 65px !important;
+    width: 62px !important;
     height: 50px !important;
 }
 
@@ -199,34 +199,38 @@ h4.gigsfuq-item {
 					<!-- TAB HEADER -->
 					<div class="tab-header tertiary">
 
-
+						@if($get_gig_price->basic_title)
 						<!-- TAB ITEM -->
 						<div class="tab-item selected">
 							<p class="text-header">Basic </p>
 						</div>
+						@endif
+						@if($get_gig_price->plus_title )
 						<!-- /TAB ITEM -->
 						<div class="tab-item">
 							<p class="text-header">Plus</p>
 						</div>
-
+						@endif
+						@if($get_gig_price->super_title)
 						<!-- TAB ITEM -->
 						<div class="tab-item">
 							<p class="text-header">Super</p>
 						</div>
-						
+						@endif
 						<!-- TAB ITEM -->
-						
+						@if($get_gig_price->platinum_title)
 						<div class="tab-item">
 							<p class="text-header">Platinum</p>
 						</div>
 						<!-- /TAB ITEM -->
-
+						@endif
 					</div>
 					<!-- /TAB HEADER -->
-		<form action=" {{ url('order/add_card/') }}" method="post">
+		<form action="{{ route('gig_checkout') }}" method="post">
 			 {{ csrf_field() }}
 			<?php $time_type = ' days'; if($get_gig_info->gig_payment_type == 'monthly'){ $time_type = ' month'; }?>
 					<!-- TAB CONTENT -->
+					@if($get_gig_price->basic_title)
 					<div class="tab-content void">
 						<!-- COMMENTS -->
 						<div class="comment-list">
@@ -255,6 +259,8 @@ h4.gigsfuq-item {
 							</div>
 						</div>
 					</div>
+					@endif
+					@if($get_gig_price->plus_title )
 					<div class="tab-content void">
 						<!-- COMMENTS -->
 						<div class="comment-list">
@@ -279,6 +285,8 @@ h4.gigsfuq-item {
 							</div>
 						</div>
 					</div>
+					@endif
+					@if($get_gig_price->super_title )
 					<div class="tab-content void">
 						<!-- COMMENTS -->
 						<div class="comment-list">
@@ -304,6 +312,8 @@ h4.gigsfuq-item {
 							</div>
 						</div>
 					</div>
+					@endif
+					@if($get_gig_price->platinum_title )
 					<div class="tab-content void">
 						<!-- COMMENTS -->
 						<div class="comment-list">
@@ -328,13 +338,14 @@ h4.gigsfuq-item {
 							</div>
 						</div>
 					</div>
+					@endif
 				</div>
 
 				<div class="sidebar-item author-bio author-badges-v2 column">
 					<!-- USER AVATAR -->
 					<a href=" {{ route('profile_view', $get_user_info->username) }}" class="user-avatar-wrap medium">
 						<figure class="user-avatar medium">
-							<img src="{{ asset('image/').'/'.$get_user_info->userinfo->user_image}}" class="images" alt="">
+							<img src="{{ asset('image').'/'.$get_user_info->userinfo->user_image}}" class="images" alt="">
 						</figure>
 					</a>
 					<!-- /USER AVATAR -->
@@ -415,27 +426,7 @@ h4.gigsfuq-item {
 						</div>
 						<!-- /INFORMATION LAYOUT ITEM -->
 
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="text-header">Files Included:</p>
-							<p>PSD, AI<br>JPEG, PNG</p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
-
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="text-header">Requirements:</p>
-							<p>CS6 or Lower</p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
-
-						<!-- INFORMATION LAYOUT ITEM -->
-						<div class="information-layout-item">
-							<p class="text-header">Dimensions:</p>
-							<p>4500x2800 Px</p>
-						</div>
-						<!-- /INFORMATION LAYOUT ITEM -->
-
+						
 						<!-- INFORMATION LAYOUT ITEM -->
 						<div class="information-layout-item">
 							<p class="tags primary">
@@ -529,92 +520,166 @@ h4.gigsfuq-item {
 				</article>
 				<table class="table table-hover table-bordered" style="margin-bottom: 20px; text-align:center;padding-left:200px; padding-right:200px; background-color: white;">
 					<thead>
-					  <tr>
-						  <th><center></center></th>
-						  <th><center><h3>Basic</h3></center></th>
-						  <th><center><h3>Plus</h3></center></th>
-						  <th><center><h3>Super</h3></center></th>
-						  <th><center><h3>Platinum</h3></center></th>
-					  </tr>
+					  	<tr>
+						  	<th><center></center></th>
+						  	@if($get_gig_price->basic_title )
+						 	<th><center><h3>Basic</h3></center></th>
+							@endif
+							@if($get_gig_price->plus_title )
+						  	<th><center><h3>Plus</h3></center></th>
+						  	@endif
+							@if($get_gig_price->super_title )
+						  	<th><center><h3>Super</h3></center></th>
+						  	@endif
+							@if($get_gig_price->platinum_title )
+						  	<th><center><h3>Platinum</h3></center></th>
+						  	@endif
+					  	</tr>
 					</thead>
 					<tbody>
 					  <tr>
+					  
 						<td class="price_left">{{$get_gig_info->gig_payment_type}} Price</td>
+						@if($get_gig_price->basic_title )
 						<td><h3 class="panel-title price">$ {{ $get_gig_price->basic_p }}</h3></td>
+						@endif
+						@if($get_gig_price->plus_title )
 						<td><h3 class="panel-title price">$ {{ $get_gig_price->plus_p }}</h3></td>
+						@endif
+						@if($get_gig_price->super_title )
 						<td><h3 class="panel-title price">$ {{ $get_gig_price->super_p }}</h3></td>
+						@endif
+						@if($get_gig_price->platinum_title )
 						<td><h3 class="panel-title price">$ {{ $get_gig_price->platinum_p }}</h3></td>
+						@endif
+						
 					  </tr>
 					  <tr>
 						<td class="price_left"><b>Packages</b></td>
+						@if($get_gig_price->basic_title )
 						<td> {{ $get_gig_price->basic_title }}</td>
+						@endif
+						@if($get_gig_price->plus_title )
 						<td> {{ $get_gig_price->plus_title }}</td>
+						@endif
+						@if($get_gig_price->super_title )
 						<td> {{ $get_gig_price->super_title }}</td>
+						@endif
+						@if($get_gig_price->platinum_title )
 						<td> {{ $get_gig_price->platinum_title }}</td>
+						@endif
 					  </tr>
 					  <tr>
 						<td class="price_left">Description</td>
+						@if($get_gig_price->basic_title )
 						<td> {{ $get_gig_price->basic_dsc }}</td>
+						@endif
+						@if($get_gig_price->plus_title )
 						<td> {{ $get_gig_price->plus_dsc }}</td>
+						@endif
+						@if($get_gig_price->super_title )
 						<td> {{ $get_gig_price->super_dsc }}</td>
+						@endif
+						@if($get_gig_price->platinum_title )
 						<td> {{ $get_gig_price->platinum_dsc }}</td>
+						@endif
 					  </tr>
 					  <tr>
 						<td class="price_left">Revisions</td>
+						@if($get_gig_price->basic_title )
 						<td> {{ $get_gig_price->rivision_b }}</td>
+						@endif
+						@if($get_gig_price->plus_title )
 						<td> {{ $get_gig_price->rivision_p }}</td>
+						@endif
+						@if($get_gig_price->super_title )
 						<td> {{ $get_gig_price->rivision_s }}</td>
+						@endif
+						@if($get_gig_price->platinum_title )
 						<td> {{ $get_gig_price->rivision_pm }}</td>
+						@endif
 					  </tr>
 
 					  @foreach($get_gig_feature as $gig_feature)
 					  <tr>
-						<td> {{ $gig_feature->feature_name }}</td>
+						<td class="price_left"> {{ $gig_feature->feature_name }}</td>
+						@if($get_gig_price->basic_title )
 						<td><?php if($gig_feature->feature_basic == 'Yes') {echo '<i style="color:#1fd0b6;font-size: 15px;" class="fa fa-check fa-lg"></i>'; }else{ echo '<i style="color:#ccc;font-size: 15px;" class="fa fa-check fa-lg"></i>';} ?></td>
+						@endif
+						@if($get_gig_price->plus_title )
 						<td><?php if($gig_feature->feature_plus == 'Yes') {echo '<i style="color:#1fd0b6;font-size: 15px;" class="fa fa-check fa-lg"></i>'; }else{ echo '<i style="color:#ccc;font-size: 15px;" class="fa fa-check fa-lg"></i>';} ?></td>
+						@endif
+						@if($get_gig_price->super_title )
 						<td><?php if($gig_feature->feature_super == 'Yes') {echo '<i style="color:#1fd0b6;font-size: 15px;" class="fa fa-check fa-lg"></i>'; }else{ echo '<i style="color:#ccc;font-size: 15px;" class="fa fa-check fa-lg"></i>';} ?></td>
+						@endif
+						@if($get_gig_price->platinum_title )
 						<td><?php if($gig_feature->feature_platinum == 'Yes') {echo '<i style="color:#1fd0b6;font-size: 15px;" class="fa fa-check fa-lg"></i>'; }else{ echo '<i style="color:#ccc;font-size: 15px;" class="fa fa-check fa-lg"></i>';} ?></td>
 					  </tr>
+					  @endif
 					 @endforeach
 					 
 					@if($get_gig_info->gig_payment_type == 'monthly')
 					 	<tr>
 						<td class="price_left">Daily Work</td>
-						<td> 1 hour</td>
-						<td> 3 hour</td>
-						<td> 4 hour</td>
-						<td> 6 hour</td>
+						@if($get_gig_price->basic_title )
+						<td> {{ $get_gig_price->daily_work_b }} hour</td>
+						@endif
+						@if($get_gig_price->plus_title )
+						<td> {{ $get_gig_price->daily_work_p }} hour</td>
+						@endif
+						@if($get_gig_price->super_title )
+						<td> {{ $get_gig_price->daily_work_s }} hour</td>
+						@endif
+						@if($get_gig_price->platinum_title )
+						<td>  {{ $get_gig_price->daily_work_pm }} hour</td>
+						@endif
 					  </tr>
 					@endif
 					
 					 <tr>
 						<td class="price_left">Delivery time</td>
+						@if($get_gig_price->basic_title )
 						<td> {{ $get_gig_price->delivery_time_b . $time_type }} </td>
+						@endif
+						@if($get_gig_price->plus_title )
 						<td> {{ $get_gig_price->delivery_time_p . $time_type }} </td>
+						@endif
+						@if($get_gig_price->super_title )
 						<td> {{ $get_gig_price->delivery_time_s . $time_type }} </td>
+						@endif
+						@if($get_gig_price->platinum_title )
 						<td> {{ $get_gig_price->delivery_time_pm . $time_type }} </td>
+						@endif
 					 </tr>
 					<?php if($get_gig_info->gig_user_id != $check_login_user) { ?>
 					  <tr>
 						</tr><tr><td></td>
+						@if($get_gig_price->basic_title )
 						<td style="margin: 0 10px;">
 							<b>$ {{ $get_gig_price->basic_p }} </b><br>
 							<button class="btn-info"  name="package" value="basic">Select</button>
 						</td>
+						@endif
+						@if($get_gig_price->plus_title )>
 						<td>
 							<b>$ {{ $get_gig_price->plus_p }}</b><br>
 							<button class="btn-info"  name="package" value="plus">Select</button>
 						</td>
+						@endif
+						@if($get_gig_price->super_title )
 						<td>
 							<b>$ {{ $get_gig_price->super_p }}</b><br>
 							<button class="btn-info"  name="package" value="super">Select</button>
 						</td>
+						@endif
+						@if($get_gig_price->platinum_title )
 						<td>
 							<b>$ {{ $get_gig_price->platinum_p }}</b><br>
 							<button class="btn-info"  name="package" value="platinum">Select</button>
 						</td>
+						@endif
 					</tr>
-				<?php }?>
+				<?php } ?>
 					</tbody>
 				  </table>
 				</form>
@@ -722,11 +787,9 @@ h4.gigsfuq-item {
 				<div class="clearfix"></div><br>
 				<div class="product-list grid column4-wrap">
 					<!-- PRODUCT ITEM -->
-					<?php
-						$get_another_gig = DB::table('gig_basics')->where('gig_user_id', $get_user_info->id)->where('gig_status', 'active')->limit(6)->get(); 
-
-						if(count($get_another_gig)>1){
-					?>
+						
+					@if(count($get_another_gig)>0)
+					
 
 					@foreach( $get_another_gig as $another_gig)
 					<div class="product-item column">
@@ -779,26 +842,23 @@ h4.gigsfuq-item {
 							<a href=" {{ route('gig_details', $another_gig->gig_url) }}" target="_blank">
 								<p class="text-header">I will  {!! $another_gig->gig_title   !!}</p>
 							</a>
-							<a href="shop-gridview-v1.html">
-								<p class="category primary">PSD Templates</p>
+							<a>
+								<p class="category primary">{{$another_gig->subcategory_name}}</p>
 							</a>
-							<p class="price"><span>$</span><?php $get_gig_price = DB::table('gig_prices')->select('basic_p')->where('gig_id', $another_gig->gig_id)->first(); 
-									if($get_gig_price){ 
-										echo $get_gig_price->basic_p;
-										}
-									?></p>
+							<p class="price"><span>$</span>{{$another_gig->basic_p}}</p>
 						</div>
 						<!-- /PRODUCT INFO -->
 						<hr class="line-separator">
 
 						<!-- USER RATING -->
 						<div class="user-rating">
-							<a href="author-profile.html">
+							<a href="{{ route('profile_view', $get_user_info->username) }}">
 								<figure class="user-avatar small">
-									<img src=" {{asset('allscript') }}/images/avatars/avatar_01.jpg }}" alt="user-avatar">
+									@if(!empty($get_user_info->userinfo))
+							<img src="{{asset('image/'.$get_user_info->userinfo->user_image) }}" alt="">@endif
 								</figure>
 							</a>
-							<a href=" {{ route('profile_view', $get_user_info->username) }}">
+							<a href="{{ route('profile_view', $get_user_info->username) }}">
 								<p class="text-header tiny"> {{ $get_user_info->name }}</p>
 							</a>
 							<ul class="rating tooltip tooltipstered">
@@ -844,7 +904,7 @@ h4.gigsfuq-item {
 
 					@endforeach
 					<!-- /PRODUCT ITEM -->
-				<?php } ?>
+				@endif
 				</div>
 			</div>
 		

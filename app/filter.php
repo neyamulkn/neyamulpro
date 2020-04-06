@@ -12,4 +12,8 @@ class filter extends Model
     	'mete_tag',
     	'filter_msg'
     ];
+
+    public function metadata(){
+    	return $this->belongsTo(gig_metadata::class, 'filter_id', 'filter_id');
+    }
 }

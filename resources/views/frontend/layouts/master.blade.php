@@ -102,7 +102,7 @@
 			<!-- LOGO -->
 			<a href="{{ url('/') }}">
 				<figure class="logo">
-					<img src="{{ asset('allscript/images/logos.png') }}" alt="logo">
+					<img src="{{ asset('allscript/images/logo.png') }}" alt="logo">
 				</figure>
 			</a>
 			<!-- /LOGO -->
@@ -129,19 +129,14 @@
 			<!-- USER BOARD -->
 			<div class="user-board">
 			@if(Auth::check())
-				<?php 
-				$get_id = null;
-					$get_id = Auth::user()->id;
-					$get_user_info = DB::table('userinfos')->where('user_id', $get_id)->first();
-
-				?>
+				
 				<div class="user-quickview">
 					<!-- USER AVATAR -->
 					<a href="{{url('dashboard/profile/setting')}}">
 					<div class="outer-ring">
 						<div class="inner-ring"></div>
 						<figure class="user-avatar">
-							<img src="{{asset('image/'.'/'.$get_user_info->user_image) }}"  alt="image">
+							<img src="{{asset('image/'.Auth::user()->userinfo->user_image) }}"  alt="image">
 						</figure>
 					</div>
 					</a>
@@ -211,7 +206,7 @@
 							<!-- /SVG ARROW -->
 						</span>
 						<!-- PIN -->
-						<span class="pin soft-edged secondary">{{ App\Notification::where('forUser', Auth::user()->id)->where('read', 0)->count()}}</span>
+						<span class="pin soft-edged secondary">{{ App\Notification::where('forUser', Auth::user()->id)->where('read', 0)->pluck('id')->count()}}</span>
 						<!-- /PIN -->
 
 						<!-- DROPDOWN NOTIFICATIONS -->
@@ -369,16 +364,16 @@
 				<a href="author-profile.html">
 				<div class="outer-ring">
 					<div class="inner-ring"></div>
-					<?php $get_user = DB::table('users')->leftJoin('userinfos', 'users.id', 'userinfos.user_id')->where('users.username', Auth::user()->username)->first(); ?>
+					
 					<figure class="user-avatar">
-						<img src="{{ asset('image/'.$get_user->user_image) }}" alt="avatar">
+						<img src="{{ asset('image/'.Auth::user()->userinfo->user_image) }}" alt="avatar">
 					</figure>
 				</div>
 				</a>
 				<!-- /USER AVATAR -->
 				<!-- USER INFORMATION -->
 				<p class="user-money">{{Auth::user()->name}}</p>
-				<p class="user-name">$745.00</p>
+				<p class="user-name">${{ Auth::user()->wallet}}</p>
 				<!-- /USER INFORMATION -->
 			</div>
 			<!-- /USER QUICKVIEW -->
@@ -490,7 +485,13 @@
 	<script src="{{ asset('/allscript/js/vendor/toastr.js') }}"></script>
 
 	{!! Toastr::message() !!}
-	 
+	<script>
+	    @if($errors->any())
+	    @foreach($errors->all() as $error)
+	    toastr.error("{{ $error }}");
+	    @endforeach
+	    @endif
+	</script>
 	@yield('js')
 
 
@@ -503,6 +504,15 @@
 	<script src="{{ asset('/allscript/js/footer.js') }}"></script>
 
 	<script>
+	function readNotify(id){
+		
+		var url = "{{route('readNotify', ':id')}}";
+		url = url.replace(":id", id);
+		$.ajax({
+            url:url,
+            method:"get",
+	    });
+	}
 	jQuery(document).ready(function() {
 	    jQuery('#overlay').fadeOut(1000);
 	});

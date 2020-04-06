@@ -10,18 +10,15 @@ use Session;
 use Toastr;
 class AddToCartController extends Controller
 {
-    
     public function theme_cart(Request $request)
     {
-
-
         if($request->session()->has('session_id')) {
             Session::get('session_id');
         }else{
-           Session::put('session_id', Session::getId());
+            Session::put('session_id', Session::getId());
         }
 
-       $session_id = Session::get('session_id');
+        $session_id = Session::get('session_id');
 
         $user_id = 0;
         if(Auth::check()){
@@ -34,6 +31,7 @@ class AddToCartController extends Controller
         if($check->user_id != $user_id){
             $data = [
                 'theme_id' => $request->theme_id,
+                'lichance_name' => 'regular',
                 'price' => $request->price,
                 'user_id' => $user_id,
                 'session_id' => $session_id,
@@ -43,7 +41,7 @@ class AddToCartController extends Controller
             DB::table('theme_add_to_cart')->insert($data);
             $output = array(
              'status' => 'success',
-             'msg'  => 'Item added to your cart successfully'
+             'msg'  => 'Item added to your cart'
             );
       
         }else{
@@ -65,33 +63,31 @@ class AddToCartController extends Controller
         if(Auth::check()){
             $user_id = Auth::user()->id;
         }
+        Session::forget('buy_theme_cart_id');
 
-        $getCards = DB::table('theme_add_to_cart')
-        ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
-        ->where(function($query) use ($user_id, $session_id) {
-            $query->where('theme_add_to_cart.user_id', $user_id)
-            ->orWhere('session_id', $session_id);
-        })->get();
+        // $getCards = DB::table('theme_add_to_cart')
+        // ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
+        // ->where(function($query) use ($user_id, $session_id) {
+        //     $query->where('theme_add_to_cart.user_id', $user_id)
+        //     ->orWhere('session_id', $session_id);
+        // })->get();
 
-        foreach ($getCards as $getCard) {
-           if($getCard->user_id == $user_id){
-                DB::table('theme_add_to_cart')->where('cart_id', $getCard->cart_id)->delete();
-           }
-        }
+        // foreach ($getCards as $getCard) {
+        //    if($getCard->user_id == $user_id){
+        //         DB::table('theme_add_to_cart')->where('cart_id', $getCard->cart_id)->delete();
+        //    }
+        // }
 
-    
         $get_themecart_info = DB::table('theme_add_to_cart')
         ->where('user_id', $user_id)
         ->orWhere('session_id', $session_id)
+        ->orderBy('cart_id', 'DESC')
         ->get();
 
-        if(count($get_themecart_info)>0){
+       
+        return view('frontend/theme/theme-addto-card')->with(compact('get_themecart_info'));
 
-            return view('frontend/theme/theme-addto-card')->with(compact('get_themecart_info'));
-
-        }else{
-            return redirect('/themeplace');
-        }
+        
         
     }
     // delete theme from cart table
@@ -113,61 +109,13 @@ class AddToCartController extends Controller
         ->delete();
         
         if($delete_cart){
-           Toastr::success('Cart item deteled.');
+           Toastr::success('Cart item removed.');
         }else{
-           Toastr::success('Cart item can\'t deteled.');
+           Toastr::success('Cart item can\'t removed.');
         }
         return back();
     }
 
     
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\add_to_cart  $add_to_cart
-     * @return \Illuminate\Http\Response
-     */
-    public function show(add_to_cart $add_to_cart)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\add_to_cart  $add_to_cart
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(add_to_cart $add_to_cart)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\add_to_cart  $add_to_cart
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, add_to_cart $add_to_cart)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\add_to_cart  $add_to_cart
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(add_to_cart $add_to_cart)
-    {
-        //
-    }
+   
 }

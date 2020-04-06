@@ -132,59 +132,44 @@
 			<!-- TRANSACTION LIST -->
 			<div class="transaction-list">
 				<!-- TRANSACTION LIST HEADER -->
-				<div class="transaction-list-header">
-					<div class="transaction-list-header-date">
-						<p class="text-header small">Date</p>
-					</div>
-					<div class="transaction-list-header-author">
-						<p class="text-header small">Buyer</p>
-					</div>
-					<div class="transaction-list-header-item">
-						<p class="text-header small">Item</p>
-					</div>
-					<div class="transaction-list-header-detail">
-						<p class="text-header small">Detail</p>
-					</div>
-					<div class="transaction-list-header-code">
-						<p class="text-header small">Type</p>
-					</div>
-					<div class="transaction-list-header-price">
-						<p class="text-header small">Price</p>
-					</div>
-					<div class="transaction-list-header-earnings">
-						<p class="text-header small">Earnings</p>
-					</div>
-					<div class="transaction-list-header-icon"></div>
-				</div>
+
+				<table class="table">
+					<thead>
+				      <tr>
+				        <th>Date</th>
+				        <th>Item</th>
+				        <th>Platform</th>
+				        <th>Type</th>
+				        <th>Price</th>
+				        <th>Earnings</th>
+				        <th>Status</th>
+				      </tr>
+				    </thead>
+			
 				<!-- /TRANSACTION LIST HEADER -->
 				@if(count($get_earnings)>0)
 					<!-- TRANSACTION LIST ITEM -->
 					@foreach($get_earnings as $get_earning)
-					<div class="transaction-list-item">
-						<div class="transaction-list-item-date">
-							<p>{{ \Carbon\Carbon::parse($get_earning->created_at)->format('M d, Y')}}</p>
-						</div>
-						<div class="transaction-list-item-author">
-							<p class="text-header"><a href="#">{{$get_earning->username}}</a></p>
-						</div>
-						<div class="transaction-list-item-item">
-							<p class="category primary"><a href="{{url('gig/'.$get_earning->username.'/'.$get_earning->gig_url)}}">{{$get_earning->gig_title}}</a></p>
-						</div>
-						<div class="transaction-list-item-detail">
-							<p>Marketplace</p>
-						</div>
-						<div class="transaction-list-item-code">
-							<p><span class="light">{{$get_earning->type}}</span></p>
-						</div>
-						<div class="transaction-list-item-price">
+					<tr>
+						<td> {{ \Carbon\Carbon::parse($get_earning->created_at)->format('d M, Y')}}
+						</td>
+						
+						<td>item
+						</td>
+						<td>{{$get_earning->platform}}</td>
+						<td>
+							<span class="light">{{$get_earning->type}}</span>
+						</td>
+						<td>
 							<p>${{$get_earning->price}}</p>
-						</div>
+						</td>
 						
-						<div class="transaction-list-item-earnings">
+						<td>
 							<p class="text-header">${{$get_earning->earning}}</p>
-						</div>
+						</td>
+						<td>-</td>
 						
-					</div>
+					</tr>
 					@endforeach
 					<!-- /TRANSACTION LIST ITEM -->
 				@else

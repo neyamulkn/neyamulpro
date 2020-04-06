@@ -69,32 +69,35 @@
                             <div class="form cf">
                                 <section class="payment-plan cf">
 
-                                     <input type="radio" onclick="hideShow('daily')" checked="" required="required" <?php echo ($get_job) ? ($get_job->price_type == 'monthly') ? 'checked= "checked"' : '' : '' ?>  name="price_type" id="monthly" value="monthly">
+                                     <input type="radio" onclick="hideShow('monthly')" checked="" required="required" <?php echo ($get_job) ? ($get_job->price_type == 'monthly') ? 'checked= "checked"' : '' : '' ?>  name="price_type" id="monthly" value="monthly">
                                     <label class="yearly-label four col" for="monthly" ><span class="sl-icon icon-menu"></span><p class="hireup">Pay a monthly price</p></label>
 
-                                    <input   onclick="hideShow('day') " type="radio" required="required" <?php echo ($get_job) ? ($get_job->price_type == 'fixed')? 'checked= "checked"' : '' : '' ?> name="price_type" id="fixed" value="fixed">
+                                    <input   onclick="hideShow('fixed') " type="radio" required="required" <?php echo ($get_job) ? ($get_job->price_type == 'fixed')? 'checked= "checked"' : '' : '' ?> name="price_type" id="fixed" value="fixed">
                                     <label  class="monthly-label four col" for="fixed" ><span class="sl-icon icon-user-follow"></span><p class="hireup">Pay a fixed price </p></label>
 
                                 </section>
+                                <div class="col-md-6">
                                 <span id="budget">
                                     <p style="color: #000;">Do you have a specific budget? </p>
-                                    <input type="number"  placeholder="Exmaple $100" value=" <?php echo ($get_job) ?  $get_job->budget : ''  ?>" style="width: 50%; border:1px solid #ccc;margin-left: 0px;" name="budget" >
+                                    <input type="number"  placeholder="Exmaple $100" value="{{ ($get_job) ?  $get_job->budget : ''  }}" style=" border:1px solid #ccc;margin-left: 0px;" name="budget" >
                                  </span>
+                                </div>
+                                <div class="col-md-6">
                                  <span id="day" style="display: none;">
                                     <p style="color: #000;">Do you have a specific day? </p>
-                                    <input type="number" value="" style="width: 50%; margin-left: 0px; border:1px solid #ccc;" name="days" placeholder="Exmaple 90 days" >
+                                    <input type="number" value="{{ ($get_job  && $get_job->price_type == 'fixed') ?  $get_job->day_hours : ''  }}"  margin-left: 0px; border:1px solid #ccc;" name="days" placeholder="Exmaple 90 days" >
                                  </span>
 
                                  <span id="daily"  >
                                     <p style="color: #000;">Do you have a specific daily work hours? </p>
-                                        <select name="hours" style="width: 50%;" id="subcategory" required="">
+                                        <select name="hours"  id="subcategory" required="">
                                             <?php for ($i=1; $i <= 12; $i++) {  ?>
                                              
-                                                <option value="{{$i}}">Everyday {{$i}} hours</option>
+                                                <option <?php echo ($get_job && $get_job->price_type == 'monthly' && $get_job->day_hours == $i ) ? 'selected' : '' ?>  value="{{$i}}">Everyday {{$i}} hours</option>
                                             <?php } ?>
                                         </select>
-                    
                                  </span>
+                             </div>
                             </div>
                         </div>
 
@@ -119,27 +122,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="workttse222 v1">
-                        <p class="workttsw"><b> How long do you expect this project to last?  </b></p>
-                        <div class="container">
-                            <div class="form cf">
-                                <section class="payment-plan cf project_do">
-                                    <input  type="radio" required="required" <?php echo ($get_job) ? ($get_job->project_time == '1')? 'checked= "checked"' : '' : '' ?> name="project_time" id="project_time1" value="1">
-                                    <label  class="monthly-label four col" for="project_time1" ><span class="sl-icon icon-user-follow"></span><p class="hireup">Less than 1 month </p></label>
-
-                                    <input type="radio" required="required" <?php echo ($get_job) ? ($get_job->project_time == '2') ? 'checked= "checked"' : '' : '' ?>  name="project_time" id="project_time2" value="2">
-                                    <label class="yearly-label four col" for="project_time2" ><span class="sl-icon icon-menu"></span><p class="hireup">1 to 3 months </p></label>
-
-                                    <input type="radio" required="required" <?php echo ($get_job) ? ($get_job->project_time == '3') ? 'checked= "checked"' : '' : '' ?>  name="project_time" id="project_time3" value="3">
-                                    <label class="yearly-label four col" for="project_time3" ><span class="sl-icon icon-menu"></span><p class="hireup">3 to 6 months </p></label>
-
-                                     <input type="radio" required="required" <?php echo ($get_job) ? ($get_job->project_time == '4') ? 'checked= "checked"' : '' : '' ?>  name="project_time" id="project_time4" value="4">
-                                    <label class="yearly-label four col" for="project_time4" ><span class="sl-icon icon-menu"></span><p class="hireup">More than 6 months</p></label>
-                                </section>
-                            </div>
-                        </div>
-                    </div> 
+ 
                 </div>
                 <div class="cattwork">
                     <b class="cattworks">Additional Options (Optional)</b><br>
@@ -167,13 +150,16 @@
 
 
 <script type="text/javascript">
+@if($get_job)
+    hideShow("{{$get_job->price_type}}");
+@endif
 function hideShow(value){
 
-    if(value == 'day'){
+    if(value == 'fixed'){
         $('#day').show();
         $('#daily').hide();
     }
-    if(value == 'daily'){
+    if(value == 'monthly'){
          $('#day').hide();
         $('#daily').show();
     }

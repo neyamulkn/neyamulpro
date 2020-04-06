@@ -2,8 +2,7 @@
 @section('title', 'wokplace Filter')
 
 @section('css')
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/login.css">
+
 	<link rel="stylesheet" type="text/css" href="{{asset('/allscript')}}/datatables/css/dataTables.bootstrap4.css">
 
 @endsection
@@ -73,14 +72,14 @@
 						<div class="input-container">
 							<div class="input-container">
 								<label class="rl-label">Filter Name</label>
-								<input name="filter_name" value="" type="text" id="" placeholder="Enter filter name...">
+								<input required name="filter_name" value="" type="text" id="" placeholder="Enter filter name...">
 							</div>
 			        	</div>
 
 			        	<div class="input-container">
 							<label for="Category" class="rl-label required">Sub Category </label>
 							<label for="Category" class="select-block">
-								<select name="subcategory_id[]" id="Category" multiple="multiple" style="width:100%" class="select2">
+								<select required name="subcategory_id[]" id="Category" multiple="multiple" style="width:100%" class="select2">
 									<option value="">Select Category</option>
 									<?php
 										$get_category = DB::table('workplace_subcategory')->get();

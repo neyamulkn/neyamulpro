@@ -18,9 +18,9 @@ class MessageController extends Controller
     public function inbox($username = null)
     {
         $user_id = Auth::user()->id;
-        $conversation_list= DB::table('conversation')
-        ->where('conversation.from_user', $user_id)
-        ->orWhere('conversation.to_user', $user_id)
+        $conversation_list= DB::table('conversations')
+        ->where('conversations.from_user', $user_id)
+        ->orWhere('conversations.to_user', $user_id)
         ->orderBy('con_id', 'DESC')
         ->get();
 //dd($conversation_list);
@@ -45,9 +45,9 @@ class MessageController extends Controller
     public function getuser($id)
     {
         $user_id = Auth::user()->id;
-        $get_conversation = DB::table('conversation')
-            ->join('users', 'conversation.to_user', '=', 'users.id')
-            ->where('conversation.from_user', $user_id)
+        $get_conversation = DB::table('conversations')
+            ->join('users', 'conversations.to_user', '=', 'users.id')
+            ->where('conversations.from_user', $user_id)
             ->where('users.username', $id)
             ->first();
        
@@ -107,7 +107,7 @@ class MessageController extends Controller
         }
 
         // check wheather allready conversation 
-        $get_conversation = DB::table('conversation')
+        $get_conversation = DB::table('conversations')
              ->where(function ($query) use ($user_id, $to_user) {
                     $query->where('from_user', $user_id)
                             ->where('to_user', $to_user);
@@ -120,7 +120,7 @@ class MessageController extends Controller
         if($get_conversation){
             $conversation_id = $get_conversation->con_id; 
         }else{
-            $conversation_id = DB::table('conversation')->insertGetId(['to_user' => $user_id, 'from_user' => $to_user]);
+            $conversation_id = DB::table('conversations')->insertGetId(['to_user' => $user_id, 'from_user' => $to_user]);
            
         }
 
@@ -171,59 +171,4 @@ class MessageController extends Controller
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function show(message $message)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(message $message)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, message $message)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(message $message)
-    {
-        //
-    }
 }

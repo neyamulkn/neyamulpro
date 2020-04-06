@@ -133,9 +133,9 @@
 		<!-- /SIDE MENU TITLE -->
 		<!-- DROPDOWN ITEM -->
 			<li class="dropdown-item">
-				<a href="{{url('dashboard/profile/setting')}}">
+				<a href="{{route('profile_setting')}}">
                     <span class="sl-icon icon-settings"></span>
-                    Account Settings
+                    Profile Settings
                 </a>
 			</li>
 			<!-- /DROPDOWN ITEM -->
@@ -235,7 +235,7 @@
 						<a href="{{url('dashboard/create-gig')}}">Marketplace Add Item</a>
 					</li>
 					<li class="inner-dropdown-item">
-						<a href="{{route('manage_seller_order', 'priority')}}">Marketplace Order History</a>
+						<a href="{{route('manage_gig_order', 'active')}}">Marketplace Order History</a>
 					</li>
 				
 					<!-- /INNER DROPDOWN ITEM -->
@@ -288,19 +288,7 @@
 		<p class="side-menu-title">Info &amp; Statistics</p>
 		<!-- /SIDE MENU TITLE -->
 
-		<!-- DROPDOWN -->
-		<ul class="dropdown dark hover-effect">
-			<!-- DROPDOWN ITEM -->
-			
-			<li class="dropdown-item">
-				<a href="{{url('dashboard/'.Auth::user()->username.'/manage/buyer_order/active')}}">
-                    <span class="sl-icon icon-people"></span>
-                    Buyer Orders
-                </a>
-			</li>
-		
-		</ul>
-		<!-- /DROPDOWN -->
+
 
          <!-- SIDE MENU TITLE -->
 		<p class="side-menu-title">Author Tools</p>

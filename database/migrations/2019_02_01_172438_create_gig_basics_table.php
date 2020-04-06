@@ -24,6 +24,9 @@ class CreateGigBasicsTable extends Migration
             $table->string('gig_payment_type', 10);
             $table->string('gig_search_tag');
             $table->integer('gig_user_id');
+            $table->integer('gig_impress')->nullable()->default(0);
+            $table->integer('gig_click')->nullable()->default(0);
+            $table->integer('gig_view')->nullable()->default(0);
             $table->string('gig_status');
             $table->timestamps();
         });

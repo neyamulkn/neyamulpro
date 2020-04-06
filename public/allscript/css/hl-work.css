@@ -15,9 +15,15 @@
     text-align: left;
     color: #00d7b3;
     margin: 1px;
-    padding: 30px 30px 30px 30px;
+    padding: 15px 15px;
     background-color: #F9F9F9;
     margin-bottom: 0;
+}
+
+.up-post h3{
+    color: #00d7b3;
+    text-align: left;
+    margin: 5px;
 }
 .up-cat1 {
     padding:20px 20px 0 20px;
@@ -383,6 +389,12 @@ svg.updollar1 {
     width: 20px;
     height: 20px;
     position: relative;
+
+}
+img.updollar1{
+    position: absolute;
+    top: 7px;
+
 }
 input.updollar {
     float: right;
@@ -396,12 +408,13 @@ input.updollar {
     padding-top: 20px;
     margin-bottom: 40px;
 }
-.hotla-work {overflow:auto; margin-bottom: 20px;}
+.hotla-work {overflow:auto; margin-bottom: 20px; background: #fff;}
 .hotl-work {
     padding: 20px;
     background: white;
     overflow: auto;
     border-bottom: 1px solid #E0E0E0;
+    border: 1px solid #ececec;
 }
 .hot-work {
     float: left;

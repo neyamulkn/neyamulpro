@@ -20,14 +20,15 @@
 
 					$url = route('gig_order_details', $show_notify->item_id);
 					$title = str_limit($show_notify->gigOrder->getGig->gig_title, 40);
+					$notify = $show_notify->notify;
 					$price = $show_notify->gigOrder->total;
 					echo '
-	            	<li class="dropdown-item" style="background:#f0f3f7">
+	            	<li onclick="readNotify('.$show_notify->id.')" class="dropdown-item" style="background:#f0f3f7">
 						<a href="'.$url.'" >
 						<figure class="user-avatar">
 							<img src="'.asset('image/'.$show_notify->user->userinfo->user_image).'" alt="">
 						</figure>
-						<p class="tiny"><span><b>'.$show_notify->user->username.'</b> '.$title.'</span></p>
+						<p class="tiny"><span><b>'.$show_notify->user->username.'</b>'.$notify .' your order '.$title.'</span></p>
 						<span class="price tiny">$'.$price.'</span>
 						<p class="timestamp">'.Carbon\Carbon::parse($show_notify->created_at)->format('M d, Y').'</p>
 						</a>
@@ -36,10 +37,10 @@
 				}elseif($show_notify->type == 'status'){
 					$url = route('gig_details', $show_notify->getGig->gig_url);
 					$title = str_limit($show_notify->getGig->gig_title, 40);
-					$price = $show_notify->get_gig_price->basic_p;
+					$price = 0;
 
 					echo '
-	            	<li class="dropdown-item" style="background:{{ ($show_notify->read == 0 ) ? "#f0f3f7" : "#fff"}}">
+	            	<li onclick="readNotify('.$show_notify->id.')" class="dropdown-item" style="background:{{ ($show_notify->read == 0 ) ? "#f0f3f7" : "#fff"}}">
 						<a href="'.$url.'" >
 						<figure class="user-avatar">
 							<img src="'.asset('image/'.$show_notify->user->userinfo->user_image).'" alt="">
@@ -56,8 +57,7 @@
 	            
 	
 		    }
-
-		    if ($show_notify->platform == 'themeplace') 
+			if ($show_notify->platform == 'themeplace') 
 			{
 				if($show_notify->type == 'order'){
 
@@ -65,7 +65,7 @@
 					$title = str_limit($show_notify->gigOrder->getGig->gig_title, 40);
 					$price = $show_notify->gigOrder->total;
 					echo '
-	            	<li class="dropdown-item" style="background:#f0f3f7">
+	            	<li onclick="readNotify('.$show_notify->id.')" class="dropdown-item" style="background:#f0f3f7">
 						<a href="'.$url.'" >
 						<figure class="user-avatar">
 							<img src="'.asset('image/'.$show_notify->user->userinfo->user_image).'" alt="">
@@ -79,15 +79,16 @@
 				}elseif($show_notify->type == 'status'){
 					$url = route('theme_detail', $show_notify->getTheme->theme_url);
 					$title = str_limit($show_notify->getTheme->theme_name, 40);
+					$notify = $show_notify->notify;
 					$price = $show_notify->getTheme->price_regular;
 
 					echo '
-	            	<li class="dropdown-item '. ($show_notify->read == 0 ? "unread" : "read").'">
+	            	<li onclick="readNotify('.$show_notify->id.')" class="dropdown-item '. ($show_notify->read == 0 ? "unread" : "read").'">
 						<a href="'.$url.'" >
 							<figure class="user-avatar">
 								<img src="'.asset('image/'.$show_notify->user->userinfo->user_image).'" alt="">
 							</figure>
-							<p class="tiny"><span><b>'.$show_notify->user->username.'</b> '.$title.'</span></p>
+							<p class="tiny"><span><b>'.$show_notify->user->username.'</b> '.$notify.' your theme '.$title.'</span></p>
 							<p style="overflow:hidden">
 								<span class="timestamp" >'.Carbon\Carbon::parse($show_notify->created_at)->format('M d, Y').'
 								</span><span class="price tiny" style="text-aling:right">$'.$price.'</span>
@@ -113,7 +114,7 @@
 							$msg = 'withdrawal requested '. $withdrawal->status;
 						}
 						echo '
-			            	<li class="dropdown-item" '.($show_notify->read == 0 ? 'style="background:#f0f3f7"' : '').'>
+			            	<li onclick="readNotify('.$show_notify->id.')" class="dropdown-item" '.($show_notify->read == 0 ? 'style="background:#f0f3f7"' : '').'>
 								<a href="'.$url.'">
 								<figure class="user-avatar">
 									<img src="'.asset('image/'.$show_notify->user->userinfo->user_image).'" alt="">

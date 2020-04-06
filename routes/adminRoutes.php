@@ -1,7 +1,13 @@
 <?php 
 
 Route::group(['middleware' => ['admin', 'auth']], function(){
+
 	Route::get('/','superAdminController@index')->name('admin_dashboard');
+	//manage user
+	Route::get('/manage/user/{status?}', 'AdminController@manage_user')->name('manage_user');
+	Route::post('/user/approveOrReject', 'AdminController@userApproveOrReject')->name('userApproveOrReject');
+	Route::post('/user/delete', 'AdminController@user_delete')->name('user_delete');
+
 	Route::get('payment-method','superAdminController@paymentMethod')->name('paymentMethod');
 	Route::post('payment-method/store','superAdminController@paymentMethodStore')->name('paymentMethodStore');
 	Route::get('payment-method/edit/{id}','superAdminController@paymentMethodEdit')->name('paymentMethodEdit');
@@ -28,15 +34,22 @@ Route::group(['middleware' => ['admin', 'auth']], function(){
 		// insert sub child category
 		Route::get('/subchildcategory', 'superAdminController@theme_subchildcategory');
 		Route::post('/subchildcategory', 'superAdminController@create_theme_subchildcategory')->name('theme_subchildcategory');
-		
+		Route::get('/subchildcategory/edit/{id}', 'superAdminController@theme_subchildcategory_edit');
+		Route::get('/subchildcategory/delete/{id}', 'superAdminController@theme_subchildcategory_delete');
 
+		
 		/// filter theme
 		Route::get('filter/', 'filterController@theme_filter')->name('theme_filter'); // filter
-		Route::post('filter/', 'filterController@insert_theme_filter'); // filter
+		Route::post('filter/{id?}', 'filterController@insert_theme_filter')->name('theme_filter'); // filter
+
+		Route::get('filter/edit/{id}', 'filterController@theme_filter_edit');
+		Route::get('filter/delete/{id}', 'filterController@theme_filter_delete');
 
 		/// sub filter theme
 		Route::get('subfilter/', 'filterController@theme_subfilter'); // filter
-		Route::post('subfilter/', 'filterController@insert_theme_subfilter')->name('insert_theme_subfilter'); // filter
+		Route::post('subfilter/', 'filterController@insert_theme_subfilter')->name('insert_theme_subfilter'); 
+		Route::get('subfilter/edit/{id}', 'filterController@theme_subfilter_edit');
+		Route::get('subfilter/delete/{id}', 'filterController@theme_subfilter_delete');
 
 		//manage theme
 
@@ -70,6 +83,19 @@ Route::group(['middleware' => ['admin', 'auth']], function(){
 		/// sub filter 
 		Route::get('subfilter/', 'filterController@workplace_subfilter'); // filter
 		Route::post('subfilter/', 'filterController@insert_workplace_subfilter'); // filter
+		Route::get('subfilter/edit/{id}', 'filterController@workplace_subfilter_edit');
+		Route::get('subfilter/delete/{id}', 'filterController@workplace_subfilter_edit');
+
+
+
+		
+		//manage jobs
+
+		Route::get('/manage/{status?}', 'workplaceController@job_list')->name('admin_manage_job');
+		Route::post('/job/approve', 'AdminController@themeAproveOrReject')->name('jobApproveOrReject');
+
+		//order list
+		Route::get('/manage/order/{status?}', 'themeController@job_order_list')->name('job_order_list');
 
 	});
 
@@ -115,7 +141,7 @@ Route::group(['middleware' => ['admin', 'auth']], function(){
 
 
 		Route::get('/manage/{status?}', 'GigController@manage_gigs')->name('admin_manage_gigs');
-		Route::post('/gig/approve', 'AdminController@gigAproveOrReject')->name('gigApproveOrReject');
+		Route::post('/gig/approve', 'AdminController@gigApproveOrReject')->name('gigApproveOrReject');
 	});
 
 });

@@ -18,8 +18,9 @@
 			<a class="btn btn-primary" href="#"> Get Started </a>
 
 			<!-- SEARCH WIDGET -->
+			<form action="#" class="search-widget-form" id="searchForm">
 			<div class="search-widget">
-				<form action="#" class="search-widget-form" id="searchForm">
+				<div class="col-md-10 col-xs-9">
 					<input type="text" id="searchKey" required name="item" placeholder="Search goods or services here...">
 					<label for="platform" class="select-block">
 						<select required="" onchange="changePath(this.value)" name="platform" id="platform">
@@ -34,9 +35,12 @@
 						</svg>
 						<!-- /SVG ARROW -->
 					</label>
+				</div>
+				<div class="col-md-2 col-xs-3">
 					<button class="button medium dark">Search Now!</button>
-				</form>
+				</div>
 			</div>
+		</form>
 			<!-- /SEARCH WIDGET -->
 		</section>
 	</div>

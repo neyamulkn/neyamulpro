@@ -1,9 +1,9 @@
  @foreach($get_theme_info as $show_theme_info)
  <a class="devcsstip_trigger">
-    <img class="user-avatar medium" src="{{ asset('theme/images/'.$show_theme_info->main_image)}}" alt="">
+    <img class="user-avatar medium" src="{{ asset('theme/images/thumb/'.$show_theme_info->main_image)}}" alt="">
   <span class="devcsstip">
     <div class="devcss">
-        <div class="size-limiter"><img alt="" src="{{ asset('theme/images/'.$show_theme_info->main_image)}}"></div><strong>{{$show_theme_info->theme_name}}</strong>
+        <div class="size-limiter"><img alt="" src="{{ asset('theme/images/thumb/'.$show_theme_info->main_image)}}"></div><strong>{{$show_theme_info->theme_name}}</strong>
         <div class="info">
             <div class="author-category">by <span class="author">{{$show_theme_info->username}}</span></div>
             <div class="price"><span class="cost"><sup>$</sup>{{$show_theme_info->price_regular}}</span></div>

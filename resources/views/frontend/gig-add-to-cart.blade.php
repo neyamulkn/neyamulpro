@@ -1,4 +1,4 @@
-<?php $get_cart_info = DB::table('add_to_carts')->where('user_id', $get_id)->get();?>	
+<?php $get_cart_info = DB::table('add_to_carts')->where('user_id', Auth::user()->id)->get();?>	
 
 <div class="account-cart-quickview">
 	<span class="icon-present">
@@ -86,7 +86,7 @@
 
 		 		?>
 					<li class="dropdown-item">
-						<a href="{{route('order_checkout', $get_cart->cart_id)}}" class="link-to"></a>
+						<a href="{{route('gig_checkout', $get_cart->cart_id)}}" class="link-to"></a>
 						<!-- SVG PLUS -->
 						<svg class="svg-plus">
 							<use xlink:href="#svg-plus"></use>

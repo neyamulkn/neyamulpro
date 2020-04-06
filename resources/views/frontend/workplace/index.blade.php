@@ -53,7 +53,7 @@
 			<div style="position: relative; width: 100%;" >
 			
 				<form action="{{ route('job_search') }}" style="width: 86%;" class="search-widget-form" >
-					<input type="text"  value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" required onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
+					<input type="text" style="width: 60%" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" required onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
 					<label for="cat" class="select-block">
 						<select name="cat" id="cat">
 							<option  value="">All Categories</option>

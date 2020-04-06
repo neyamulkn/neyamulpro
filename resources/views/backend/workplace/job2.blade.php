@@ -214,35 +214,7 @@
 
 
 
-    $('#submit_form').on('submit', function(e){  
-           e.preventDefault();  
-        var  link = '<?php echo Route('upload_images');?>';
-        document.getElementById("images-to-upload").setAttribute("class", "uploading"); 
-        document.getElementById("submit_btn").setAttribute("disabled", "disabled"); 
-        $.ajax({
-            url:link,
-            method:"POST",
-            data:new FormData(this),
-            contentType:false,  
-                //cache:false,  
-                processData:false, 
-                dataType :'json',
-            success:function(data){
-
-             
-              if(data.type == 'success'){
-                document.getElementById("images-to-upload").removeAttribute("class"); 
-                document.getElementById("submit_btn").removeAttribute("disabled");
-                toastr.success(data.message);
-                window.location.href= data.url;
-              }else{
-                 toastr.error(data.message);
-                document.getElementById("images-to-upload").removeAttribute("class"); 
-                document.getElementById("submit_btn").removeAttribute("disabled");
-              }
-            }
-        });
-        });
+   
 </script>
 
 <script src="{{asset('/allscript')}}/gig/js/dropify.min.js"></script>

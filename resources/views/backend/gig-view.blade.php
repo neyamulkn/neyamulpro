@@ -24,17 +24,17 @@
             ->select('gig_status as status')
             ->where('gig_user_id' , '=', $user_id)
             ->get();
-        	$all = $active = $draft = $pending = $denied = $paused = 0;
+        	$all = $active = $draft = $pending = $reject = $paused = 0;
         	foreach($get_status as $show_status){
   
         		if($show_status->status == 'active'){ $active +=1 ; }
         		if($show_status->status == 'pending'){ $pending +=1 ; }
         		if($show_status->status == 'draft'){ $draft +=1 ; }
-        		if($show_status->status == 'denied'){ $denied +=1 ; }
+        		if($show_status->status == 'reject'){ $reject +=1 ; }
         		if($show_status->status == 'paused'){ $paused +=1 ; }
         	}
 
-        	$all = $active+$pending +$draft+ $denied+ $paused;
+        	$all = $active+$pending +$draft+ $reject+ $paused;
 
         	?>
 			<div class="tab-header primary">
@@ -48,8 +48,8 @@
 				<div class="tab-item {{(Request::route('status') == 'draft') ? 'selected': ''}}"  onclick="get_gigs('draft')">
 					<p class="text-header">DRAFT({{$draft}})</p>
 				</div>
-				<div class="tab-item {{(Request::route('status') == 'denied') ? 'selected': ''}}"  onclick="get_gigs('denied')">
-					<p class="text-header">DENIED({{$denied}})</p>
+				<div class="tab-item {{(Request::route('status') == 'reject') ? 'selected': ''}}"  onclick="get_gigs('reject')">
+					<p class="text-header">REJECT({{$reject}})</p>
 				</div>
 				<div class="tab-item {{(Request::route('status') == 'paused') ? 'selected': ''}}"  onclick="get_gigs('paused')">
 					<p class="text-header">PAUSED({{$paused}})</p>
@@ -66,6 +66,8 @@
 				<div class="comment-list"><br>
 					<!-- COMMENT -->
 				<div class="product-list list full v2">
+				
+
 					<div class="show_gigs">
 					@if(count($get_gigs)>0)
 						<table class="responsive-table-input-matrix">
@@ -87,7 +89,7 @@
 		                            <tr class="tbgig" id="item{{$show_gig->gig_id}}">
 		                                <td class="gig-pict-45">
 		                                    <span class="gig-pict-45">
-		                                        <a href="#"><img src="{{asset('gigimages/'.$show_gig->image_path)}}" alt="" ></a>
+		                                        <a href="#"><img src="{{asset('gigimages/'. ($show_gig->get_image ? $show_gig->get_image->image_path : ''))}}" alt="" ></a>
 		                                    </span>
 		                                </td>
 		                                <td class="title js-toggle-gig-stats ">
@@ -99,12 +101,19 @@
 		                                <td>{{$show_gig->gig_click }} <i class="fa fa-long-arrow-up green"></i></td>
 		                                <td>{{$show_gig->gig_view }} <i class="fa fa-long-arrow-up green"></i></td>
 		                                <td>{{$show_gig->gig_impress }} <i class="fa fa-long-arrow-up green"></i></td>
-		                                <td>{{$show_gig->gig_impress }} <i class="fa fa-long-arrow-down red"></i></td>
+		                                <td>{{$show_gig->gig_impress }} %</i></td>
 		                                <td>
+
 		                                    <label for="sv" class="select-block v3">
-		                                        <select onchange="action_type(this.value, '{{$show_gig->gig_id}}')" name="sv" id="sv">
+		                                        <select onchange="action_type(this.value,'{{$show_gig->gig_url}}', '{{$show_gig->gig_id}}')"  name="sv" id="sv">
 		                                            <option value="0">select action</option>
 		                                            <option value="edit">Edit</option>
+		                                            @if($show_gig->gig_status == 'paused')
+							                        <option value="active">Active</option>
+							                        @endif
+							                        @if($show_gig->gig_status == 'active')
+							                        <option value="paused">Paused</option>
+							                        @endif
 		                                            <option value="delete">Delete</option>
 		                                        </select>
 		                                        <!-- SVG ARROW -->
@@ -162,8 +171,8 @@
 
     function get_gigs(status){
     	document.getElementById('open').style.display = 'block';
-    	
-        var  link = '<?php echo URL::to("dashboard/manage-gigs/");?>/'+status+'?type=status';
+    	history.pushState({}, null, '{{route("manage_gigs")}}/'+status);
+        var  link = '<?php echo URL::to("dashboard/manage-gigs/");?>/'+status+'?ajaxRequest=status';
       
         $.ajax({
             url:link,
@@ -176,30 +185,36 @@
         });
     }
 
-function action_type(id, gig_id) {
-	if(id == 'delete'){
-    	if (confirm("Are you sure delete it.?")) {
-       
-            var  link = '{{route("gig_delete")}}';
-            $.ajax({
-            url:link,
-            method:"post",
-            data:{
-            	gig_id: gig_id,
-            	_token: '{{csrf_token()}}'
-            },
-            success:function(data){
-                if(data){
-                    
-                     $("#item"+gig_id).hide();
-                    toastr.error(data);
-                }
-	        }
-	        
-	        });
-	    }
-	     return false;
-	}       
+function action_type(type, gig_url=null, gig_id=null) {
+	
+	if(type == 'delete' || type == 'paused' || type == 'active'){
+	    	if (confirm("Are you sure "+type+" it.?")) {
+		        
+	            var  link = '{{route("gigStatusCng")}}';
+	            $.ajax({
+	            url:link,
+	            method:"get",
+	            data:{
+	            	gig_id: gig_id,status:type
+	            },
+	            success:function(data){
+	                if(data){
+	                    $("#item"+gig_id).hide();
+	                    toastr.success(data);
+	                }else{
+	                	toastr.error('Sorry something is wrong');
+	                }
+		           }
+		        
+		        });
+		    }
+		    return false;
+		
+		}else if(type == 'edit'){
+			window.location.replace('{{url("dashboard/create-gig")}}/'+gig_url);
+		}else{
+			return false;
+		}      
 } 
 
 $('.tab-item').on('click', function(){

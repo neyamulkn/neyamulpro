@@ -103,12 +103,15 @@ class WorkplaceHomeController extends Controller
 
     public function job_details($job_id){
 
-    	$get_job = DB::table('jobs')
-    	->join('users', 'jobs.user_id', '=', 'users.id')
-    	->where('jobs.job_title_slug', $job_id)
+    	$get_job = job::with(['user', 'category', 'subcategory'])
+    	->where('job_title_slug', $job_id)
     	->first();
-
-    	return view('frontend.workplace.job-details')->with(compact('get_job'));
+        if($get_job){
+            return view('frontend.workplace.job-details')->with(compact('get_job'));
+        }else{
+            return redirect::route('404');
+        }
+    	
     }
 
 

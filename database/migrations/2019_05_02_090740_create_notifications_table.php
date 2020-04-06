@@ -20,6 +20,7 @@ class CreateNotificationsTable extends Migration
             $table->integer('forUser');
             $table->integer('entityID');
             $table->tinyInteger('read')->default(0);
+            $table->char('notify', 125)->nullable();
             $table->timestamps();
         });
     }

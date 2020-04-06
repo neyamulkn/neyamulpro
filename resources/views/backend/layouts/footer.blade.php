@@ -42,7 +42,13 @@
 <script src="{{ asset('/allscript/js/vendor/toastr.js') }}"></script>
 
 {!! Toastr::message() !!}
-
+<script>
+    @if($errors->any())
+    @foreach($errors->all() as $error)
+    toastr.error("{{ $error }}");
+    @endforeach
+    @endif
+</script>
 @yield('js')
 
 <script>

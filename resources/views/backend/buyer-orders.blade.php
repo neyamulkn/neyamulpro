@@ -130,18 +130,15 @@ figure.user-avatar.small {
 <!-- Footer -->
 <script src="{{asset('/allscript')}}/js/footer.js"></script>
 
-
 <!-- XM Pie Chart -->
 <script src="{{asset('/allscript')}}/js/vendor/jquery.xmpiechart.min.js"></script>
-
-
 
 <script type="text/javascript">
 	get_order('{{Request::route('status')}}');
 
     function get_order(status){
     	document.getElementById('open').style.display = 'block';
-    	history.pushState('state/', '/buyer_order/', status);
+    	history.pushState({}, null, '{{route("manage_gig_order")}}/'+status);
         var  link = '<?php echo URL::to("dashboard/marketplace/manage/get_buyer_orders/");?>/'+status;
        
         $.ajax({

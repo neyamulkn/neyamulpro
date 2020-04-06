@@ -170,22 +170,21 @@ h1 {
 }
 /*End tooltips*/
  .search-widget-form {
-    width: 91%;
+    width: 86%;
     margin: 15px auto 0;
+    overflow: initial !important;
 }
 
 .search_bar{
 	position: absolute;
-    top: 46px;
-    left: 82px;
+    top: 50px;
+    left: 0;
     margin: 0px auto;
-    width: 52%;
     border:1px solid #ccc;
     border-top: none;
     background: #fafafa;
     z-index: 999;
     display: none;
-
 }
 .search_bar li{
 	
@@ -209,33 +208,38 @@ h1 {
 			<h3><span>46,129 WordPress Themes & Website Templates From $2</span></h3>
 			<h5>WordPress themes, web templates and more. Brought to you by the largest global community of creatives.</h5>
 
-			<div style="position: relative; width: 100%;" >
 			
-				<form action="{{ route('theme_search') }}" style="width: 86%;" class="search-widget-form" >
-					<input type="text" style="width: 60%;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" required onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
-					<label for="cat" class="select-block">
-						<select name="cat" id="cat">
-							<option  value="">All Categories</option>
-							@foreach($theme_category as $show_category)
 
-								<option {{(isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url)? 'selected' : ''}} value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
-							@endforeach
-						</select>
-						<!-- SVG ARROW -->
-						<svg class="svg-arrow">
-							<use xlink:href="#svg-arrow"></use>
-						</svg>
-						<!-- /SVG ARROW -->
-					</label>
-					<button class="button medium primary">Search Now!</button>
-				</form>
+				<form action="{{ route('theme_search') }}"  class="search-widget-form" >
+		<div class="row">
+			<div class="col-xs-9 col-md-10" style="position: relative;">
+					
+				<input type="text" value="" required="" onkeyup="search_bar(this.value)" autocomplete="off" class="item" id="item" name="item" placeholder="Search goods or services here...">
+				<label for="cat" class="select-block">
+					<select name="cat" id="cat">
+						<option  value="">All Categories</option>
+						@foreach($theme_category as $show_category)
 
+							<option {{(isset($_GET['cat']) && $_GET['cat'] == $show_category->category_url)? 'selected' : ''}} value="{{$show_category->category_url}}">{{$show_category->category_name}}</option>
+						@endforeach
+					</select>
+					<!-- SVG ARROW -->
+					<svg class="svg-arrow">
+						<use xlink:href="#svg-arrow"></use>
+					</svg>
+					<!-- /SVG ARROW -->
+				</label>
 				<div class="search_bar" id="search_bar" >
 					<ul>
 						<span id="show_suggest_key"></span>
 					</ul>
 				</div>
 			</div>
+			<div class="col-xs-3 col-md-2">
+				<button class="button medium tertiary">Search</button>
+			</div>
+		</div>
+	</form>
 		</section>
 	</div>
 	<!-- /BANNER -->
@@ -250,10 +254,10 @@ h1 {
 			<div class="hometheme" style="overflow: visible;">
 				@foreach($top_seller as $show_seller)
 				<a class="devcsstip_trigger" href="{{route('theme_detail', [$show_seller->theme_url])}}">
-					<img class="user-avatar medium" src="{{ asset('theme/images/'.$show_seller->main_image)}}" alt="">
+					<img class="user-avatar medium" src="{{ asset('theme/images/thumb/'.$show_seller->main_image)}}" alt="">
 					  <span class="devcsstip">
 					    <div class="devcss" style="width: 477px;overflow: hidden; position: absolute;z-index: 99999">
-							<div class="size-limiter"><img alt="" src="{{ asset('theme/images/'.$show_seller->main_image)}}"></div><strong>  {{$show_seller->theme_name}}</strong>
+							<div class="size-limiter"><img alt="" src="{{ asset('theme/images/thumb/'.$show_seller->main_image)}}"></div><strong>  {{$show_seller->theme_name}}</strong>
 							<div class="info">
 								<div class="author-category">by <span class="author">{{$show_seller->username}}</span></div>
 								<div class="price"><span class="cost"><sup>$</sup>{{$show_seller->price_regular}}</span></div>
@@ -280,10 +284,10 @@ h1 {
 				
 				@foreach($get_theme_info as $show_theme_info)
 					<a class="devcsstip_trigger" href="{{route('theme_detail', [$show_theme_info->theme_url])}}">
-						<img class="user-avatar medium" src="{{ asset('theme/images/'.$show_theme_info->main_image)}}" alt="">
+						<img class="user-avatar medium" src="{{ asset('theme/images/thumb/'.$show_theme_info->main_image)}}" alt="">
 					  <span class="devcsstip">
 					    <div class="devcss">
-							<div class="size-limiter"><img alt="" src="{{ asset('theme/images/'.$show_theme_info->main_image)}}"></div><strong>  {{$show_theme_info->theme_name}}</strong>
+							<div class="size-limiter"><img alt="" src="{{ asset('theme/images/thumb/'.$show_theme_info->main_image)}}"></div><strong>  {{$show_theme_info->theme_name}}</strong>
 							<div class="info">
 								<div class="author-category">by <span class="author">{{$show_theme_info->username}}</span></div>
 								<div class="price"><span class="cost"><sup>$</sup>{{$show_theme_info->price_regular}}</span></div>

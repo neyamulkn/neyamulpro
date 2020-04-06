@@ -19,6 +19,8 @@ use Redirect;
 use Session;
 use URL;
 use Toastr;
+use Auth;
+use DB;
 
 class PaymentController extends Controller
 {
@@ -44,30 +46,74 @@ class PaymentController extends Controller
     {
         return view('paywithpaypal');
     }
-    public function payWithpaypal(Request $request)
+    public function PaymentPaypal(Request $request)
     {
+    
+        if($request->platform == 'marketplace'){
+            Session::put('purchasePlatform', $request->platform);
+            $item_title = Session::get('gig_title');
+            $quantity = Session::get('item_quantity');
+            $subtotal = Session::get('subtotal');
+            $total_price = $quantity*$subtotal+2;
+
+        }elseif($request->platform == 'themeplace'){
+          
+            $buyer_id = Auth::user()->id;
+            //check direct buy or cart item
+            if(Session::get('buy_theme_cart_id')){
+                $get_themecart_info = DB::table('theme_add_to_cart')
+                ->join('themes', 'theme_add_to_cart.theme_id', 'themes.theme_id')
+                ->where('cart_id', Session::get('buy_theme_cart_id'))
+                ->select('theme_add_to_cart.*', 'themes.theme_name')->first();
+                $item_title = $get_themecart_info->theme_name;
+                $quantity = 1;
+                $subtotal = $get_themecart_info->price;
+                $total_price = $quantity*$subtotal+2;
+            }else{
+                $session_id = 0;
+                $session_id =  Session::get('session_id'); // for guest user add to cart
+               
+                //get all cart item 
+                $get_themecart_info = DB::table('theme_add_to_cart')
+                ->where('user_id', $buyer_id)
+                ->orWhere('session_id', $session_id)
+                ->get()->toArray();
+
+                $quantity = count($get_themecart_info);
+                $item_title = 'Theme payment total item:' .$quantity;                
+                $subtotal = array_sum(array_column($get_themecart_info, 'price'));
+                $total_price = $quantity*$subtotal+2;
+            }
+
+           
+
+        }elseif($request->platform == 'workplace'){
+
+        }else{
+            return back();
+        }
 
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
 
         $item_1 = new Item();
 
-        $item_1->setName('Item 1') /** item name **/
+        $item_1->setName($item_title) /** item name **/
             ->setCurrency('USD')
-            ->setQuantity(1)
-            ->setPrice($request->get('amount')); /** unit price **/
+            ->setQuantity($quantity)
+            ->setPrice($total_price); /** unit price **/
 
         $item_list = new ItemList();
         $item_list->setItems(array($item_1));
 
         $amount = new Amount();
         $amount->setCurrency('USD')
-            ->setTotal($request->get('amount'));
+            ->setTotal($total_price);
 
         $transaction = new Transaction();
         $transaction->setAmount($amount)
             ->setItemList($item_list)
-            ->setDescription('Your transaction description');
+            ->setDescription('Your payment transaction successfully completed');
 
         $redirect_urls = new RedirectUrls();
         $redirect_urls->setReturnUrl(route('paymentStatus')) /** Specify return URL **/
@@ -125,7 +171,7 @@ class PaymentController extends Controller
 
     }
 
-    public function paymentStatus(Request $request)
+    public function PaymentStatus(Request $request)
     {
         /** Get the payment ID before session clear **/
         $payment_id = Session::get('paypal_payment_id');
@@ -135,7 +181,18 @@ class PaymentController extends Controller
         if (empty($request->input('PayerID')) || empty($request->input('token'))) {
 
             Toastr::error('Payment failed');
-            return Redirect::route('theme_checkout');
+            if(Session::get('purchasePlatform') == 'marketplace'){
+                return Redirect::route('gigOrderPayment');
+            }
+            elseif(Session::get('purchasePlatform') == 'themeplace'){
+                return Redirect::route('theme_checkout');
+            }
+            elseif(Session::get('purchasePlatform') == 'workplace'){
+                return Redirect::route('theme_checkout');
+            }else{
+                return redirect::route('home');
+            }
+           
 
         }
 
@@ -148,13 +205,33 @@ class PaymentController extends Controller
 
         if ($result->getState() == 'approved') {
             // payment success 
-            return Redirect::route('theme_payment_paypal');
-
+            if(Session::get('purchasePlatform') == 'marketplace'){
+                return Redirect::route('gigPaymentSuccess');
+            }
+            elseif(Session::get('purchasePlatform') == 'themeplace'){
+                return Redirect::route('themePaymentSuccess');
+            }
+            elseif(Session::get('purchasePlatform') == 'workplace'){
+                return Redirect::route('theme_checkout');
+            }else{
+                return redirect::route('home');
+            }
         }
 
         Toastr::error('Payment failed');
-        return Redirect::route('theme_checkout');
+        if(Session::get('purchasePlatform') == 'marketplace'){
+            return Redirect::route('gigOrderPayment');
+        }
+        elseif(Session::get('purchasePlatform') == 'themeplace'){
+            return Redirect::route('theme_checkout');
+        }
+        elseif(Session::get('purchasePlatform') == 'workplace'){
+            return Redirect::route('theme_checkout');
+        }else{
+            return redirect::route('home');
+        }
 
     }
+   
 
 }

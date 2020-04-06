@@ -46,7 +46,8 @@
 					<div class="hotla-work">
 						<h3 class="up-post-sub v2">
 							<img height="50px" class="user-avatar123" src="{{asset('image/'.$get_applicant->user_image)}}" alt="">	
-							<span class="usernamehot">{{$get_applicant->username}}</span></h3>						
+							<a href="{{ route('profile_view', $get_applicant->username) }}" class="usernamehot">{{$get_applicant->username}}</a>
+						</h3>						
 						<div class="up-sub-mainup">
 							
 							<a class="hot-workoklike" href="{{url('workplace/'.$get_applicant->job_title_slug)}}" target="_blank" rel="noopener">{{$get_applicant->job_title}}</a>
@@ -79,8 +80,8 @@
 				  					<input type="hidden" name="proposal_id" value="{{$get_applicant->proposal_id}}">
 				                        <div class='form-row row'>
 				                            <div class='col-xs-12 form-group required'>
-				                                <label class='control-label'>Name on Card</label> <input
-				                                    class='form-control' size='4' type='text'>
+				                                <label class='control-label'>Name on Card</label> 
+				                                <input class='form-control' size='4' type='text'>
 				                            </div>
 				                        </div>
 				  

@@ -200,9 +200,7 @@
 		    font-size: 20px;
 		    float: left;
     	}
-    	.order_sign{
-    		color: #11c149;
-    	}
+    	
     	.order_progress{
     		color: #cc8808; 
     	}
@@ -220,59 +218,334 @@
     max-width: 735px;
     margin: 1.75rem auto;
 }}
+
+.button.big.primary.wcart.v3 {
+    text-align: center;
+    padding-left: 0;
+    color: #000;
+}
+.form-box-item {
+    padding: 3px 1px 30px !important;
+  }
+
+.progress_right{float: left; width:200px}
+.e-alert-box {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-flow: row nowrap;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -webkit-align-items: baseline;
+    -ms-flex-align: baseline;
+    align-items: baseline;
+    margin-bottom: 16px;
+    padding: 16px;
+    background-color: whitesmoke;
+    border-left: 6px solid #00d7b3;
+    border-radius: 4px;
+    color: #454545;
+    text-align: left;
+}
+.e-alert-box__icon {
+    -webkit-flex: 0 0 30px;
+    -ms-flex: 0 0 30px;
+    flex: 0 0 20px;
+    display: block;
+    text-align: left;
+    color: red;
+    font-size: 14px;
+}
+.t-body a {
+    color: #00d7b3;
+}
+.payment-method__tab-inner {
+    text-align: center;
+   
+}
+.payment-method__tab1 {
+    float: left;
+    width: 20%;
+    border-top: 6px solid #00d7b3;
+    border-bottom-color: transparent !important;
+    background-color: white;
+    padding-top: 1px;
+    z-index: 1;
+    text-align: center;
+    padding-bottom: 20px;
+}
+.payment-method__title {
+    margin: 20px;
+}
+.payment-method__tab {
+    float: left;
+    width: 20%;
+    background-color: #eee;
+    text-align: center;
+    padding: 6px 12px;
+    outline: 0;
+    border-radius: 0;
+    border: 0px solid #e1e8ed;
+    border-left: 1px solid transparent;
+    border-bottom-width: 1px;
+}
+.payment-method__tab:hover, .payment-method__tab:focus {
+    background-color: white;
+}
+.payment-method__title.1 {
+    margin-top: -5px;
+}
+img.input-container2 {
+    float: right;
+    margin-top: -35px;
+    padding-right: 16px;
+}
+.input-containervv {
+    width: 45%;
+    float: left;
+    margin-right: 4px;
+}
+.input-containervvs {
+    width: 45%;
+    float: left;
+}
+span.t-body.-size-l.h-m0.h-pull-left {
+    font-size: 36px;
+    float: left;
+    font-weight: bold;
+}
+.e-fieldset__footer {
+    background-color: #fafafa;
+    border-top: 1px solid #e0e0e0;
+    padding: 16px;
+    text-align: right;
+    overflow: auto;
+}
+.secure_checkout_banner {
+    float: left;
+}
+.secure-checkout-button__container {
+    float: right;
+    padding-left: 10px;
+}
+.button.mid.primary {
+    padding: 0 25px;
+}
+p.t-body {
+    margin-bottom: 10px;
+}
+.media__item.-align-center {
+    float: left;
+    margin-right: 20px;
+}
+li.financial-institutes__logo {
+    float: left;
+    position: relative;
+  padding-right: 7px;
+}
+.media.h-mt2 {
+    overflow: auto;
+    margin-bottom: 20px;
+}
+.button.mid {
+    padding: 0 10px;
+}
+.secure_checkout_banner {
+    margin-top: 10px;
+}
+.payment33 {
+    padding: 22px 24px 26px;
+    background-color: #fff;
+    border: 1px solid #ebebeb;
+    position: relative;
+}
+
+.cart .cart-header-product, .cart .cart-item-product {
+    width: 535px !important;
+}
+
+.cart .cart-item {
+    padding: 10px 0px 0px !important;
+    border-bottom: none !important;
+ 
+}
+
+.payment-method__tab-inner{
+  float: left;
+}
+.cart-item-category{
+  width: 110px !important;
+  padding-top: 0px !important;
+}
+.cart-item a{
+  color: #108a14;
+}
+
+#summary p{
+  color: #000 !important;
+  font-weight: bold !important;
+}
+
+/* Form Progress */
+.vprogress {
+
+  text-align: center;
+}
+.vprogress .bar {
+  display: block;
+ 
+}
+.vprogress .circle{
+  display: block;
+  margin-bottom: 0px;
+   background: #fff;
+  width: 40px; height: 40px;
+  border-radius: 40px;
+  border: 1px solid #d5d5da;
+}
+.vprogress .bar {
+  position: relative;
+  width: 6px;
+  height: 20px;
+  top: 0px;
+  margin-left: 17px;
+  margin-right: -5px;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+}
+.vprogress .circle .label {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background: #0fa70f;
+  line-height: 32px;
+  border-radius: 32px;
+  margin-top: 3px;
+  color: #ffffff;
+  font-size: 17px;
+}
+.vprogress .circle .title {
+  color: #525254;
+  font-size: 14px;
+  line-height: 22px;
+  margin-left: 45px;
+  position: relative;
+  top: -28px;
+  text-align: left;
+}
+ 
+/* Done / Active */
+.vprogress .bar.done,
+.vprogress .circle.done {
+  background: #0fa70f;
+}
+.vprogress .bar.failed,
+.vprogress .circle.failed {
+  background: red;
+}
+.vprogress .bar.active {
+  background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+}
+.vprogress .circle.done .label {
+  color: #FFF;
+  background: #8bc435;
+  box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+.vprogress .circle.done .title {
+  color: #444;
+}
+.vprogress .circle.active .label {
+  color: #FFF;
+  background: #0c95be;
+  box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+.vprogress .circle.active .title {
+  color: #0c95be;
+}
+
+.deliver_header{
+         display:flex;padding:10px;background: #fff;border-bottom: 1px solid #ccc;
+      }
+      .order_sign , .order_progress{
+        font-size: 11px; 
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-left: 30px;
+      }.order_sign2{
+        width: 25px;
+        font-size: 20px;
+        float: left;
+      }
+      
+      .order_progress{
+        color: #cc8808; 
+      }
+.order_requirement{margin-bottom: 10px; text-align:center;color: #7b7b7b;}
+
+.review_header{display:flex;padding:10px;background: #268220; border-bottom: 1px solid #ccc;}
+.order_sign_review{
+  color: #fff;
+  font-size: 11px; 
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-left: 30px;
+  }
+
     </style>
 @endsection
 
 @section('content')
-  <div class="deliver_header" style="{{ ($get_order_details->status == 'completed') ? 'background: #268220;color: #fff' : '' }}">
+        <?php 
+          $current_time = Carbon\Carbon::parse(now())->format('m/d/Y H:i:s');
+          $date = \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y');
+          if($get_order_details->gig_payment_type == 'monthly'){
+            $date = strtotime(date("m/d/Y", strtotime($date)) . " +1 month");
+            $date = date("m/d/Y", $date);
+            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
+          }else{
+            $date =  date('m/d/Y', strtotime($date. ' + '.$get_order_details->delivery_time.' days')); 
+            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
+          }
+        ?>
+  <div class="deliver_header" style="@if ($get_order_details->status == 'completed') background: #268220;color: #fff @elseif($get_order_details->status == 'cancel')  background: #b19c35;color: #fff  @else color:#11c149; @endif">
     
-<!-- for buyer bar -->
-@if(Auth::user()->role_id == env('BUYER'))
-  @if($get_order_details->status == 'active')
-    
+
       <div class="col-md-2 order_sign">
         <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
-        <div style="float: left;">requirements <br/> Submitted</div>
+        <div style="float: left;">Requirements <br/> Submitted</div>
       </div>
-      <div class="col-md-5 order_progress ">
+
+    @if($get_order_details->status == 'active')
+    
+      <div class="col-md-3 order_progress ">
         <div class="order_sign2"><i class="fa fa-map-marker" aria-hidden="true"></i></div> 
-        <div style="float: left;padding-top: 10px">Order in progress</div>
+        <div style="float: left;">Order in progress <br/> Waiting for delivery</div>
       </div>
-   
+    @endif
+
+    @if($current_time >= $date && $get_order_details->status != 'completed' && $get_order_details->status != 'cancel' )
+      <div class="col-md-2 order_progress">
+      <div class="order_sign2"><i class="fa fa-clock-o" aria-hidden="true"></i></div> 
+      <div style="float: left;padding-top: 8px">Time is expired</div>
+     </div>
     @endif
 
     @if($get_order_details->status == 'delivered')
-    
-      <div class="col-md-2 order_sign">
-        <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
-        <div style="float: left;">Requirements <br/> Submitted</div>
-      </div>
       <div class="col-md-6 order_progress">
             <div style="font-size: 26px;">&#x2713; ORDER DELIVERED <em style="font-weight: bold;">PLEASE REVIEV</em ></div>  
       </div>
-    
     @endif
-@endif
 
+
+    @if($get_order_details->status == 'completed' OR $get_order_details->status == 'cancel')
     
-<!-- for buyer & seller both bar -->
-  @if($get_order_details->status == 'completed' OR $get_order_details->status == 'cancel')
-    
-      <div class="col-md-2 order_sign_review">
-        <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
-        <div style="float: left;">Requirements <br/> Submitted</div>
-      </div>
-
-      <div class="col-md-2 order_sign_review">
-        <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
-        <div style="float: left;">Delivery <br/> Submitted</div>
-      </div>
-
       <div class="col-md-5 ">
             <div style="font-size: 26px;text-transform: uppercase;"> &#x2713; ORDER <em style="font-weight: bold;">{{$get_order_details->status}}</em ></div>  
       </div>
    
     @endif
+   
 </div>
 <!-- DASHBOARD CONTENT -->
 <div class="dashboard-content">
@@ -283,7 +556,7 @@
 				<h1 class="ordertitle"><span class="sl-icon icon-star"></span> Order #{{$get_order_details->order_id}} <a class="gig-view33" href="{{url('marketplace/'.$get_order_details->gig_url)}}">view gig</a></h1>
 				<br>
 				<ul class="order-header-info cf">
-					<li class="order-header-info">Seller: <a href="{{url($get_order_details->username)}}">{{$get_order_details->username}}</a> 
+					<li class="order-header-info">Seller: <a href="{{route('profile_view', $get_order_details->username)}}">{{$get_order_details->username}}</a> 
 						(<a href="#" class="buyer-history">view history</a>) 
 						<time datetime="2018-12-17"><em>{{\Carbon\Carbon::parse($get_order_details->created_at)->format('M d, Y')}}</em></time></li>
 				</ul>
@@ -345,7 +618,7 @@
 					</td>
 					<td> {{$get_order_details->gig_payment_type}} price</td>
           <td>{{$get_order_details->quantity}}</td>
-					<td>{{$get_order_details->delivery_time}} Days</td>
+					<td>{{$get_order_details->delivery_time}}@if($get_order_details->gig_payment_type =='monthly') month @else days @endif</td>
 					<td>${{$get_order_details->subtotal}}</td>
 				</tr>
 				
@@ -359,32 +632,20 @@
     @if(($get_order_details->status == 'active') OR ($get_order_details->status == 'delivered'))
       <div class="counterWrap">
         
-        <?php 
-        
-           $date = \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y');
-          if($get_order_details->gig_payment_type == 'monthly'){
-            $date = strtotime(date("m/d/Y", strtotime($date)) . " +1 month");
-            $date = date("m/d/Y", $date);
-            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
-          }else{
-            $date =  date('m/d/Y', strtotime($date. ' + '.$get_order_details->delivery_time.' days')); 
-            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
-          }
-        ?>
-        <div class="counter"></div>
+        <div class="counter"></div> 
 
 		<div class="labelsq"><ul><li>days</li><li>hours</li><li>minutes</li><li>seconds</li></ul></div>
 		<div style="display:none;" id="dataSet">
            <?php echo  $date;  ?>
         </div>
-        @if($get_order_details->gig_payment_type != 'monthly')
+        
         <form action="{{route('order_timeorcancel')}}" onsubmit="return confirm('Do you want submit this form.?')" method="POST">
           <input id="order_id" required="required" type="text" value="{{$get_order_details->order_id}}" name="order_id">
           {{csrf_field()}}
           <div id="expired_time" style="text-align: center;margin:20px 0px 0px;"></div>
          
         </form>
-        @endif
+       
       </div><hr/>
     @endif
 
@@ -450,15 +711,15 @@
    
         @if($get_order_details->status == 'delivered' AND Auth::user()->role_id == env('BUYER'))  
               <div class="user_image">
-                <span class="outer-ring">
+                <span >
                     <img src="{{asset('image/'.$get_order_details->user_image)}}" alt="gig_image" > 
                   </span><strong>{{$get_order_details->username}} Send Your Delivery.</strong>
                   <div style="position: absolute;top: 38px;left: 58px;">
-                    <p>Are you pleased withe the delivery and ready to approve it.?</p>
+                    <p>Are you pleased with the delivery and ready to approve it.?</p>
                   </div><br/><br/>
                   <span style="padding-left: 40px;">
 
-                    <form action="{{url('/order/completed/'.$get_order_details->order_id)}}" onsubmit="return confirm('Do you really want to submit the form?');" method="post" >
+                    <form action="{{url('/order/completed/'.$get_order_details->order_id)}}" onsubmit="return confirm('Do you really want to completed the order?');" method="post" >
                       <input type="hidden" name="type" value="marketplace">
                      {{csrf_field()}} 
                       <span class="btn btn-warning"  data-toggle="modal" data-target="#revision_delivery">Revision Order</span>
@@ -468,7 +729,7 @@
               </div>
         @endif
         
-    @if($get_order_details->status != 'completed')
+    @if($get_order_details->status != 'completed' && $get_order_details->status != 'cancel')
     	<span>Use Quick Response:</span>
           <form action="{{route('quick_response')}}" method="POST" enctype="multipart/form-data">
             {{csrf_field()}}
@@ -483,23 +744,50 @@
                 </label>
             </div>
         </form><br/>
-			@else <h2 style="color: #000; text-align: center;">Your Order is completed.</h2> @endif
+			@else <h2 style="color: #000; text-align: center;">Your order is {{$get_order_details->status}}.</h2> @endif
 
-      @if(($get_order_details->status == 'active' OR $get_order_details->status == 'delivered') AND (Auth::user()->role_id == env('FRELANCER')) )
-			<div class="order_requirement">
-				<button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#work_deliver">Deliver Your Oder</button>
-      </div>
-      @endif
+     
 
 		</div>
 	</div>
-	<div class="order12rt">
+	<div class="order12rt" style="overflow: hidden;">
 		<div class="order-notes-wrapper note-order-page">
-			<h3 class="note-wrapper">Private Note</h3>
-			<p>Only visible to you</p>
-			<div class="note-content">
-				<button><span class="sl-icon icon-docs"></span> Add note</button>
-			</div>
+			<div class="form-box-item not-padded">
+         
+          <div class="vprogress">
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">&#x2713;</span>
+                <span class="title progress_right">Placed Order</span>
+              </div>
+              <span class="bar done"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">&#x2713;</span>
+                <span class="title progress_right" >Provide requirements</span>
+              </div>
+              <span class="bar done"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">@if($get_order_details->status == 'active') &#9675;@else &#x2713; @endif</span>
+                <span class="title progress_right ">Order in progress </span>
+              </div>
+              <span class="bar done" class="progress_right"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">@if($get_order_details->status == 'delivered') &#9675; @elseif($get_order_details->status == 'completed') &#x2713; @else 4 @endif</span>
+                <span class="title progress_right" >Review the delivery</span>
+              </div>
+              <span class="bar done"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">@if($get_order_details->status == 'completed')&#x2713; @else 5 @endif</span>
+                <span class="title progress_right">Order complete</span>
+              </div>
+              @if($get_order_details->status == 'completed')
+              <span class="bar done"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">@if($get_order_details->status == 'completed') &#9675; @else 6 @endif</span>
+                <a href="{{route('gig_feadback', $get_order_details->order_id) }}" class="title progress_right">Give Feadback</a>
+              </div>
+              @endif
+          </div>
+        </div>
 		</div>
   @if(($get_order_details->gig_payment_type == 'monthly') AND ($get_order_details->status == 'active') AND (Auth::user()->role_id == env('BUYER')))
     <div class="order-notes-wrapper note-order-page">

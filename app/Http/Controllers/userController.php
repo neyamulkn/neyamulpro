@@ -13,17 +13,15 @@ class userController extends Controller
 
     public function dashboard(){
         if(Auth::user()->role_id == env('ADMIN')){
-            $path = 'admin_dashboard';
+            return Redirect::route('admin_dashboard');
         }elseif(Auth::user()->role_id == env('BUYER')){
-            $path = 'user_dashboard';
+            return view('backend.dashboard');
         }
         elseif(Auth::user()->role_id == env('FRELANCER')){
-            $path = 'user_dashboard';
+            return view('backend.dashboard');
         }else{
-            $path = '404';
-        }
-
-        return Redirect::route($path);
+            return Redirect::route('404');
+        }   
     }
 
     public function user_register(Request $data)

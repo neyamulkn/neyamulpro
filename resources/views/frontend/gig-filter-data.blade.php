@@ -160,5 +160,4 @@
 <!-- /PAGER -->
 @else
 <h1 style="color:#000;">No record found.!</h1>
-
 @endif

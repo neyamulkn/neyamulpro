@@ -13,7 +13,7 @@ class Notification extends Model
     }
 
     public function getGig(){
-    	return $this->belongsTo(gig_order::class, 'item_id', 'gig_id');
+    	return $this->belongsTo(gig_basic::class, 'item_id', 'gig_id');
     }
     public function gigOrder(){
     	return $this->belongsTo(gig_order::class, 'item_id', 'order_id');

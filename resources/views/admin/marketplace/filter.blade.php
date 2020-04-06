@@ -126,8 +126,7 @@
 	</div>
 	<!-- End add model---->
 
-
-	  <!-- edit modal --->  
+	<!-- edit modal --->  
 <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
     	<form action="{{url('admin/marketplace/filter')}}" data-parsley-validate method="post" id="profile_info">

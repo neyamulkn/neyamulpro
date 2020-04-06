@@ -33,6 +33,22 @@ class User extends Authenticatable
         return $this->hasOne(userinfo::class);
     }
 
+    public function jobs(){
+        return $this->hasMany(job::class, 'user_id');
+    }
+
+    // use proposal list page
+    public function jobOrder(){
+        return $this->hasMany(job_order::class, 'freelancer_id');
+    }
+
+    public function gigs(){
+        return $this->hasMany(gig_basic::class, 'gig_user_id');
+    }
+    public function themes(){
+        return $this->hasMany(theme::class, 'user_id');
+    }
+
     public function role(){
         return $this->belongsTo(role::class);
     }

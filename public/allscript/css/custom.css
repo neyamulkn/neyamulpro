@@ -13,10 +13,19 @@
 		left: 27%;
 		display: block;
 	}
-	.search-widget-form button.medium{
-		width: 15% !important;
+	.h4, .h5, .h6, h4, h5, h6 {
+    margin-top: initial;
+    margin-bottom: initial;
+}
+
+	.checkbox, .radio {
+	    margin-top: 0px;
+	    margin-bottom: 0px;
 	}
-.h4, .h5, .h6, h4, h5, h6{
+form .col-md-10 , form .col-md-2{
+	padding: 0px !important;
+}
+.h4, .h5, .h6{
   margin: initial !important;
 }
 	.product-list.list.full {
@@ -220,7 +229,7 @@ td {
 .price_dollar{
 	position:absolute;
 	top:24px;
-	left: 33px;
+	left: 8px;
 	font-size: 12px;
 }
 

@@ -1,5 +1,4 @@
-
-@if(Auth::user()->role_id == env('admin'))
+@if(Auth::user()->role_id == env('ADMIN'))
 	@include('admin.layouts.header')
 @else 
 	@include('backend.layouts.header')

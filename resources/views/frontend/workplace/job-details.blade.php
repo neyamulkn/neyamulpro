@@ -101,72 +101,22 @@
 	<!-- SECTION -->
 	<div class="section-wrap">
 		<div class="section">
-			<!-- SIDEBAR -->
-			<div class="sidebar right up">
-				<a href="{!! route('job_proposal', $get_job->job_title_slug) !!}" class="button mid secondary-dark upb">Submit a Proposal</a><br/>
-				<button form="shop_search_form" class="button mid secondary-dark">Save Job</button>
-				<p class="pin-tag primary"><svg class="svg-check bullet-icon"><use xlink:href="#svg-check"></use></svg> Flag as inappropriate</p>
-				<p>Required Connects to submit a proposal: 2 <svg class="svg-check bullet-icon"><use xlink:href="#svg-check"></use></svg></p>
-				<p>Available Connects: 60 <svg class="svg-check bullet-icon"><use xlink:href="#svg-check"></use></svg></p>
-				<hr class="line-separator">
-				<b>About the Client</b><br/><br/>
-				<b><svg class="svg-check bullet-icon"><use xlink:href="#svg-check"></use></svg> Payment Method Verified</b><br/><br/>
-				<ul class="rating">
-					<li class="rating-item">
-						<!-- SVG STAR -->
-						<svg class="svg-star">
-							<use xlink:href="#svg-star"></use>
-						</svg>
-						<!-- /SVG STAR -->
-					</li>
-					<li class="rating-item">
-						<!-- SVG STAR -->
-						<svg class="svg-star">
-							<use xlink:href="#svg-star"></use>
-						</svg>
-						<!-- /SVG STAR -->
-					</li>
-					<li class="rating-item">
-						<!-- SVG STAR -->
-						<svg class="svg-star">
-							<use xlink:href="#svg-star"></use>
-						</svg>
-						<!-- /SVG STAR -->
-					</li>
-					<li class="rating-item">
-						<!-- SVG STAR -->
-						<svg class="svg-star">
-							<use xlink:href="#svg-star"></use>
-						</svg>
-						<!-- /SVG STAR -->
-					</li>
-					<li class="rating-item empty">
-						<!-- SVG STAR -->
-						<svg class="svg-star">
-							<use xlink:href="#svg-star"></use>
-						</svg>
-						<!-- /SVG STAR -->
-					</li>
-					<p> 5.00 of 1 review</p>
-				</ul>
-				<b>India</b><br/>
-				<p>Noida 09:25 PM</p>
-				<b>2 jobs posted</b><br/>
-				<p>50% hire rate, 1 open job</p>
-				<b>${!!$get_job->budget!!} total spent</b><br/>
-				<p>1 hire, 0 active</p><br/>
-				<p>{!! \Carbon\Carbon::parse($get_job->created_at)->diffForHumans()!!}</p><br/>
-				
-			</div>
+			
 			<!-- CONTENT -->
 			<div class="content left">
+				
+
 				<div class="hotlancer-work">
-				<h3 class="up-post">{!!$get_job->job_title!!}</h3>
+					<div class="up-post">
+						<h3 >{!!$get_job->job_title!!}</h3>
+						<p><i class="fa fa-tags small"></i> <a href="{{url('/themeplace')}}">{{$get_job->category->category_name}}</a> &nbsp; &nbsp;
+
+						<i class="fa fa-clock-o small"></i> Posted {!! \Carbon\Carbon::parse($get_job->created_at)->diffForHumans()!!} </p>
+					</div>
+				
 				<!-- POST -->
 				<article class="post">
-					<p class="up-cat"><a href="#">Web Development</a></p><br/>
-					<p class="up-time">Posted 14 minutes ago</p><br/>
-					<hr class="line-separator"><br/>
+				
 					<!-- POST CONTENT -->
 					<div class="up-dis">
 						<p>{!! $get_job->job_dsc !!}</p>
@@ -282,6 +232,64 @@
 				</div>
 			</div>
 			<!-- CONTENT -->
+
+			<!-- SIDEBAR -->
+			<div class="sidebar right up">
+				<a href="{!! route('job_proposal', $get_job->job_title_slug) !!}" class="button mid secondary-dark upb">Submit a Proposal</a><br/>
+				<button form="shop_search_form" class="button mid secondary-dark">Save Job</button>
+				<p class="pin-tag primary"><svg class="svg-check bullet-icon"><use xlink:href="#svg-check"></use></svg> Flag as inappropriate</p>
+				<p>Required Connects to submit a proposal: 2 <svg class="svg-check bullet-icon"><use xlink:href="#svg-check"></use></svg></p>
+				<p>Available Connects: 60 <svg class="svg-check bullet-icon"><use xlink:href="#svg-check"></use></svg></p>
+				<hr class="line-separator">
+				<b>About the Client</b><br/><br/>
+				<b><svg class="svg-check bullet-icon"><use xlink:href="#svg-check"></use></svg> Payment Method Verified</b><br/><br/>
+				<ul class="rating">
+					<li class="rating-item">
+						<!-- SVG STAR -->
+						<svg class="svg-star">
+							<use xlink:href="#svg-star"></use>
+						</svg>
+						<!-- /SVG STAR -->
+					</li>
+					<li class="rating-item">
+						<!-- SVG STAR -->
+						<svg class="svg-star">
+							<use xlink:href="#svg-star"></use>
+						</svg>
+						<!-- /SVG STAR -->
+					</li>
+					<li class="rating-item">
+						<!-- SVG STAR -->
+						<svg class="svg-star">
+							<use xlink:href="#svg-star"></use>
+						</svg>
+						<!-- /SVG STAR -->
+					</li>
+					<li class="rating-item">
+						<!-- SVG STAR -->
+						<svg class="svg-star">
+							<use xlink:href="#svg-star"></use>
+						</svg>
+						<!-- /SVG STAR -->
+					</li>
+					<li class="rating-item empty">
+						<!-- SVG STAR -->
+						<svg class="svg-star">
+							<use xlink:href="#svg-star"></use>
+						</svg>
+						<!-- /SVG STAR -->
+					</li>
+					<p> 5.00 of 1 review</p>
+				</ul>
+				<b>India</b><br/>
+				<p>Noida 09:25 PM</p>
+				<b>2 jobs posted</b><br/>
+				<p>50% hire rate, 1 open job</p>
+				<b>${!!$get_job->budget!!} total spent</b><br/>
+				<p>1 hire, 0 active</p><br/>
+				<p>{!! \Carbon\Carbon::parse($get_job->created_at)->diffForHumans()!!}</p><br/>
+					
+			</div>
 		</div>
 	</div>
 	<!-- /SECTION -->

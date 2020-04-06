@@ -9,7 +9,6 @@
     <link href="{{asset('/allscript')}}/css/countDown.css" media="all" rel="stylesheet" />
 <style type="text/css">
 
- 
 .counterWrap {
   padding: 30px;
   width: 100%;
@@ -201,9 +200,7 @@
         font-size: 20px;
         float: left;
       }
-      .order_sign{
-        color: #11c149;
-      }
+      
       .order_progress{
         color: #cc8808; 
       }
@@ -217,51 +214,148 @@
         position: absolute;right: 30px;top: 8px;width: 30%;border-left: 1px solid #ccc;height: 75%;padding: 10px;text-align: center;
       }
       @media (min-width: 576px){
-.modal-dialog {
-    max-width: 735px;
-    margin: 1.75rem auto;
-}}
+      .modal-dialog {
+          max-width: 735px;
+          margin: 1.75rem auto;
+      }}
+
+
+      /* Form Progress */
+      .vprogress {
+
+        text-align: center;
+      }
+      .vprogress .bar {
+        display: block;
+       
+      }
+
+
+      .progress_right{float: left; width:200px}
+      .vprogress .circle{
+        display: block;
+        margin-bottom: 0px;
+         background: #fff;
+        width: 40px; height: 40px;
+        border-radius: 40px;
+        border: 1px solid #d5d5da;
+      }
+      .vprogress .bar {
+        position: relative;
+        width: 6px;
+        height: 20px;
+        top: 0px;
+        margin-left: 17px;
+        margin-right: -5px;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+      }
+      .vprogress .circle .label {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background: #0fa70f;
+        line-height: 32px;
+        border-radius: 32px;
+        margin-top: 3px;
+        color: #ffffff;
+        font-size: 17px;
+      }
+      .vprogress .circle .title {
+        color: #525254;
+        font-size: 14px;
+        line-height: 22px;
+        margin-left: 45px;
+        position: relative;
+        top: -28px;
+        text-align: left;
+      }
+       
+      /* Done / Active */
+      .vprogress .bar.done,
+      .vprogress .circle.done {
+        background: #0fa70f;
+      }
+      .vprogress .bar.failed,
+      .vprogress .circle.failed {
+        background: red;
+      }
+      .vprogress .bar.active {
+        background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+      }
+      .vprogress .circle.done .label {
+        color: #FFF;
+        background: #8bc435;
+        box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+      }
+      .vprogress .circle.done .title {
+        color: #444;
+      }
+      .vprogress .circle.active .label {
+        color: #FFF;
+        background: #0c95be;
+        box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+      }
+      .vprogress .circle.active .title {
+        color: #0c95be;
+      }
     </style>
 @endsection
 
 @section('content')
-  <div class="deliver_header" style="{{ ($get_order_details->status == 'completed') ? 'background: #268220;color: #fff' : '' }}">
+
+
+        <?php 
+        $current_time = Carbon\Carbon::parse(now())->format('m/d/Y H:i:s');
+           $date = \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y');
+          if($get_order_details->price_type == 'monthly'){
+            $date = strtotime(date("m/d/Y", strtotime($date)) . " +1 month");
+            $date = date("m/d/Y", $date);
+            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
+          }else{
+            $date =  date('m/d/Y', strtotime($date. ' + '.$get_order_details->work_duration.' days')); 
+            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
+          }
+        ?>
+  <div class="deliver_header" style="@if ($get_order_details->status == 'completed') background: #268220;color: #fff @elseif($get_order_details->status == 'cancel')  background: #b19c35;color: #fff @else color:#11c149; @endif">
     
- 
-  @if(($get_order_details->status == 'active' OR $get_order_details->status == 'delivered')  )
 
       <div class="col-md-2 order_sign">
         <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
         <div style="float: left;">Buyer Submitted<br/> Information</div>
       </div>
 
-     <div class="col-md-5 order_progress">
+   @if($get_order_details->status == 'active')
+     <div class="col-md-3 order_progress">
       <div class="order_sign2"><i class="fa fa-map-marker" aria-hidden="true"></i></div> 
       <div style="float: left;">Order in progress<br/> deliver soon</div>
+     </div> 
+    @endif
+
+
+    @if($get_order_details->status == 'delivered')
+     <div class="col-md-3 order_progress">
+      <div class="order_sign2"><i class="fa fa-map-marker" aria-hidden="true"></i></div> 
+      <div style="float: left;">Order delivered<br/> waiting for review</div>
      </div>
+   @endif
 
-     <div class="col-md-2"><button class="btn btn-success btn-sm" style="float: right;" type="button" data-toggle="modal" data-target="#work_deliver">Deliver Your Oder</button></div>
-  @endif
+   @if($current_time >= $date && ($get_order_details->status != 'completed' && $get_order_details->status != 'cancel'))
+    <div class="col-md-2 order_progress">
 
+      <div class="order_sign2"><i class="fa fa-refresh" aria-hidden="true"></i></div> 
+      <div style="float: left;">Time is expired<br/> Need extra time</div>
+     </div>
+    @endif
 
-    
-<!-- for buyer & seller both bar -->
-  @if($get_order_details->status == 'completed' OR $get_order_details->status == 'cancel')
-    
-      <div class="col-md-2 order_sign_review">
-        <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
-        <div style="float: left;">Requirements <br/> Submitted</div>
-      </div>
-
-      <div class="col-md-2 order_sign_review">
-        <div class="order_sign2"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div> 
-        <div style="float: left;">Delivery <br/> Submitted</div>
-      </div>
+    @if($get_order_details->status == 'completed' OR $get_order_details->status == 'cancel')
 
       <div class="col-md-5 ">
             <div style="font-size: 26px;text-transform: uppercase;{{ ($get_order_details->status == 'cancel') ? 'color: red' : '' }}"> &#x2713; ORDER <em style="font-weight: bold;">{{$get_order_details->status}}</em ></div>  
       </div>
-   
+      @else
+      <div class="col-md-2"><button class="btn btn-success btn-sm" style="float: right;" type="button" data-toggle="modal" data-target="#work_deliver">Upload Delivery File</button></div>
     @endif
 </div>
 <!-- DASHBOARD CONTENT -->
@@ -273,7 +367,7 @@
         <h1 class="ordertitle"><span class="sl-icon icon-star"></span> Order #{{$get_order_details->order_id}} <a class="gig-view33" href="{{url('workplace/'.$get_order_details->job_title_slug)}}">view job</a></h1>
         <br>
         <ul class="order-header-info cf">
-          <li class="order-header-info"> Buyer: <a href="{{url($get_order_details->username)}}">{{$get_order_details->username}}</a> 
+          <li class="order-header-info"> Buyer: <a href="{{route('profile_view', $get_order_details->username)}}">{{$get_order_details->username}}</a> 
             (<a href="#" class="buyer-history">view history</a>) 
             <time datetime="2018-12-17"><em>{{\Carbon\Carbon::parse($get_order_details->created_at)->format('M d, Y')}}</em></time></li>
         </ul>
@@ -311,32 +405,10 @@
     @if(($get_order_details->status == 'active') OR ($get_order_details->status == 'delivered'))
       <div class="counterWrap">
         
-        <?php 
-        
-           $date = \Carbon\Carbon::parse($get_order_details->created_at)->format('m/d/Y');
-          if($get_order_details->price_type == 'monthly'){
-            $date = strtotime(date("m/d/Y", strtotime($date)) . " +1 month");
-            $date = date("m/d/Y", $date);
-            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
-          }else{
-            $date =  date('m/d/Y', strtotime($date. ' + '.$get_order_details->work_duration.' days')); 
-            $date = $date." ".\Carbon\Carbon::parse($get_order_details->created_at)->format('H:i:s');
-          }
-        ?>
         <div class="counter"></div>
 
         <div class="labelsq"><ul><li>days</li><li>hours</li><li>minutes</li><li>seconds</li></ul></div>
-        <div style="display:none;" id="dataSet">
-           <?php echo  $date;  ?>
-        </div>
-        @if($get_order_details->price_type != 'monthly')
-        <form action="{{route('job_order_timeorcancel')}}" onsubmit="return confirm('Do you want submit this form.?')" method="POST">
-          <input id="order_id" required="required" type="text" value="{{$get_order_details->order_id}}" name="order_id">
-          {{csrf_field()}}
-          <div id="expired_time" style="text-align: center;margin:20px 0px 0px;"></div>
-         
-        </form>
-        @endif
+        <div style="display:none;" id="dataSet"> <?php echo  $date;  ?>  </div>
       </div><hr/>
     @endif
 
@@ -375,7 +447,6 @@
         @if($get_deliver_info)
            @foreach($get_deliver_info  as $deliver_info)
            
-           
             <div class=" user_image">
               <span class="">
                 <img src="{{asset('image/'.$deliver_info->user_image)}}" alt="gig_image" > 
@@ -400,7 +471,7 @@
           @endif
         </div>
 
-  @if($get_order_details->status != 'completed')
+    @if($get_order_details->status != 'completed' && $get_order_details->status != 'cancel')
       <span>Use Quick Response:</span>
       <form action="{{route('job_quick_response')}}" method="POST" enctype="multipart/form-data">
         {{csrf_field()}}
@@ -418,25 +489,55 @@
       
       @if(($get_order_details->status == 'active' OR $get_order_details->status == 'delivered') AND (Auth::user()->role_id == env('FRELANCER')) )
         <div class="order_requirement">
-          <button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#work_deliver">Deliver Your Oder</button>
+          <button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#work_deliver">Upload delivery file</button>
         </div>
       @endif
-  @else <h2 style="color: #000; text-align: center;">Your Order is completed.</h2> @endif
+    @else 
+      <h2 style="color: #000; text-align: center;">Your order is {{$get_order_details->status}}.</h2> 
+    @endif
     </div>
   </div>
-  <div class="order12rt">
+  <div class="order12rt" style="overflow: hidden;">
     <div class="order-notes-wrapper note-order-page">
-      <h3 class="note-wrapper">Private Note</h3>
-      <p>Only visible to you</p>
-      <div class="note-content">
-        <button><span class="sl-icon icon-docs"></span> Add note</button>
-      </div>
+      <div class="not-padded">
+         
+            <div class="vprogress">
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">&#x2713;</span>
+                <span class="title progress_right">Placed Order</span>
+              </div>
+              <span class="bar done"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">&#x2713;</span>
+                <span class="title progress_right" >Provide requirements</span>
+              </div>
+              <span class="bar done"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">@if($get_order_details->status == 'active') &#9675;@else &#x2713; @endif</span>
+                <span class="title progress_right ">Order in progress </span>
+              </div>
+              <span class="bar done" class="progress_right"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">@if($get_order_details->status == 'delivered') &#9675; @elseif($get_order_details->status == 'completed') &#x2713; @else 4 @endif</span>
+                <span class="title progress_right" >Review the delivery</span>
+              </div>
+              <span class="bar done"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">@if($get_order_details->status == 'completed')&#x2713; @else 5 @endif</span>
+                <span class="title progress_right">Order complete</span>
+              </div>
+
+              @if($get_order_details->status == 'completed')
+              <span class="bar done"></span>
+              <div class="circle">
+                <span class="label" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">@if($get_order_details->status == 'completed') &#9675; @else 6 @endif</span>
+                <a href="{{route('job_feadback', $get_order_details->order_id) }}" class="title progress_right">Give Feadback</a>
+              </div>
+              @endif
+           
+          </div>
+        </div>
     </div>
-    <div class="order-notes-wrapper note-order-page">
-      <p>Need to contact Customer Support?</p>
-      <a href="#" class="button mid dark spaced"><span class="primary">Purchase Now!</span></a>
-    </div>
-    
   </div>
   
   <div class="clearfix"></div>      

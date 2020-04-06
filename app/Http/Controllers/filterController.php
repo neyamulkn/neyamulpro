@@ -10,6 +10,8 @@ use App\Workplace_filter_category;
 use DB;
 use App\gig_metadata;
 use App\Theme_filter_category;
+use App\Theme_filter;
+use App\Theme_subfilter;
 use Toastr;
 class filterController extends Controller
 {
@@ -19,7 +21,7 @@ class filterController extends Controller
     $this->middleware('auth');
   }
   public function show_filer_page(){
-    	$get_filter_data = filter::get();
+    	$get_filter_data = filter::orderBy('filter_id', 'DESC')->get();
 
     	return view('admin.marketplace.filter')->with(compact('get_filter_data'));
   }
@@ -169,6 +171,7 @@ class filterController extends Controller
                 ->join('filters', 'gig_metadatas.filter_id', '=', 'filters.filter_id')
                 ->select('gig_metadatas.*', 'filters.filter_name')
                 ->where('gig_metadatas.filter_type', '!=', 'price')
+                ->orderBy('sub_filter_id', 'DESC')
                 ->get();
       return view('admin.marketplace.gig-metadata')->with(compact('get_data'));
   }
@@ -266,7 +269,7 @@ class filterController extends Controller
     //theme filter
 
     public function theme_filter(){
-      $get_filter_data =DB::table('theme_filters')->get();
+      $get_filter_data =DB::table('theme_filters')->orderBy('filter_id', 'DESC')->get();
       //dd($get_filter_data);
       return view('admin.themeplace.filter')->with(compact('get_filter_data'));
     
@@ -274,7 +277,7 @@ class filterController extends Controller
 
 
     public function insert_theme_filter(Request $request){
-
+      $id = $request->id;
   		if($request->category_id){
   			$category_id = implode(',',  $request->category_id);
   		}else{
@@ -286,19 +289,25 @@ class filterController extends Controller
   			'category_id' => $category_id,
   			'type' =>  $request->type,
   			'filter_msg' => $request->filter_msg
-  			];
+  		];
 
-  		$insertId = DB::table('theme_filters')->insertGetId($data);
-           
-      if($insertId){
+  		$success = Theme_filter::updateOrcreate(['filter_id' => $id], $data);
+
+      if($success){
+         Theme_filter_category::where('filter_id', $id)->delete(); 
           foreach ($request->category_id as $category_id) {
             $filter_data = [
-              'filter_id' => $insertId,
+              'filter_id' => $success->filter_id,
               'category_id' => $category_id
             ];
             Theme_filter_category::create($filter_data);
          }
-         Toastr::success('Filter inserted successfully');
+         if($id){
+            Toastr::success('Filter update successfully');
+         }else{
+            Toastr::success('Filter inserted successfully');
+         }
+        
          
       }else{
          Toastr::error('Sorry filter not inserted.');
@@ -308,33 +317,81 @@ class filterController extends Controller
 
     }
 
+    public function theme_filter_edit($id){
+
+      $data = [];
+      $data['get_data'] = DB::table('theme_filters')->where('filter_id', $id)->first();
+      $data['get_category'] = DB::table('theme_category')->get(); 
+      
+      echo view('admin.editpages.theme-filter')->with($data); 
+    }
+
+
+    public function theme_filter_delete($id) {
+         $delete = Theme_filter::where('filter_id', $id)->delete();
+
+        if($delete){
+           Theme_filter_category::where('filter_id', $id)->delete(); 
+            echo "Data successfully deleted.";
+        }else{
+            echo "Sorry Data not deleted.";
+        }
+    }
+
     //theme filter
 
     public function theme_subfilter(){
-    	return view('admin.themeplace.subfilter');
+      $get_data = DB::table('theme_subfilters')
+                ->join('theme_filters', 'theme_subfilters.filter_id', '=', 'theme_filters.filter_id')
+                ->select('theme_subfilters.*', 'theme_filters.filter_name')
+                ->orderBy('id', 'DESC')
+                ->get();
+    	return view('admin.themeplace.subfilter')->with(compact('get_data'));
     }
 
 
     public function insert_theme_subfilter(Request $request){
 	
 		$data = [
-			'sub_filtername' => $request->sub_filtername,
+			'sub_filtername' => $request->sub_filter_name,
 			'filter_id' => $request->filter_id,
 			];
 
-		$insert = DB::table('theme_subfilters')->insert($data);
-      if($insert){
-        return back()->with('msg', 'Filter inserted successfully');
+		$updateOrcreate = Theme_subfilter::updateOrcreate(['id' => $request->id], $data);
+      if($updateOrcreate){
+
+        if($request->id){
+            Toastr::success('Filter update successfully');
+         }else{
+            Toastr::success('Filter inserted successfully');
+         }
+       
       }else{
-        return back()->with('msg', 'Sorry Filter not inserted.');
+        Toastr::success('Sorry Filter not inserted.');
       }
+
+      return back();
     }
 
+    // edit gig sub filter data
+    public function theme_subfilter_edit($id){
+      $data = [];
+      $data['get_subfilter'] = DB::table('theme_subfilters')->where('id', $id)->first();
+  
+      $data['get_filters'] = DB::table('theme_filters')->get();
+
+      return view('admin.editpages.subfilter')->with($data);
+    }
+
+     public function theme_subfilter_delete($id){
+        DB::table('theme_subfilters')->where('id', $id)->delete();
+        echo 'Sub category deleted successfully.';
+     }
 
     // workplace filter
 
     public function workplace_filter(){
-      $get_filter_data =DB::table('workplace_filters')->get();
+      $get_filter_data =DB::table('workplace_filters')->orderBy('id', 'DESC')->get();
 
       return view('admin.workplace.filter')->with(compact('get_filter_data'));
     	

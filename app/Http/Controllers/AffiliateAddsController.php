@@ -151,6 +151,7 @@ class AffiliateAddsController extends Controller
     }
 
     public function affiliate_code(Request $request){
+       
         $code = '';
         $data = [
             'ref_username' => $request->username,

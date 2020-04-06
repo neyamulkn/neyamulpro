@@ -1,11 +1,5 @@
 @extends('admin.layouts.master')
-
-
-@section('css')
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/login.css">
-	<link rel="stylesheet" type="text/css" href="{{asset('/allscript')}}/datatables/css/dataTables.bootstrap4.css">
-@endsection
+@section('title', 'Sub category')
 
 @section('content')
         <!-- DASHBOARD CONTENT -->
@@ -50,16 +44,16 @@
  <!-- add modal --->  
 	<div id="add" class="modal fade" role="dialog">
 		<div class="modal-dialog">
+
 			<!-- Modal content-->
 			<div class="modal-content">
+				<form action="{{route('insert_theme_subcategory')}}" data-parsley-validate method="post" 
+					id="profile_info">
+					 {{ csrf_field() }}
 				<div class="modal-header">
 					<h4 class="modal-title">Add sub category</h4>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>	
 				</div>
-
-				<form action="{{route('insert_theme_subcategory')}}" data-parsley-validate method="post" 
-					id="profile_info">
-					 {{ csrf_field() }}
 		        	<div class="modal-body form-box-item">
 						<div class="input-container">
 							<div class="input-container">
@@ -86,22 +80,23 @@
 								<!-- /SVG ARROW -->
 							</label>
 						</div>
-					</div>
+					
 
-		        	<div class="input-container">
-						<label for="status" class="rl-label required">Status</label>
-						<label for="status" class="select-block">
-							<select name="status" id="status">
-								<option value="1">Active</option>
-								<option value="2">Unactive</option>
-								
-							</select>
-							<!-- SVG ARROW -->
-							<svg class="svg-arrow">
-								<use xlink:href="#svg-arrow"></use>
-							</svg>
-							<!-- /SVG ARROW -->
-						</label>
+			        	<div class="input-container">
+							<label for="status" class="rl-label required">Status</label>
+							<label for="status" class="select-block">
+								<select name="status" id="status">
+									<option value="1">Active</option>
+									<option value="2">Unactive</option>
+									
+								</select>
+								<!-- SVG ARROW -->
+								<svg class="svg-arrow">
+									<use xlink:href="#svg-arrow"></use>
+								</svg>
+								<!-- /SVG ARROW -->
+							</label>
+						</div>
 					</div>
 
 			        <div class="modal-footer">
@@ -184,13 +179,5 @@
   	} 
 	</script>
 
-	<!-- This is data table -->
-    <script src="{{asset('/allscript')}}/datatables/js/jquery.dataTables.min.js"></script>
-    
-   
-    <script>
-        $(function () {
-            $('#myTable').DataTable();
-        });
-    </script>
+
 @endsection

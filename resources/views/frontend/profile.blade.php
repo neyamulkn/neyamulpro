@@ -74,14 +74,14 @@
 				<!-- SIDEBAR ITEM -->
 				<div class="sidebar-item author-bio">
 					<!-- USER AVATAR -->
-					<a href="user-profile.html" class="user-avatar-wrap medium">
+					<a  class="user-avatar-wrap medium">
 						<figure class="user-avatar medium">
-							<img src="{{asset('/allscript')}}/images/avatars/avatar_09.jpg" alt="">
+							<img src="{{asset('image/'. $userinfo->userinfo->user_image)}}" alt="">
 						</figure>
 					</a>
 					<!-- /USER AVATAR -->
 					<p class="text-header">{{ $userinfo->username}}</p>
-					<p class="text-oneline">Super Samurai Developers<br>Los Angeles, Usa</p>
+					<p class="text-oneline">{{ $userinfo->user_title }}</p>
 					<!-- SHARE LINKS -->
 					<ul class="share-links">
 						<li><a href="#" class="fb"></a></li>
@@ -108,60 +108,7 @@
 					</li>
 					
 				</ul>
-				<!-- /DROPDOWN -->
-
-				<!-- SIDEBAR ITEM -->
-				<div class="sidebar-item author-reputation full">
-					<h4>Author's Reputation</h4>
-					<hr class="line-separator">
-					<!-- PIE CHART -->
-					<div class="pie-chart pie-chart1">
-						<p class="text-header percent">86<span>%</span></p>
-						<p class="text-header percent-info">Recommended</p>
-						<!-- RATING -->
-						<ul class="rating">
-							<li class="rating-item">
-								<!-- SVG STAR -->
-								<svg class="svg-star">
-									<use xlink:href="#svg-star"></use>
-								</svg>
-								<!-- /SVG STAR -->
-							</li>
-							<li class="rating-item">
-								<!-- SVG STAR -->
-								<svg class="svg-star">
-									<use xlink:href="#svg-star"></use>
-								</svg>
-								<!-- /SVG STAR -->
-							</li>
-							<li class="rating-item">
-								<!-- SVG STAR -->
-								<svg class="svg-star">
-									<use xlink:href="#svg-star"></use>
-								</svg>
-								<!-- /SVG STAR -->
-							</li>
-							<li class="rating-item">
-								<!-- SVG STAR -->
-								<svg class="svg-star">
-									<use xlink:href="#svg-star"></use>
-								</svg>
-								<!-- /SVG STAR -->
-							</li>
-							<li class="rating-item empty">
-								<!-- SVG STAR -->
-								<svg class="svg-star">
-									<use xlink:href="#svg-star"></use>
-								</svg>
-								<!-- /SVG STAR -->
-							</li>
-						</ul>
-						<!-- /RATING -->
-					</div>
-					<!-- /PIE CHART -->
-					<a href="#" class="button mid dark-light">Read all the Customer Reviews</a>
-				</div>
-				<!-- /SIDEBAR ITEM -->
+				
 			</div>
 			<!-- /SIDEBAR -->
 
@@ -384,13 +331,13 @@
 <script src="{{asset('/allscript')}}/js/dashboard-statistics.js"></script>
 
 <script>
-	function following(user_id){
-		alert(user_id);
+	function following(following_id){
+		
 		$.ajax({
 			method:'post',
 			url:'{{route("following.store")}}',
 			data:{
-				user_id:user_id,
+				following_id:following_id,
 				_token:"{!!  csrf_token()  !!}"
 			},
 			success:function(data){

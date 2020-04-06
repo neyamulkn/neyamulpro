@@ -42,7 +42,7 @@
 }
 .payment-method__tab-inner {
     text-align: center;
-    margin-left: 20px;
+  
 }
 .payment-method__tab1 {
     float: left;
@@ -59,8 +59,8 @@
     margin: 20px;
 }
 .payment-method__tab {
-    float: left;
-    width: 25%;
+
+    width: 24%;
     background-color: #eee;
     text-align: center;
     padding: 6px 12px;
@@ -224,9 +224,9 @@ li.financial-institutes__logo {
 							<?php
 								$total += $show_themeinfo->price;
 								$qty += 1;
-							?>
+							?> 
 							<div class="cart-overview-item">
-								<a href="{{url('themeplace/'.$show_themeinfo->theme_url)}}">
+								<a href="{{route('theme_detail', $show_themeinfo->theme_url)}}">
 								<p class="text-header small theme-title">{{$show_themeinfo->theme_name}}</p></a> 
 								<p class="price"><span>$</span>{{$show_themeinfo->price}}</p>
 							</div>
@@ -239,26 +239,22 @@ li.financial-institutes__logo {
 
 					<div class="cart-overview-item">
 						<p class="text-header small"><span class="primary">Service Fee: </span></p>
-						<p class="price"><span>$</span>2</p>
+						<p class="price"><span>$</span>{{$settings['serviceFee']}}</p>
 					</div>
 					<hr class="line-separator">
 					<div class="cart-overview-item">
-						<p class="text-header small"><span class="primary">Total: </span></p>
-						<p id="total_price" class="price"><span>$</span>{{$total}}</p>
+						<p class="text-header small"><span class="primary">Total:</span></p>
+						<p id="total_price" class="price"><span>$</span>{{$total+$settings['serviceFee']}}</p>
 					</div>
 				</div>
 			</div>
 			<!-- /SIDEBAR -->
-			<form action="{{route('paypalPayment')}}" method="post">
-			{{csrf_field()}}
-			 
-			  <input type="hidden" name="amount" value="{{$total}}">
-			  <input type="hidden" name="currency_code" value="USD">
-			  <input type="hidden" name="return" value="{{route('theme_payment_paypal')}}">
-			  <input type="hidden" name="cancel_return" value="{{route('theme_payment_cancel')}}">
-			  <input type="image" style="display: none" id="submit_btn" name="submit"
-			    value="Place Order">
-			</form>	 
+			
+
+			<form action="{{route('paymentPaypal')}}" method="post">
+				@csrf
+				<input type="submit" name="platform" value="themeplace" style="display: none" id="submit_btn" >
+			</form>	
 			<!-- CONTENT -->
 			<div class="content left">
 				
@@ -272,7 +268,7 @@ li.financial-institutes__logo {
 
 						<div class="payment-method__tabs is-hidden-phone">
 
-							<button name="payment_key"onclick="paymentbtn('masterCard')"  value="buy_now::credit" aria-selected="false" class="payment-method__tab " data-google-analytics-payment-method="credit">
+							<button name="payment_key" onclick="paymentbtn('masterCard')"  value="buy_now::credit" aria-selected="false" class="payment-method__tab " data-google-analytics-payment-method="credit">
 								<div class="payment-method__tab-inner">
 								<div class="payment-method__title">
 								   <img alt="Visa" title="Visa" width="48px" height="25px" src="{{ asset('image/cc.svg')}}">
@@ -297,11 +293,11 @@ li.financial-institutes__logo {
 							  </div>
 							</button>
 
-							<button name="payment_key" onclick="paymentbtn('hotlancer')" value="buy_now::paypal" aria-selected="false">
+							<button name="payment_key" onclick="paymentbtn('hotlancer')" value="buy_now::paypal"  class="payment-method__tab " aria-selected="false">
 								<div class="payment-method__tab-inner">
-								<div class="payment-method__title 1">
-									<h4 class="t-heading -size-xs h-m0">HOTlancer Credit</h4>
-									<p class="t-body -size-m h-m0">Balance: $0</p>
+								<div class="payment-method__title" >
+									<h6 >HOTlancer Credit</h6>
+									<p class="t-body -size-m h-m0">Balance: ${{Auth::user()->wallet}}</p>
 								</div>
 							  </div>
 							</button>
@@ -455,13 +451,13 @@ function stripeTokenHandler(token) {
 						  </div>
 						  <div class="secure-checkout-button__container">
 
-							<label for="submit_btn" class="button mid primary">Checkout with PayPal</label></a>
+							<label for="submit_btn" class="button mid primary">Checkout with PayPal</label>
 						  </div>
 						</div>
 					</div>
 					
 					<div id="hotlancer" style="display: none;" class="form-box-item not-padded">
-						<p class="t-body">Add credit during checkout using PayPal or Skrill.</p>
+						
 						<div class="input-container">
 							<!-- CHECKBOX -->
 							<input type="checkbox" id="same_add" name="same_add" checked="">
@@ -471,25 +467,8 @@ function stripeTokenHandler(token) {
 							</label>
 							<!-- /CHECKBOX -->
 						</div>
-						<div class="cart-total small">
-							<p class="price"><span>$</span>112</p>
-							<p class="text-header subtotal">Cart Subtotal</p>
-						</div>
-						<!-- /CART TOTAL -->
-
-						<!-- CART TOTAL -->
-						<div class="cart-total small">
-							<p class="price"><span>$</span>5</p>
-							<p class="text-header subtotal">Shipping</p>
-						</div>
-						<!-- /CART TOTAL -->
-
-						<!-- CART TOTAL -->
-						<div class="cart-total small">
-							<p class="price"><span>$</span>117</p>
-							<p class="text-header subtotal">Cart Total</p>
-						</div>
-						<!-- /CART TOTAL -->
+					
+						
 						<div class="e-fieldset__footer">
 						  <div class="secure_checkout_banner">
 							<span class="secure-checkout-banner1">

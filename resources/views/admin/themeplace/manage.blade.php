@@ -90,8 +90,9 @@ figure.user-avatar.small {
 					                    <tr>
 					                        <th>Image</th>
 					                        <th>Item</th>
-					                        <th>Total Sell</th>
+					                        <th>Author</th>
 					                        <th>Price</th>
+					                        <th>Total Sell</th>
 					                        <th>Earnings</th>
 					                        <th>Status</th>
 					                        <th>Action</th>
@@ -103,7 +104,7 @@ figure.user-avatar.small {
 				                               
 				                                <td class="gig-pict-45">
 				                                    <span class="gig-pict-45">
-				                                        <a href="#"><img src="{{asset('theme/images/'.$view_theme->main_image)}}" alt="" ></a>
+				                                        <a href="#"><img src="{{asset('theme/images/thumb/'.$view_theme->main_image)}}" alt="" ></a>
 				                                    </span>
 				                                </td>
 				                                <td class="title js-toggle-gig-stats ">
@@ -111,8 +112,9 @@ figure.user-avatar.small {
 				                                        <a class="ellipsis" target="_blank" href="{{route('theme_detail', $view_theme->theme_url)}}">{{$view_theme->theme_name}}</a>
 				                                    </div>
 				                                </td>
-				                                <td>{{$view_theme->total_sell}}</td>
+				                                <td><a href="{{ route('profile_view', $view_theme->username) }}" >{{$view_theme->username}}</a></td>
 				                                <td>${{$view_theme->price_regular}}</td>
+				                                <td>{{$view_theme->total_sell}}</td>
 				                                <td>${{($view_theme->total_earn)? $view_theme->total_earn : 0}}</td>
 				                                <td>{{$view_theme->status}}</td>
 				                                
@@ -123,8 +125,16 @@ figure.user-avatar.small {
 				                                           
 				                                            <option value="active">Approve</option>
 				                                          
-				                                            <option value="reject">Reject</option>
-				                                            
+				                                            @if($view_theme->status != 'reject')
+							                                <option value="reject">Reject</option>
+							                                @endif
+							                                <option value="edit">View</option>
+				                                            @if($view_theme->status == 'paused')
+									                        <option value="active">Active</option>
+									                        @endif
+									                        @if($view_theme->status == 'active')
+									                        <option value="paused">Paused</option>
+									                        @endif
 				                                            <option value="delete">Delete</option>
 				                                        </select>
 				                                        <!-- SVG ARROW -->
@@ -221,7 +231,7 @@ figure.user-avatar.small {
 <script type="text/javascript">
 	function action_type(type, theme_url=null, theme_id=null) {
 
-	if(type == 'active' || type == 'reject'){
+	if(type == 'active' || type == 'paused' || type == 'reject'){
 		if (confirm("Are you sure "+type+" it.?")) {
        
             var  link = '{{route("approveOrReject")}}';
@@ -235,6 +245,7 @@ figure.user-avatar.small {
 	            },
 	            success:function(data){
 	                if(data.status == 'success'){
+	                	 $("#item"+theme_id).hide();
 	                    toastr.success(data.message);
 	                }else{
 	                	toastr.error(data.message);

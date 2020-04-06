@@ -55,7 +55,7 @@ font-weight: bold;
   height: 300px;
  
 }
-
+.checkbox, .radio {margin-bottom: initial;}
 /* Style the buttons inside the tab */
 .tab p {
   display: block;
@@ -178,7 +178,7 @@ font-weight: bold;
                                             <div class="inpt-form-group"> 
                                                 <label class="rl-label filter_boreder">Gig Title</label>
                                             	<div class="inpt-group">
-													<textarea minlength="15" maxlength="80" required="required" name="gig_title" style="font-size: 35px;height: 115px;" class="inpt-control gig-title-text" type="text" placeholder="do something I'm really good at"></textarea>
+											                           <textarea minlength="15" maxlength="80" required="required" name="gig_title" style="font-size: 35px;height: 115px;" class="inpt-control gig-title-text" type="text" placeholder="do something I'm really good at"></textarea>
 	                                                    <div class="form-tooltip">
 	                                                        <span class="tooltip-title">Why do we need this info?</span>
 	                                                        <p class="tooptip-content">Lorem Ipsum is simply dummy text of the printing and
@@ -187,45 +187,40 @@ font-weight: bold;
 	                                                        <span class="tooltip-info">Your information is Safe here & never shared.</span>
 	                                                    </div>  
 	                                                 <div class="char-count"><em>0</em> / 80 max</div>
-													<div class="char-count-desc"></div>
-													<span class="gig-before-title">I will</span>
+                          													<div class="char-count-desc"></div>
+                          													<span class="gig-before-title">I will</span>
 		                                        </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                      <div class="col-md-6">
-                                              <label class="rl-label filter_boreder">Category</label>
-                                                 <div class="inpt-group dropdown-select-icon"> 
-                                                                 
-              								                    <select name="category_id" required="required" class="inpt-control select " id="category_id">
-              														<option value="" disabled selected>Select Category</option>
-              														<?php
-              															$get_category = DB::table('gig_home_category')->get();
-              															
-              														 ?>
-              														@foreach($get_category as $category)
-              															<option value="{{$category->id}}">{{$category->category_name}}</option>
-              														@endforeach
-              													</select>
+                                          <label class="rl-label filter_boreder">Category</label>
+                                             <div class="inpt-group dropdown-select-icon"> 
+                                                             
+          								                    <select name="category_id" required="required" class="inpt-control select " id="category_id">
+                    														<option value="" disabled selected>Select Category</option>
+                    														<?php
+                    															$get_category = DB::table('gig_home_category')->get();
+                    															
+                    														 ?>
+                    														@foreach($get_category as $category)
+                    															<option value="{{$category->id}}">{{$category->category_name}}</option>
+                    														@endforeach
+                    													</select>
                                               <div class="form-tooltip">
                                                   <span class="tooltip-title">Why do we need this info?</span>
-                                                 <p class="tooptip-content">Lorem Ipsum is simply dummy text of the printing and
-              						typesetting industry. Lorem Ipsum has been the industry's
-              						standard dummy text ever since the 1500s</p>
+                                                 <p class="tooptip-content">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy  text ever since the 1500s</p>
                                                   <span class="tooltip-info">Your information is Safe here & never shared.</span>
                                              </div> 
                                            </div> 
                                          </div>
                                          <div class="col-md-6"><br>
                                             <div class="inpt-group dropdown-select-icon"> 
-                                                   <select name="subcategory" required="required" id="subcategory" class="inpt-control select ">
-
-                                                       <option value="" disabled selected>Select category first</option>
-
-								                                  </select> 
-                                                    
-                                                </div> 
+                                                 <select name="subcategory" onchange="get_medata(this.value)" required="required" id="subcategory" class="inpt-control select ">
+                                                     <option value="" disabled selected>Select category first</option>
+							                                  </select> 
+                                              </div> 
                                          </div>
                                     </div><br/>
                                     
@@ -240,7 +235,6 @@ font-weight: bold;
                   														</div>
                   														<div class="col-md-10 ">
                                                  <div id="metadata"></div>
-
                   														</div>
                   													</div>		
                   												</ul>
@@ -422,9 +416,7 @@ font-weight: bold;
 
 //get meta data query sub category
 
-$(document).ready(function(){
-    $('#subcategory').on('change',function(){
-        var subcategory_id = $(this).val();
+    function get_medata(subcategory_id){
         var _token = $('input[name="_token"]').val();
         if(subcategory_id){
             $.ajax({
@@ -432,23 +424,17 @@ $(document).ready(function(){
                 url:'{{url("get_medata")}}',
                 data:{subcategory_id:subcategory_id, _token:_token},
                 success:function(data){
-                	if(data){
-                		$('#show_metadata').attr('style', 'display:block');
-                    	$('#metadata').html(data);
+                  if(data){
+                      $('#show_metadata').attr('style', 'display:block');
+                      $('#metadata').html(data);
                     }else{
-                    	$('#metadata').html('');
-                    	$('#show_metadata').remove();
+                      $('#metadata').html('');
+                      $('#show_metadata').attr('style', 'display:none');
                     }
                 }
             }); 
-        }else{
-            $('#metadata').html('<option value="">Select category first</option>');
-            $('#show_metadata').remove();
-            $('#show_metadata').attr('style', 'display:none');
         }
-    });
-
-});
+    }
 
 
 $("select").on('change', function(e) {
@@ -530,7 +516,7 @@ $("select").on('change', function(e) {
         }
       });
   </script>
-
+ 
   <!-- end tags
    -->
 <script src="{{asset('/allscript')}}/js/parsley.min.js"></script>	

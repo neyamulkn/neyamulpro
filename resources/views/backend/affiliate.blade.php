@@ -67,32 +67,8 @@
 				<!-- /TRANSACTION LIST ITEM -->
 		</div>
 			
-    <!-- update Modal -->
-  <div class="modal fade" id="edit" role="dialog"  tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-    	<form action="{{url('admin/workplace/category')}}" data-parsley-validate method="post" id="profile_info">
-				 {{ csrf_field() }}
-	      <!-- Modal content-->
-		    <div class="modal-content">
-		        <div class="modal-header">
-		          
-		          <h4 class="modal-title">Update sub category</h4>
-		          <button type="button" class="close" data-dismiss="modal">&times;</button>
-		        </div>
-		        <div class="modal-body form-box-item">
-		     		
-					<div id="edit_form"></div>
-		        </div>
-		        <div class="modal-footer">
-		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		           <button type="submit" class="btn btn-sm btn-success">Update</button>
-		        </div>
-      		</div>
-       </form>
-    </div>
-  </div>  
 
- <!-- location modal --->  
+ <!-- affiliate modal --->  
 	<div id="add" class="modal fade" role="dialog">
 		<div class="modal-dialog">
 			<!-- Modal content-->
@@ -104,7 +80,7 @@
 
 			
 	        <div class="modal-body form-box-item">
-	        	<form action="{{url('admin/workplace/category')}}" id="generate_code" method="post" >
+	        	<form action="{{route('affiliate_code')}}" id="generate_code" method="post" >
 				 {{ csrf_field() }}
 				<!-- dashboard-affiliate-program -->
 				
@@ -209,7 +185,7 @@
 
 					<div class="modal-footer">
 			          <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
-			           <button type="submit" class="btn btn-sm btn-success">Get Code</button>
+			           <button type="submit" id="submitBtn" class="btn btn-sm btn-success">Get Code</button>
 			        </div>
 					<!-- /dashboard-affiliate-program -->
  			 	</form>
@@ -241,20 +217,6 @@
         }); 
    });
 
-	function edit(id){
-            var  link = '<?php echo URL::to("admin/workplace/category/edit/");?>/'+id;
-            $.ajax({
-            url:link,
-            method:"get",
-            
-            success:function(data){
-                if(data){
-                     $("#edit_form").html(data);
-                }
-            }
-        
-        }); 
-    }
 
     function deleteItem(id) {
     if (confirm("Are you sure delete it.?")) {

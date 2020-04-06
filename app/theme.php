@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\theme_review;
 class theme extends Model
 {
+    protected $primaryKey = 'theme_id';
     protected $fillable = [
     'user_id',
     'theme_name',
@@ -27,5 +28,13 @@ class theme extends Model
 
     public function comments(){
         return $this->hasMany(ThemeComment::class, 'theme_id');
+    }
+    
+    public function orders(){
+        return $this->hasMany(themeOrder::class, 'theme_id', 'theme_id');
+    }
+
+    public function theme_review(){
+        return $this->hasMany(theme_review::class, 'theme_id', 'theme_id');
     }
 }

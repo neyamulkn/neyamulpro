@@ -172,22 +172,18 @@ li.financial-institutes__logo {
 						<h4>Your Cart Total</h4>
 						<hr class="line-separator">
 						<!-- CART OVERVIEW ITEM -->
-						
+						<?php $cart_total = array_sum(array_column($get_themecart_info->toArray(), 'price')); ?>
 						<div class="cart-overview-item">
 							<p class="text-header small"><span class="primary">Total: </span></p>
 							<p id="total_price" class="price"><span>$</span>
-							<?php $count = 0;
-								foreach($get_themecart_info as $show_cart)
-								$count += $show_cart->price;
-							?>
-							{{$count}}
-						</p>
+								{{  $cart_total }}
+							</p>
 						</div>
 
 					</div>
-					
+					@if( $cart_total > 0)
 					<button class="button big primary v3"> Secure checkout </button> 
-					
+					@endif
 				</div>
 			</form>
 			<!-- /SIDEBAR -->
@@ -202,6 +198,10 @@ li.financial-institutes__logo {
 							<p class="text-header small">Product Details</p>
 						</div>
 						
+						<div class="cart-header-actions">
+							<p class="text-header small">Lichance Name</p>
+						</div>
+
 						<div class="cart-header-price">
 							<p class="text-header small">Price</p>
 						</div>
@@ -212,8 +212,8 @@ li.financial-institutes__logo {
 						
 					</div>
 					<!-- /CART HEADER -->
-					
-			@foreach($get_themecart_info as $show_cart)
+			@if(count($get_themecart_info)>0)
+				@foreach($get_themecart_info as $show_cart)
 		
 				<?php
 		            $get_theme = DB::table('themes')
@@ -229,7 +229,7 @@ li.financial-institutes__logo {
 							<div class="item-preview">
 								<a href="{{route('theme_detail', [$get_theme->theme_url])}}">
 									<figure class="product-preview-image small liquid">
-										<img src="{{ asset('theme/images/'.$get_theme->main_image)}}" alt="">
+										<img src="{{ asset('theme/images/thumb/'.$get_theme->main_image)}}" alt="">
 									</figure>
 								</a>
 								<a href="{{route('theme_detail', [$get_theme->theme_url])}}"><p class="text-header small">{{$get_theme->theme_name}}</p></a>
@@ -241,6 +241,10 @@ li.financial-institutes__logo {
 						<!-- /CART ITEM PRODUCT -->
 
 						<!-- CART ITEM PRICE -->
+						<div class="cart-item-actions">
+							<p >{{$show_cart->lichance_name}}</p>
+						</div>
+
 						<div class="cart-item-price">
 							<p id="price" class="price"><span>$</span>{{$show_cart->price}}</p>
 						</div>
@@ -257,8 +261,8 @@ li.financial-institutes__logo {
 						</div>
 					</div>
 				
-			@endforeach
-			
+				@endforeach
+			@else <h4 style="text-align: center;padding: 20px;">Your cart is empty</h4> @endif
 				</div>
 				<!-- /CART -->
 				

@@ -23,7 +23,7 @@ class superAdminController extends Controller
     } 
 
     public function gig_category(){
-      $get_category = DB::table('gig_home_category')->get();
+      $get_category = DB::table('gig_home_category')->orderBy('id', 'DESC')->get();
      	return view('admin.marketplace.gig-category')->with(compact('get_category'));
     }
 
@@ -77,7 +77,7 @@ class superAdminController extends Controller
       $get_subcategory = DB::table('gig_subcategories')
         ->join('gig_home_category', 'gig_subcategories.category_id', '=', 'gig_home_category.id')
         ->select('gig_subcategories.*', 'gig_home_category.category_name')
-        ->get();
+        ->orderBy('id', 'DESC')->get();
        return view('admin.marketplace.gig-subcategory')->with(compact('get_subcategory'));
     }
 
@@ -234,7 +234,7 @@ class superAdminController extends Controller
     //theme option
 
     public function theme_category(){
-        $get_category = DB::table('theme_category')->paginate(15);
+        $get_category = DB::table('theme_category')->orderBy('id', 'DESC')->get();
         return view('admin.themeplace.category')->with(compact('get_category'));
     }
 
@@ -293,7 +293,7 @@ class superAdminController extends Controller
     $get_subcategory = DB::table('theme_subcategory')
       ->join('theme_category', 'theme_subcategory.category_id', '=', 'theme_category.id')
       ->select('theme_subcategory.*', 'theme_category.category_name')
-      ->get();
+      ->orderBy('id', 'DESC')->get();
     return view('admin.themeplace.subcategory')->with(compact('get_category', 'get_subcategory'));
   }
 
@@ -356,27 +356,69 @@ class superAdminController extends Controller
   
 
     public function theme_subchildcategory(){
-        return view('admin.themeplace.subchild_category');
+      $subchild_categories = DB::table('theme_subchild_category')
+       ->join('theme_subcategory', 'theme_subchild_category.subcategory_id', '=', 'theme_subcategory.id')->orderBy('theme_subchild_category.id', 'DESC')
+       ->select('theme_subchild_category.*', 'theme_subcategory.subcategory_name')->get();
+      return view('admin.themeplace.subchild_category')->with(compact('subchild_categories'));
     }
 
     public function create_theme_subchildcategory(Request $request){
+
         $request->validate([
-            'subchild_category_name' => 'required|unique:theme_subchild_category',
+            'subchild_category_name' => ['required', 'unique:theme_subchild_category,subchild_category_name,'. $request->id],
         ]);
         $data = [
             'subchild_category_name' => $request->subchild_category_name,
-            'subchild_category_url' => str_slug($request->subchild_category_name),
             'subcategory_id' => $request->subcategory_id,
             'status' =>  $request->status
         ];
-        $insert = DB::table('theme_subchild_category')->insert($data);
-         if($insert){
-            Toastr::success('sub childcategory inserted successfully');
-         }else{
-            Toastr::error('sorry sub childcategory not inserted.');
-         }
+
+        $find = DB::table('theme_subchild_category')->where('id', $request->id)->first();
+
+        if($find){
+
+          $update = DB::table('theme_subchild_category')->where('id', $request->id)->update($data);
+          if($update){
+            Toastr::success('Sub childcategory update successfully');
+          }else{
+            Toastr::error('Sorry sub childcategory not updated.');
+          }
+        }else{
+          $data = array_merge(['subchild_category_url' => str_slug($request->subchild_category_name)], $data);
+         
+          $insert = DB::table('theme_subchild_category')->insert($data);
+          if($insert){
+            Toastr::success('Sub childcategory inserted successfully');
+          }else{
+            Toastr::error('Sorry sub childcategory not inserted.');
+          }
+       }
       return back();
     }
+
+    public function theme_subchildcategory_edit($id){
+
+        $data = [];
+        $data['get_data'] = DB::table('theme_subchild_category')
+            ->join('theme_subcategory', 'theme_subchild_category.subcategory_id', '=', 'theme_subcategory.id')->orderBy('theme_subchild_category.id', 'DESC')
+            ->where('theme_subchild_category.id', $id)
+            ->select('theme_subchild_category.*', 'theme_subcategory.subcategory_name')->first();
+            // get category
+        $data['get_category'] = DB::table('theme_subcategory')->get();
+     
+      echo view('admin.editpages.subChildCategory')->with($data);
+    }
+
+    public function theme_subchildcategory_delete($id) {
+     $delete = DB::table('theme_subchild_category')->where('id', $id)->delete();
+
+      if($delete){
+          echo "Data successfully deleted.";
+      }else{
+          echo "Sorry Data not deleted.";
+      }
+  }
+  
 
 
     // workplace category 

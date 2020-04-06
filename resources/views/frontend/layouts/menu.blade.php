@@ -14,7 +14,7 @@
 						$category = 'gig_home_category';
 						$subcategory = 'gig_subcategories';
 						$type = 'marketplace';
-					}if($category == 'themeplace' OR $category == 'themeplaces'){
+					}if($category == 'themeplace'){
 						$category = 'theme_category';
 						$subcategory = 'theme_subcategory';
 						$type = 'themeplace';

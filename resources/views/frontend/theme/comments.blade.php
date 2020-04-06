@@ -212,7 +212,7 @@ span.icon-arrow-right.small {
 
                     <input type="hidden" name="theme_id" value="{!! $get_theme_detail->theme_id !!}">
                     <!-- CHECKBOX -->
-                    <input type="radio" id="regular-license" value="price_regular" name="regular_license" form="aux_form" checked="">
+                    <input type="radio" id="regular-license" value="regular" name="license" form="aux_form" checked="">
                     <label class="b-label linked-check" for="regular-license">
                         <span class="checkbox tertiary"><span></span></span>
                         Regular License
@@ -221,26 +221,28 @@ span.icon-arrow-right.small {
                     <p class="license-text" data-license="regular-license" style="display: block;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
 
                     <!-- CHECKBOX -->
-                    <input type="radio" id="extended-license" value="price_extented" name="extended_license" form="aux_form">
+                    <input type="radio" id="extended-license" value="extented" name="license" form="aux_form">
                     <label class="b-label linked-check" for="extended-license">
                         <span class="checkbox tertiary"><span></span></span>
                         Extended License
                     </label>
                     <!-- /CHECKBOX -->
-
+                    
                     <input type="hidden" name="price" value="{!! $get_theme_detail->price_regular !!}" id="price">
                     <p class="license-text" data-license="extended-license" style="display: none;">Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do eiusmod tempor cididunt ut labore.</p>
                     <button type="submit" name="purchase" value="purchase" class="button mid dark spaced"><span class="tertiary"><span class="icon-credit-card"></span> Buy Now</span></button>
+                    
                 </form>
 
                     <button onclick="add_to_cart('{!! $get_theme_detail->theme_id !!}')" class="button mid tertiary half">Add to Cart </button>
                     <button class="button mid secondary wicon half"><span class="icon-heart"></span>652</button>
                     <div class="clearfix"></div>
+                    
                 </div>
 
                 <!-- SIDEBAR ITEM -->
                 <div class="sidebar-item author-bio short author-badges-v1 column">
-                    <a href="user-profile.html" class="user-avatar-wrap medium">
+                    <a href="{{route('profile_view', [$get_theme_detail->username])}}" class="user-avatar-wrap medium">
                         <figure class="user-avatar medium user">
                             <img src="{!! asset('image').'/'.$get_theme_detail->user_image  !!}" alt="">
                         </figure>
@@ -326,24 +328,16 @@ span.icon-arrow-right.small {
                     </div>
                     <!-- /BADGE LIST -->
                     <div class="clearfix"></div>
-                    <a href="{!! url($get_theme_detail->username) !!}" class="button mid dark spaced">Go to <span class="tertiary">Profile Page</span></a>
-                    <a href="#" class="button mid dark-light">Send a Private Message</a>
+                    <a href="{!! route('profile_view', $get_theme_detail->username) !!}" class="button mid dark spaced">Go to <span class="tertiary">Profile Page</span></a>
+                    
                 </div>
                 <!-- /SIDEBAR ITEM -->
                 <div class="sidebar-item void buttons">
-                    <a href="#" class="button big dark purchase">
-                        <span >{!! $total_sale->total_sale !!} </span>
-                        <span class="tertiary"> Sales</span>
+                    <a class="button big dark tertiary">
+                        {!! $total_sale->total_sale !!} 
+                         Sales
                     </a>
-                    <a href="#" class="button big tertiary wcart">
-                        <span class="icon-present"></span>
-                        100 Comments
-                    </a>
-                    <a href="#" class="button big secondary wfav">
-                        <span class="icon-heart"></span>
-                        <span class="fav-count">652</span>
-                        Add to Favourites
-                    </a>
+                 
                 </div>
                 <div class="sidebar-item author-reputation short">
                     <!-- PIE CHART -->
@@ -512,31 +506,39 @@ span.icon-arrow-right.small {
                         <div class="information-layout-item">
                             <p class="text-header">Upload Date:</p>
                             <p>{!!  \Carbon\Carbon::parse($get_theme_detail->updated_at)->format('M d, Y') !!}</p>
-                        </div>
+                        </div> 
                         <!-- /INFORMATION LAYOUT ITEM -->
                         <!-- /Radio ITEM -->
                         @foreach($get_theme_features as $get_theme_feature)
+                            
+
                             @if($get_theme_feature->feature_type=='radio')
-                                <?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
+
                                 <div class="information-layout-item">
-                                    <p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
+                                    <p class="text-header">{!! $get_theme_feature->filter_name !!}:</p>
                                     <p>{!! $get_theme_feature->feature_name !!}</p>
                                 </div>
                             @endif
 
                             @if($get_theme_feature->feature_type=='select')
-                                <?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
+                                <?php $get_features = DB::table('theme_features')->leftJoin('theme_subfilters', 'theme_features.feature_name', 'theme_subfilters.id')->where('theme_features.feature_id', $get_theme_feature->feature_id)->where('theme_features.theme_id', $get_theme_detail->theme_id)->get();  ?>
+
                                 <div class="information-layout-item">
-                                    <p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
-                                    <p>{!! $get_theme_feature->feature_name !!}</p>
+                                    <p class="text-header">{!! $get_theme_feature->filter_name !!}:</p>
+                                    <p>
+                                        @foreach($get_features as $feature)
+                                            {!! $feature->sub_filtername !!},
+                                        @endforeach
+                                    </p>
                                 </div>
                             @endif
 
                             @if($get_theme_feature->feature_type=='dropdown')
-                                <?php $get_feature_name = DB::table('theme_filters')->where('filter_id', $get_theme_feature->feature_id)->first();?>
+                                <?php $get_features = DB::table('theme_features')->leftJoin('theme_subfilters', 'theme_features.feature_name', 'theme_subfilters.id')->where('theme_features.feature_id', $get_theme_feature->feature_id)->where('theme_features.theme_id', $get_theme_detail->theme_id)->first();  ?>
+
                                 <div class="information-layout-item">
-                                    <p class="text-header">{!! $get_feature_name->filter_name !!}:</p>
-                                    <p>{!! $get_theme_feature->feature_name !!}</p>
+                                    <p class="text-header">{!! $get_theme_feature->filter_name !!}:</p>
+                                    <p>{!! $get_features->sub_filtername !!}</p>
                                 </div>
                             @endif
                         @endforeach
@@ -546,7 +548,7 @@ span.icon-arrow-right.small {
                             <p class="tags tertiary" style="border:none;">
                                 <?php $tag_array = explode(',', $get_theme_detail->search_tag); ?>
                                 @foreach($tag_array as $tag)
-                                    <a href="{!! url('tags/'.$tag) !!}">{!! $tag !!}</a>,
+                                    <a href="{{ url('themeplace/search?item='.$tag) }}">{!! $tag !!}</a>,
                                 @endforeach
                             </p>
                         </div>
@@ -554,7 +556,6 @@ span.icon-arrow-right.small {
                     </div>
                     <!-- INFORMATION LAYOUT -->
                 </div>
-
 
             </div>
             <!-- /SIDEBAR -->
@@ -598,9 +599,9 @@ span.icon-arrow-right.small {
                                     <div class="comment">
                                         <p class="text-header">{{$show_comment->username}}</p>
                                         <!-- PIN -->
-                                        <span class="pin greyed">Purchased</span>
+                                       <span class="pin greyed">{{($show_comment->user_id == $get_theme_detail->user_id) ? 'AUTHOR' : 'PURCHASED'}}</span>
                                         <!-- /PIN -->
-                                        <p class="timestamp">{!! \Carbon\Carbon::parse($show_comment->created_at)->format('M d, Y') !!}</p>
+                                        <p class="timestamp">{!! \Carbon\Carbon::parse($show_comment->created_at)->diffForHumans() !!}, {!! \Carbon\Carbon::parse($show_comment->created_at)->format(' d M, Y') !!}</p>
                                         <a style="cursor: pointer;" onclick="reply_field('{{$show_comment->com_id}}')" class="report">Reply</a>
                                         <p>{{$show_comment->comment}}</p>
                                     </div>
@@ -627,9 +628,8 @@ span.icon-arrow-right.small {
                                                     <!-- /USER AVATAR -->
                                                     <p class="text-header">{{$show_reply->username}}</p>
                                                     <!-- PIN -->
-                                                    <span class="pin greyed">Purchased</span>
-                                                    
-                                                    <a class="report">{{ \Carbon\Carbon::parse($show_reply->created_at)->format('M d, Y') }}</a>
+                                                    <span class="pin greyed">{{($show_reply->user_id == $get_theme_detail->user_id) ? 'AUTHOR' : 'PURCHASED'}}</span>
+                                                    <a class="report">{!! \Carbon\Carbon::parse($show_reply->created_at)->diffForHumans() !!}, {!! \Carbon\Carbon::parse($show_reply->created_at)->format(' d M, Y') !!}</a>
                                                     <p>{{$show_reply->reply_msg}}</p>
                                                 </div>
                                             </div>
@@ -727,14 +727,18 @@ span.icon-arrow-right.small {
 
         $.ajax({
             method:'post',
-            url:'{!!  URL::to("/themeplace/cart/")  !!}',
+            url:"{{route('theme_cart')}}",
             data:{
                 theme_id:theme_id,
                 price:price,
                 _token:"{!!  csrf_token()  !!}"
             },
             success:function(data){
-                alert(data);
+               if(data.status == 'success'){
+                    toastr.success(data.msg);
+                }else{
+                    toastr.error(data.msg);
+                }
             }
         });
 

@@ -5,7 +5,7 @@ Route::get('view/add', function(){
 	return view('add');
 });
 
-Route::get('/','HomeController@index');
+Route::get('/','HomeController@index')->name('home');
  //home page
 Route::get('search/keyword', 'HomeController@search_keyword')->name('search_keyword');
 // suggest search keyword every platform
@@ -15,17 +15,17 @@ Auth::routes();
 
 Route::group(['prefix'=> 'dashboard', 'middleware' => ['auth']], function(){
 	Route::get('notifications', 'NotificationController@notifications')->name('notifications');
+	Route::get('notifications/read/{id}', 'NotificationController@readNotify')->name('readNotify');
 
 });
 
 Route::get('dashboard', 'userController@dashboard')->name('dashboard');
 
-
 Route::get('switch/user', 'userController@switchUser')->name('switchUser');
 
 Route::get('adsense/view', 'AdsenseController@index');
 
-Route::get('dashboard/profile/setting', 'UserinfoController@profile_setting')->name('user_dashboard');
+Route::get('dashboard/profile/setting', 'UserinfoController@profile_setting')->name('profile_setting');
 
 Route::post('/checkemail', 'UserinfoController@check_email');
 Route::post('/profile/update', 'UserinfoController@update');
@@ -48,6 +48,9 @@ Route::group(['prefix'=> 'dashboard/themeplace', 'middleware' => ['auth']],  fun
 	Route::post('/image/upload', 'themeController@image_upload')->name('image_upload');
 	Route::post('/upload/', 'themeController@insert_theme')->name('insert_theme');
 	Route::get('/manage/{status?}', 'themeController@manage_theme')->name('manage_theme');
+
+	Route::get('change/status', 'themeController@themeStatusCng')->name('themeStatusCng');
+
 	Route::post('/delete', 'themeController@delete_theme')->name('delete_theme');
 
 	Route::get('delete/folder_item', 'themeController@delete_folder_item')->name('delete_folder_item');
@@ -69,20 +72,17 @@ Route::group(['prefix'=> 'themeplace'],  function(){
 	Route::post('comment/reply/{id}', 'themefrontController@comment_reply')->name('comment_reply');
 
 
-	//add to cart added
-	Route::post('/cart/', 'AddToCartController@theme_cart');
+	//add to cart item
+	Route::post('/cart/', 'AddToCartController@theme_cart')->name('theme_cart');
 	// view cart
 	Route::get('/cart/view', 'AddToCartController@view_cart')->name('theme.view_cart');
 	// delete cart
 	Route::get('/cart/delete/{id}', 'AddToCartController@theme_delete_cart')->name('themeCartDelete');
 
-	Route::post('/checkout', 'ThemeOrderController@theme_checkout')->name('theme_checkout');
+	Route::match(array('GET', 'POST'), '/checkout', 'ThemeOrderController@theme_checkout')->name('theme_checkout');
 
-	Route::post('payment/paypal', 'PaymentController@payWithpaypal')->name('paypalPayment');
-	Route::get('getpayment/status', 'PaymentController@paymentStatus')->name('paymentStatus');
+	Route::get('/payment/completed/paypal', 'ThemeOrderController@payment_success')->name('themePaymentSuccess');
 
-	Route::get('/payment/completed/paypal', 'ThemeOrderController@payment_success')->name('theme_payment_paypal');
-	Route::get('/order/payment/cancel', 'ThemeOrderController@payment_cancel')->name('theme_payment_cancel'); 
 	Route::post('/payment/completed/stripe', 'ThemeOrderController@stripe_payment')->name('theme_stripe_payment'); // stripe payment
 	Route::get('/downloads', 'themefrontController@theme_download')->name('theme_downloads');
 	Route::get('/download_file/bytheme_id/{theme_id}', 'themefrontController@download_file');
@@ -98,7 +98,7 @@ Route::group(['prefix'=> 'themeplace'],  function(){
 Route::group(['prefix'=> 'dashboard/workplace', 'middleware' => ['auth']],  function(){
 
 	// upload job 
-	Route::get('/job-post/{post_id?}', 'WorkplaceController@job_post');
+	Route::get('/job-post/{post_slug?}', 'WorkplaceController@job_post')->name('job_post');
 	// get sub category for upload job
 	Route::get('/get_subcategory/{id}', 'WorkplaceController@get_subcategory');
 	Route::post('/job-post/insert', 'WorkplaceController@insert_job_post');
@@ -122,10 +122,13 @@ Route::group(['prefix'=> 'dashboard/workplace', 'middleware' => ['auth']],  func
 	Route::get('/job-post/{post_id}/step/7', 'WorkplaceController@job_post_seven');
 	Route::post('/job-post/insert/step_seven', 'WorkplaceController@insert_job_step_seven');
 
-	Route::get('/job-list/', 'WorkplaceController@job_list');
-	Route::get('/proposals-list/{job_id}', 'WorkplaceController@proposals_list');
+	Route::get('/job-list/{status?}', 'WorkplaceController@job_list')->name('job_list');
+	Route::get('/job/status', 'WorkplaceController@job_status')->name('job_status');
 
-	Route::get('/applicant-hire/{job_id}/{applicant_id}', 'WorkplaceController@applicant_hire');
+
+	Route::get('/proposals-list/{slug}', 'JobProposalController@proposals_list');
+
+	Route::get('/applicant-hire/{job_slug}/{applicant_id}', 'JobProposalController@applicant_hire')->name('applicant_hire');
 
 	Route::post('/payment_stripe/', 'WorkplaceController@payment_stripe')->name('payment_stripe.post');
 	Route::get('/work-description/{order_id}', 'WorkplaceController@work_description');
@@ -134,9 +137,6 @@ Route::group(['prefix'=> 'dashboard/workplace', 'middleware' => ['auth']],  func
 	Route::get('/manage/order/{status?}', 'JobOrderController@job_manage_order')->name('job_manage_order');
 	Route::get('/order-details/{order_id}', 'JobOrderController@order_details')->name('job_order_details');
 	
-	Route::get('/manage/get_buyer_orders/{status}', 'JobOrderController@get_orders_by_status');
-
-	
 	Route::post('/order/quick-response', 'JobOrderController@quick_response')->name('job_quick_response'); 
 	Route::post('/order/extratime-cancel', 'JobOrderController@order_timeExtra_cancel')->name('job_order_timeorcancel'); 
 	// order deliver 
@@ -144,7 +144,7 @@ Route::group(['prefix'=> 'dashboard/workplace', 'middleware' => ['auth']],  func
 	Route::post('/revision/order', 'JobOrderController@revision_delivery')->name('job_revision_delivery'); 
 	Route::post('/order/completed/{order_id}', 'JobOrderController@order_completed')->name('job_order_completed');
 	Route::get('/order/feadback/{order_id}', 'JobOrderController@job_feadback')->name('job_feadback');
-	Route::post('/order/feadback/{order_id}', 'JobOrderController@job_insert_feadback');
+	Route::post('/order/feadback/{order_id}', 'JobOrderController@insert_feadback')->name('job_feadback');
 
 
 
@@ -160,8 +160,8 @@ Route::group(['prefix' => 'workplace'], function(){
 	Route::post('/{category}/{subcategory}', 'WorkplaceHomeController@get_filter_data');
 	Route::get('{job_url}', 'WorkplaceHomeController@job_details')->name('job-details');
 
-	Route::get('proposal/{job_url}/details', 'WorkplaceController@submit_proposal')->name('job_proposal');
-	Route::post('insert-proposal', 'WorkplaceController@insert_proposal');
+	Route::get('proposal/{job_url}', 'JobProposalController@submit_proposal')->name('job_proposal');
+	Route::post('job/proposal/create', 'JobProposalController@insert_proposal')->name('apply_job');
 	
 });
 
@@ -174,16 +174,27 @@ Route::post('/get_medata', 'GigController@get_medata'); //get sub category for g
  
 Route::get('/dashboard/create-gig', 'GigController@create_gig'); // view gig page
 Route::post('/dashboard/create-gig', 'GigController@insert_gig'); // insert gig 1st step
-Route::get('/dashboard/create-gig/{step}/{title?}', 'GigController@gig_step'); // update gig
+Route::get('/dashboard/create-gig/{url}', 'GigController@gig_step')->name('gig_step'); // update gig
 
-Route::post('/dashboard/create-gig/second', 'GigController@insert_gig_step_second'); // insert gig step 2nd
-Route::post('/dashboard/create-gig/third', 'GigController@insert_gig_step_third'); // insert gig step 3rd
-Route::post('/dashboard/create-gig/fourth', 'GigController@insert_gig_step_fourth'); // insert gig step 4th
-Route::post('/dashboard/create-gig/five', 'GigController@insert_gig_step_five'); // insert gig step 5th
-Route::post('/dashboard/upload/images', 'GigController@upload_images')->name('upload_images'); // insert gig step 5th
-Route::post('/dashboard/create-gig/finish', 'GigController@insert_gig_step_finish'); // insert gig step finish
+Route::get('/dashboard/create-gig/{url}/second', 'GigController@gig_step_second')->name('gig_step_second');
+Route::post('/dashboard/create-gig/{url}/second', 'GigController@insert_gig_step_second')->name('gig_step_second');
 
-Route::get('dashboard/manage-gigs/{status?}', 'GigController@manage_gigs');
+Route::get('/dashboard/create-gig/{url}/third', 'GigController@gig_step_third')->name('gig_step_third'); // insert gig step 3rd
+Route::post('/dashboard/create-gig/{url}/third', 'GigController@insert_gig_step_third')->name('gig_step_third'); // insert gig step 3rd
+
+Route::get('/dashboard/create-gig/{url}/fourth', 'GigController@gig_step_fourth')->name('gig_step_fourth'); // insert gig step 4th
+Route::post('/dashboard/create-gig/{url}/fourth', 'GigController@insert_gig_step_fourth')->name('gig_step_fourth'); // insert gig step 4th
+Route::get('/dashboard/create-gig/{url}/five', 'GigController@gig_step_five')->name('gig_step_five'); // insert gig step 5th
+Route::post('/dashboard/create-gig/{url}/five', 'GigController@insert_gig_step_five')->name('gig_step_five'); // insert gig step 5th
+Route::get('/dashboard/gigimage/delete', 'GigController@gigimage_delete')->name('gigimage_delete'); // insert gig step 5th
+
+Route::get('/dashboard/create-gig/{url}/finish', 'GigController@gig_step_finish')->name('gig_step_finish'); // insert gig step finish
+Route::post('/dashboard/create-gig/{url}/finish', 'GigController@insert_gig_step_finish'); // insert gig step finish
+
+Route::get('dashboard/manage-gigs/{status?}', 'GigController@manage_gigs')->name('manage_gigs');
+
+Route::get('gig/change/status', 'GigController@gigStatusCng')->name('gigStatusCng');
+
 Route::post('dashboard/marketplace/gig/delete', 'GigController@gig_delete')->name('gig_delete');
 
 Route::post('/dashboard/create/price', 'GigController@insert_price'); // update gig
@@ -224,34 +235,36 @@ Route::post('marketplace/suggest/keyword', 'gighomeController@suggest_keyword')-
 Route::post('/order/add_card/', 'GigOrderController@add_to_cart'); // add to cart
 Route::get('/delete/add_to_cart/{cart_id}', 'GigOrderController@delete_cart'); // delete add to cart
 
-Route::get('marketplace/order/checkout/{cart_id}', 'GigOrderController@order_checkout')->name('order_checkout'); // view order details
-Route::post('marketplace/order/placeorder/payment', 'GigOrderController@placeorder_payment')->name('gigOrderPayment'); // order & payment
+Route::post('marketplace/order/checkout', 'GigOrderController@order_checkout')->name('gig_checkout'); // view order details
+Route::match(array('GET', 'POST'), 'marketplace/order/payment', 'GigOrderController@placeorder_payment')->name('gigOrderPayment'); // order & payment
+
+//all platform order paypal payment
+Route::post('/order/purchase/paypal', 'PaymentController@PaymentPaypal')->name('paymentPaypal');
+Route::get('/order/purchase/status', 'PaymentController@PaymentStatus')->name('paymentStatus');
 
 Route::get('/order/placeorder/card/', 'GigOrderController@card'); // stripe payment
-
 Route::post('/order/placeorder/stripe_payment/', 'GigOrderController@stripe_payment'); // stripe payment
 
 // order & payment
-Route::get('/order/payment/success', 'GigOrderController@payment_success'); 
+Route::get('/order/payment/success', 'GigOrderController@payment_success')->name('gigPaymentSuccess'); 
 Route::get('/order/payment/cancel', 'GigOrderController@payment_cancel'); 
 // order requirements
-Route::get('/order/requirements/{order_id}', 'GigOrderController@order_requirements'); 
+Route::get('/order/requirements/{order_id}', 'GigOrderController@order_requirements')->name('order_requirement'); 
 
 Route::post('/order/requirements/{order_id}', 'GigOrderController@insert_order_requirements'); // order requirements
 Route::get('/order/started/{order_id}', 'GigOrderController@order_started'); // order requirements
  // order review for buyer
 Route::get('/order/review/{order_id}', 'GigOrderController@order_review');
-// order completed
-
+// order completed for buyer
 Route::post('/order/completed/{order_id}', 'GigOrderController@order_completed');
-Route::get('/order/completed/{order_id}', 'GigOrderController@order_review');
-Route::get('/order/feadback/{order_id}', 'GigOrderController@feadback');
-Route::post('/order/feadback/{order_id}', 'GigOrderController@insert_feadback');
+
+Route::get('dashboard/marketplace/order/feadback/{order_id}', 'GigOrderController@feadback')->name('gig_feadback');
+Route::post('dashboard/marketplace/order/feadback/{order_id}', 'GigOrderController@insert_feadback')->name('gig_feadback');
 
 Route::get('/order/payment/{order_id}', 'GigOrderController@order_payment'); // 
 
 // manage seller order
-Route::get('dashboard/marketplace/manage/seller_order/{status?}', 'GigOrderController@manage_seller_order')->name('manage_seller_order'); 
+Route::get('dashboard/marketplace/manage/order/{status?}', 'GigOrderController@manage_order')->name('manage_gig_order'); 
 // get seller order by status
 Route::get('dashboard/manage/get_seller_orders/{status}', 'GigOrderController@get_seller_orders_by_status'); 
 // get order details
@@ -262,8 +275,7 @@ Route::post('dashboard/order/quick-response', 'GigOrderController@quick_response
 Route::post('dashboard/revision/order-delivery', 'GigOrderController@revision_delivery')->name('revision_delivery'); 
 Route::post('dashboard/order/order-timeorcancel', 'GigOrderController@order_timeExtra_cancel')->name('order_timeorcancel'); 
 
-// buyer 
-Route::get('dashboard/{username}/manage/buyer_order/{status?}/', 'GigOrderController@manage_buyer_order'); 
+
 // get_orders_by_status
 Route::get('dashboard/marketplace/manage/get_buyer_orders/{status?}', 'GigOrderController@get_orders_by_status'); 
 

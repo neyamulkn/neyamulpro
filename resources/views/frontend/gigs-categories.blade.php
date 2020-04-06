@@ -60,9 +60,12 @@
 		<div class="section">
 			<div  style="width: 100%; margin-bottom: 15px; position: relative; padding: 10px 0 0px !important;">
 				<form action=""  class="search-widget-form"  style="width: 100%;" >
-					<input type="text" autocomplete="off" onkeyup="search_bar(this.value)" style="width: 85%;border-radius:0px !important;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" id="item" placeholder="Search goods or services here...">
-					
-					<button class="button medium tertiary">Search Now!</button>
+					<div class="col-md-10 col-xs-8">
+					<input type="text" autocomplete="off" onkeyup="search_bar(this.value)" style="width: 100%;" value="{{(isset($_GET['item']) ? $_GET['item'] : '' )}}" name="item" id="item" placeholder="Search goods or services here...">
+					</div>
+					 <div class="col-md-2 col-xs-4">
+					<button class="button medium primary"><i class="icon-search"></i> Search</button>
+				</div>
 				</form>
 				<div class="search_bar" id="search_bar" >
 					<ul>

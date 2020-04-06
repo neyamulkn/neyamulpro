@@ -15,8 +15,11 @@
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/style.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/custom.css">
 	<link rel="stylesheet" href="{{asset('/allscript')}}/css/vendor/toastr.css">
+	<link rel="stylesheet" type="text/css" href="{{asset('/allscript')}}/datatables/css/dataTables.bootstrap4.css">
+
 	<!-- favicon -->
 	<link rel="icon" href="favicon.ico">
+
 	<title>@yield('title')</title>
 
 <style type="text/css">
@@ -45,18 +48,21 @@
 
 	.uploading {
 		position: absolute;
-	left: 0px;
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-	text-align: center;
-	padding:10%;
-	background-color: rgba(154, 150, 150, 0.3);
-	background-image: url("{{asset('image/spinner.gif')}}");
-	background-position: center;
-    background-repeat: no-repeat;
-}
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		text-align: center;
+		padding:10%;
+		background-color: rgba(154, 150, 150, 0.3);
+		background-image: url("{{asset('image/spinner.gif')}}");
+		background-position: center;
+	    background-repeat: no-repeat;
+	}
+	div.dataTables_wrapper div.dataTables_filter{
+		float: right;
+	}
 
 	</style>
 </head>
@@ -133,6 +139,13 @@
 				<a href="{{route('admin_dashboard')}}">
                     <span class="sl-icon icon-chart"></span>
                     Dashboard
+                </a>
+			</li>
+
+			<li class="dropdown-item">
+				<a href="{{route('manage_user')}}">
+                    <span class="sl-icon icon-chart"></span>
+                    Manage Users
                 </a>
 			</li>
 			
@@ -218,9 +231,9 @@
 				<!-- INNER DROPDOWN -->
 			</li>
 			<li class="dropdown-item">
-				<a href="{{route('admin_manage_gigs', 'active')}}">
+				<a href="{{route('admin_manage_job', 'active')}}">
                     <span class="sl-icon icon-star"></span>
-                    Manage Gigs
+                    Manage Jobs
                 </a>
                 
 			</li>

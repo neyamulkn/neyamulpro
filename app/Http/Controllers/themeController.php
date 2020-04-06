@@ -39,7 +39,7 @@ class themeController extends Controller
 			    'theme_name' => $request->theme_name,
 			    'theme_url' => $url,
 			    'category_id' => $request->category_id,
-          'status' => 'pending'
+          'status' => 'draft'
 			];
 
 			$insert_id = theme::create($data);
@@ -73,7 +73,11 @@ class themeController extends Controller
 
       $data = [];
       $user_id = Auth::user()->id;
-    	$data['get_theme'] = theme::where('theme_url', $url)->where('user_id', $user_id)->first();
+    	$get_theme = theme::where('theme_url', $url);
+      if(Auth::user()->role_id != env('ADMIN')){
+        $get_theme = $get_theme->where('user_id', $user_id);
+      }
+      $data['get_theme'] = $get_theme->first();
 
       if($data['get_theme'])
       {
@@ -85,6 +89,9 @@ class themeController extends Controller
         ->join('theme_filters', 'theme_filter_categories.filter_id','theme_filters.filter_id')
         ->where('theme_filter_categories.category_id', $data['get_theme']->category_id)->orderBy('type', 'ASC')->get();
 
+        if(Auth::user()->role_id == env('ADMIN')){
+          return view('admin.themeplace.review-theme')->with($data);
+        }
     		return view('backend.theme.theme-upload')->with($data);
     	    	
     	}else{
@@ -151,19 +158,25 @@ class themeController extends Controller
     //main image upload by ajax
     public function image_upload(Request $request)
     {
-         $rules = array(
-          'uploadImage'  => 'required|max:2048'
-         );
+       $rules = array(
+        'uploadImage'  => 'required|max:2048'
+       );
 
-         $error = Validator::make($request->all(), $rules);
+       $error = Validator::make($request->all(), $rules);
 
-         if($error->fails())
-         {
-            return response()->json(['errors' => $error->errors()->all()]);
+       if($error->fails())
+       {
+          return response()->json(['errors' => $error->errors()->all()]);
          }
-         $uploadImage = $request->file('uploadImage');
+        $uploadImage = $request->file('uploadImage');
 
-        $new_name = rand() . '.' . $uploadImage->getClientOriginalExtension();
+        $new_name = rand().Auth::user()->id . '.' . $uploadImage->getClientOriginalExtension();
+
+        $image_path = public_path('theme/images/thumb/'.$new_name );
+        $image_resize = Image::make($uploadImage);
+        $image_resize->resize(330, 195);
+        $image_resize->save($image_path);
+
       	$uploadImage->move(public_path('theme/images'), $new_name);
       	$theme_id = $request->theme_id;
        	$data = ['main_image' => $new_name ];
@@ -183,9 +196,8 @@ class themeController extends Controller
   // insert theme 
   public function insert_theme(Request $request){
 
-
 		  $user_id = Auth::user()->id;
-    	
+   
     	try{
 	    	// theme source file
 			 $main_file = $request->file('main_file');
@@ -223,18 +235,22 @@ class themeController extends Controller
 			        }
 			    }
 
-			    if(isset($request->select)){
-		            foreach($request->select as $feature_id => $feature_name){
-		            	$data = [
-      					    'theme_id' => $request->theme_id,
-      					    'feature_type' => 'select',
-      					    'feature_id' => $feature_id,
-      					    'feature_name' => $feature_name
-      					];
+			    if(isset($request->selectbox)){
+            foreach($request->selectbox as $feature_id => $array_name){
+              if(is_array($request->$array_name)){
+                foreach($request->$array_name as $key => $feature_name){
+                  $data = [
+                    'theme_id' => $request->theme_id,
+                    'feature_type' => 'select',
+                    'feature_id' => $feature_id,
+                    'feature_name' => $feature_name
+                ];
       					DB::table('theme_features')->insert($data);
       					 
-			        } 
-			    }
+			        }
+            } 
+          }
+			 }
 
 			    if(isset($request->dropdown)){
 		            foreach($request->dropdown as $feature_id => $feature_name){
@@ -273,6 +289,7 @@ class themeController extends Controller
 
   // manage theme by status
 	public function manage_theme($status='active'){
+
 		$user_id = Auth::user()->id;
         //count theme status  (active, pending etc)
         $get_status = DB::table('themes');
@@ -283,17 +300,18 @@ class themeController extends Controller
 
         // show theme by status
         $get_theme_info = DB::table('themes')
+            ->join('users', 'themes.user_id', 'users.id')
             ->leftJoin('theme_orders', 'themes.theme_id', 'theme_orders.theme_id')
             ->leftJoin('theme_category', 'themes.category_id', 'theme_category.category_url')
             ->leftJoin('theme_subcategory', 'themes.sub_category', 'theme_subcategory.subcategory_url')
-            ->selectRaw('themes.*, count(theme_orders.theme_id) total_sell, sum(theme_orders.total_price) total_earn');
+            ->selectRaw('themes.*, users.username, count(theme_orders.theme_id) total_sell, sum(theme_orders.total_price) total_earn');
 
             if(Auth::user()->role_id != env('ADMIN')){
               $get_theme_info = $get_theme_info->where('themes.user_id', $user_id);
             }
 
             if($status != 'all'){
-                $get_theme_info = $get_theme_info->where('themes.status', $status);
+                $get_theme_info = $get_theme_info->where('themes.status', $status)->where('themes.status', '!=', 'delete');
             }
            
             $get_theme_info = $get_theme_info->groupBy('themes.theme_id')->orderBy('themes.theme_id', 'DESC')->paginate(4);
@@ -315,7 +333,25 @@ class themeController extends Controller
         } 
   }
 
-  // delte theme 
+  public function themeStatusCng(Request $request){ 
+        $user_id = Auth::user()->id;
+        $find_theme = theme::where('theme_id', $request->theme_id);
+        if(Auth::user()->role_id != env('ADMIN')){
+            $find_theme = $find_theme->where('user_id' , $user_id);
+        }
+        $find_theme =$find_theme->first();
+
+        if($request->status == 'paused' || $request->status == 'active'){
+            if($find_theme->update(['status' => $request->status])){
+                echo 'Job update '. $request->status;
+            }else{
+                return false;
+            }
+        }
+        
+    }
+
+  // delete theme 
 	public function delete_theme(Request $request)
     {
         $user_id = Auth::user()->id;
@@ -360,6 +396,10 @@ class themeController extends Controller
         theme::where('theme_id', $request->theme_id)->where('user_id', $user_id)->update(['main_file' => null]);
       }else{
         $file_path = public_path('theme/images/'.$theme->main_image );
+        $thumb_path = public_path('theme/images/thumb/'.$theme->main_image );
+        if(file_exists($thumb_path)){
+           @unlink($thumb_path);
+        }
         theme::where('theme_id', $request->theme_id)->where('user_id', $user_id)->update(['main_image' => null]);
       }
       

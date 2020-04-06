@@ -88,7 +88,7 @@ class RegisterController extends Controller
             ];
         
             Userinfo::create($getlastId);
-
+ 
             return $user;
         }
     }

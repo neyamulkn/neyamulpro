@@ -2,11 +2,6 @@
 
 @section('title', 'theme category')
 
-@section('css')
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/icon.css">
-	<link rel="stylesheet" href="{{asset('/allscript')}}/css/login.css">
-@endsection
-
 @section('content')
         <!-- DASHBOARD CONTENT -->
         <div class="dashboard-content">
@@ -17,7 +12,7 @@
 				<button form="profile-info-form"  data-toggle="modal" data-target="#add" class="button mid-short primary">Add Category</button>
             </div>
             <!-- /HEADLINE -->
-            <table class="table table-bordered">
+            <table id="myTable" class="table table-bordered table-striped">
 			    <thead>
 			      <tr>
 			        <th>Serial</th>
@@ -145,11 +140,10 @@
         });
         
     }
-function deleteItem(id) {
-    if (confirm("Are you sure delete it.?")) {
-      
-            var  link = '{{ URL::to("admin/themeplace/category/delete") }}/'+id;
-            $.ajax({
+	function deleteItem(id) {
+    if(confirm("Are you sure delete it.?")) {
+        var  link = '{{ URL::to("admin/themeplace/category/delete") }}/'+id;
+        $.ajax({
             url:link,
             method:"get",
             

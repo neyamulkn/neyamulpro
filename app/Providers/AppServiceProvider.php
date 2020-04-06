@@ -14,6 +14,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        $settings = [
+            'admin' => 1,
+            'freelancer' => 2,
+            'buyer' => 3,
+            'serviceFee' => 2,
+        ];
+
+        view()->share('settings', $settings);
     }
 
     /**
